@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-import { red } from "@material-ui/core/colors";
+import { red, pink } from "@material-ui/core/colors";
 
 // Create a theme instance.
 const theme = createMuiTheme({
@@ -12,6 +12,8 @@ const theme = createMuiTheme({
 
       dark: "#ff4c68",
 
+      contrastText: pink.A200,
+
       light: red[100],
     },
     error: {
@@ -21,7 +23,21 @@ const theme = createMuiTheme({
       default: "#fff",
     },
     text: {
-      secondary: "rgba(255,255,255,.5)",
+      secondary: "#8f8f8f",
+    },
+  },
+  typography: {
+    h1: {
+      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
+      fontSize: "4.5rem",
+      fontWeight: 500,
+      lineHeight: 1.5,
+    },
+    h2: {
+      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
+      fontSize: "3.5rem",
+      fontWeight: 500,
+      lineHeight: 1.5,
     },
   },
 });

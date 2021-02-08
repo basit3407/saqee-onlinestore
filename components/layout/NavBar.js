@@ -1,8 +1,12 @@
-import { useState, cloneElement, Fragment } from "react";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+
+import { useState, cloneElement, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   AppBar,
   makeStyles,
+  fade,
   Toolbar,
   Link,
   useScrollTrigger,
@@ -16,7 +20,10 @@ import {
   MenuItem,
   useTheme,
   useMediaQuery,
+  Popover,
+  InputBase,
 } from "@material-ui/core";
+
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -26,13 +33,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.dark,
   },
   root: {
-    margin: theme.spacing(2, 0),
+    marginTop: theme.spacing(1),
   },
   sideGridItem: {
+    display: "inline-block",
     "&:hover": {
       "& $item": {
         color: theme.palette.secondary.main,
       },
+      cursor: "pointer",
     },
   },
   //For nested hover to work we need to create empty class of child item
@@ -51,21 +60,59 @@ const useStyles = makeStyles((theme) => ({
   },
   menuPaper: {
     backgroundColor: theme.palette.secondary.light,
-    maxHeight: "calc(100% - 96px)",
+    width: "100%",
+    marginLeft: theme.spacing(0),
+  },
+  searchPaper: {
+    backgroundColor: theme.palette.secondary.light,
+    width: "100%",
+    maxWidth: "unset",
+    marginLeft: theme.spacing(0),
+  },
+  search: {
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    margin: "20px auto",
+    width: "50%",
+
+    [theme.breakpoints.down("xs")]: {
+      width: "75%",
+    },
+  },
+  inputRoot: {
+    color: theme.palette.secondary.dark,
+    margin: "0 auto",
+    textAlign: "center",
+    display: "block",
+  },
+  inputInput: {
+    padding: theme.spacing(2, 2, 2, 0),
+    display: "block",
+  },
+  headingNavbar: {
+    [theme.breakpoints.down("sm")]: {
+      marginTop: theme.spacing(1),
+    },
   },
 }));
 
 export default function NavBar() {
   const classes = useStyles(),
-    [anchorEl, setAnchorEl] = useState(null),
-    open = Boolean(anchorEl),
+    [open, setOpen] = useState(false),
+    [open1, setOpen1] = useState(false),
     theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
     handleMenu = (event) => {
-      setAnchorEl(event.currentTarget);
+      const { id } = event.currentTarget;
+      if (id === "menu") return setOpen(true);
+      setOpen1(true);
     },
     handleClose = () => {
-      setAnchorEl(null);
+      setOpen(false);
+      setOpen1(false);
     };
 
   return (
@@ -74,42 +121,66 @@ export default function NavBar() {
         <AppBar>
           <Toolbar className={classes.toolbar}>
             <Container>
-              <Grid className={classes.root} container>
-                <Grid item xs className={classes.sideGridItem}>
+              <Grid className={classes.root} spacing={1} container>
+                <Grid item xs>
                   <Hidden implementation="css" smDown>
-                    <Sides icon={SearchIcon} text="search" />
+                    <div
+                      id="search"
+                      onClick={handleMenu}
+                      className={classes.sideGridItem}
+                    >
+                      <Sides icon={SearchIcon} text="search" />
+                    </div>
                   </Hidden>
                   <Hidden implementation="css" mdUp>
                     <IconButton
                       color="primary"
                       edge="start"
                       onClick={handleMenu}
+                      id="menu"
                     >
                       <MenuIcon />
                     </IconButton>
-
-                    <Menu
-                      anchorEl={anchorEl}
-                      getContentAnchorEl={null}
+                    <Popover
+                      anchorReference="anchorPosition"
+                      anchorPosition={{ top: 110, left: 0 }}
                       anchorOrigin={{
                         vertical: "bottom",
-                        horizontal: "center",
+                        horizontal: "left",
                       }}
-                      transformOrigin={{ vertical: -30, horizontal: "center" }}
+                      transformOrigin={{ vertical: "top", horizontal: "left" }}
+                      keepMounted
+                      open={open1}
+                      onClose={handleClose}
+                      classes={{ paper: classes.searchPaper }}
+                      PaperProps={{ elevation: 0 }}
+                    >
+                      <SearchBar />
+                    </Popover>
+
+                    <Menu
+                      anchorReference="anchorPosition"
+                      anchorPosition={{ top: 90, left: 0 }}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                      transformOrigin={{ vertical: "top", horizontal: "left" }}
                       keepMounted
                       open={open}
                       onClose={handleClose}
                       classes={{ paper: classes.menuPaper }}
                     >
-                      {/* for rcvng the ref from menu we add div */}
-                      <div>
-                        <Map element={MenuItem} />
-                      </div>
+                      <MenuItem>
+                        <SearchBar />
+                      </MenuItem>
+                      <Map matches={matches} element={MenuItem} />
                     </Menu>
                   </Hidden>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={8}>
                   <Typography
+                    className={classes.headingNavbar}
                     align="center"
                     variant={matches ? "h6" : "h4"}
                     color="primary"
@@ -117,13 +188,12 @@ export default function NavBar() {
                     Saqees Online Store
                   </Typography>
                 </Grid>
-                <Grid
-                  style={{ textAlign: "right" }}
-                  className={classes.sideGridItem}
-                  item
-                  xs
-                >
-                  <Sides icon={ShoppingCartIcon} text="cart" />
+                <Grid style={{ textAlign: "right" }} item xs>
+                  <Link href="#" underline="none">
+                    <div className={classes.sideGridItem}>
+                      <Sides icon={ShoppingCartIcon} text="cart" />
+                    </div>
+                  </Link>
                 </Grid>
                 <Grid
                   display={{ xs: "none", md: "block" }}
@@ -132,7 +202,7 @@ export default function NavBar() {
                   item
                   xs={12}
                 >
-                  <Map element={Fragment} />
+                  <Map matches={matches} element={Fragment} />
                 </Grid>
               </Grid>
             </Container>
@@ -171,6 +241,7 @@ Sides.propTypes = {
 
 const Map = (props) => {
   const Element = props.element,
+    { matches } = props,
     classes = useStyles(),
     sections = [
       { title: "BODY CARE PRODUCTS", href: "/" },
@@ -187,6 +258,7 @@ const Map = (props) => {
           variant="button"
           className={classes.menuLink}
           href={item.href}
+          color={matches ? "textSecondary" : "primary"}
         >
           {item.title}
         </Link>
@@ -197,6 +269,7 @@ const Map = (props) => {
 
 Map.propTypes = {
   element: PropTypes.elementType.isRequired,
+  matches: PropTypes.bool.isRequired,
 };
 
 function ElevationScroll(props) {
@@ -214,4 +287,27 @@ function ElevationScroll(props) {
 
 ElevationScroll.propTypes = {
   children: PropTypes.element.isRequired,
+};
+
+const SearchBar = () => {
+  const classes = useStyles();
+  useEffect(() => {
+    const names = document.getElementsByName("input");
+    names.forEach((item) => {
+      item.focus();
+    });
+  });
+
+  return (
+    <div className={classes.search}>
+      <InputBase
+        placeholder="What are you looking for ?"
+        name="input"
+        classes={{
+          root: classes.inputRoot,
+          input: classes.inputInput,
+        }}
+      />
+    </div>
+  );
 };
