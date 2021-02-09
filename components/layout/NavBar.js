@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
-import { useState, cloneElement, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   AppBar,
@@ -9,7 +9,6 @@ import {
   fade,
   Toolbar,
   Link,
-  useScrollTrigger,
   Container,
   Grid,
   Typography,
@@ -29,6 +28,20 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
 
 const useStyles = makeStyles((theme) => ({
+  "@keyframes blinker": {
+    from: { opacity: 1 },
+    to: { opacity: 0 },
+  },
+
+  top: {
+    background: `linear-gradient(to right,#f08ccd 0,#8cd0e3 100%)`,
+  },
+  topText: {
+    animationName: "$blinker",
+    animationDuration: "2s",
+    animationTimingFunction: "linear",
+    animationIterationCount: "infinite",
+  },
   toolbar: {
     backgroundColor: theme.palette.secondary.dark,
   },
@@ -65,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchPaper: {
     backgroundColor: theme.palette.secondary.light,
-    width: "100%",
+    width: "90%",
     maxWidth: "unset",
     marginLeft: theme.spacing(0),
   },
@@ -117,99 +130,106 @@ export default function NavBar() {
 
   return (
     <>
-      <ElevationScroll>
-        <AppBar>
-          <Toolbar className={classes.toolbar}>
-            <Container>
-              <Grid className={classes.root} spacing={1} container>
-                <Grid item xs>
-                  <Hidden implementation="css" smDown>
-                    <div
-                      id="search"
-                      onClick={handleMenu}
-                      className={classes.sideGridItem}
-                    >
-                      <Sides icon={SearchIcon} text="search" />
-                    </div>
-                  </Hidden>
-                  <Hidden implementation="css" mdUp>
-                    <IconButton
-                      color="primary"
-                      edge="start"
-                      onClick={handleMenu}
-                      id="menu"
-                    >
-                      <MenuIcon />
-                    </IconButton>
-                    <Popover
-                      anchorReference="anchorPosition"
-                      anchorPosition={{ top: 90, left: 0 }}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
-                      }}
-                      transformOrigin={{ vertical: "top", horizontal: "left" }}
-                      keepMounted
-                      open={open1}
-                      onClose={handleClose}
-                      classes={{ paper: classes.searchPaper }}
-                      PaperProps={{ elevation: 0 }}
-                    >
-                      <SearchBar />
-                    </Popover>
-
-                    <Menu
-                      anchorReference="anchorPosition"
-                      anchorPosition={{ top: 90, left: 0 }}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
-                      }}
-                      transformOrigin={{ vertical: "top", horizontal: "left" }}
-                      keepMounted
-                      open={open}
-                      onClose={handleClose}
-                      classes={{ paper: classes.menuPaper }}
-                    >
-                      <MenuItem>
-                        <SearchBar />
-                      </MenuItem>
-                      <Map matches={matches} element={MenuItem} />
-                    </Menu>
-                  </Hidden>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography
-                    className={classes.headingNavbar}
-                    align="center"
-                    variant={matches ? "h6" : "h4"}
-                    color="primary"
+      <div className={classes.top}>
+        <Typography
+          classes={{ root: classes.topText }}
+          align="center"
+          color="primary"
+          variant="subtitle2"
+        >
+          Free delivery over order of PKR 2500
+        </Typography>
+      </div>
+      <AppBar position="sticky">
+        <Toolbar className={classes.toolbar}>
+          <Container>
+            <Grid className={classes.root} spacing={1} container>
+              <Grid item xs>
+                <Hidden implementation="css" smDown>
+                  <div
+                    id="search"
+                    onClick={handleMenu}
+                    className={classes.sideGridItem}
                   >
-                    Saqees Online Store
-                  </Typography>
-                </Grid>
-                <Grid style={{ textAlign: "right" }} item xs>
-                  <Link href="#" underline="none">
-                    <div className={classes.sideGridItem}>
-                      <Sides icon={ShoppingCartIcon} text="cart" />
-                    </div>
-                  </Link>
-                </Grid>
-                <Grid
-                  display={{ xs: "none", md: "block" }}
-                  component={Box}
-                  className={classes.bigMenu}
-                  item
-                  xs={12}
-                >
-                  <Map matches={matches} element={Fragment} />
-                </Grid>
+                    <Sides icon={SearchIcon} text="search" />
+                  </div>
+                </Hidden>
+                <Hidden implementation="css" mdUp>
+                  <IconButton
+                    color="primary"
+                    edge="start"
+                    onClick={handleMenu}
+                    id="menu"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Popover
+                    anchorReference="anchorPosition"
+                    anchorPosition={{ top: 110, left: 0 }}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                    keepMounted
+                    open={open1}
+                    onClose={handleClose}
+                    classes={{ paper: classes.searchPaper }}
+                    PaperProps={{ elevation: 0 }}
+                  >
+                    <SearchBar />
+                  </Popover>
+
+                  <Menu
+                    anchorReference="anchorPosition"
+                    anchorPosition={{ top: 65, left: 0 }}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                    keepMounted
+                    open={open}
+                    onClose={handleClose}
+                    classes={{ paper: classes.menuPaper }}
+                  >
+                    <MenuItem>
+                      <SearchBar />
+                    </MenuItem>
+                    <Map matches={matches} element={MenuItem} />
+                  </Menu>
+                </Hidden>
               </Grid>
-            </Container>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-      <Toolbar className={classes.toolbar} />
+              <Grid item xs={8}>
+                <Typography
+                  className={classes.headingNavbar}
+                  align="center"
+                  variant={matches ? "h6" : "h4"}
+                  color="primary"
+                >
+                  Saqees Online Store
+                </Typography>
+              </Grid>
+              <Grid style={{ textAlign: "right" }} item xs>
+                <Link href="#" underline="none">
+                  <div className={classes.sideGridItem}>
+                    <Sides icon={ShoppingCartIcon} text="cart" />
+                  </div>
+                </Link>
+              </Grid>
+              <Grid
+                display={{ xs: "none", md: "block" }}
+                component={Box}
+                className={classes.bigMenu}
+                item
+                xs={12}
+              >
+                <Map matches={matches} element={Fragment} />
+              </Grid>
+            </Grid>
+          </Container>
+        </Toolbar>
+      </AppBar>
     </>
   );
 }
@@ -270,23 +290,6 @@ const Map = (props) => {
 Map.propTypes = {
   element: PropTypes.elementType.isRequired,
   matches: PropTypes.bool.isRequired,
-};
-
-function ElevationScroll(props) {
-  const { children } = props;
-
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-  });
-
-  return cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
-
-ElevationScroll.propTypes = {
-  children: PropTypes.element.isRequired,
 };
 
 const SearchBar = () => {

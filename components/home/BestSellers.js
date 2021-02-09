@@ -2,9 +2,12 @@ import {
   Button,
   Card,
   Container,
+  Fade,
   Grid,
   makeStyles,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -31,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonColor: {
     backgroundColor: theme.palette.secondary.dark,
+
+    "&:hover": {
+      background: `linear-gradient(to right,#f08ccd 0,#8cd0e3 100%)`,
+    },
   },
   buttonTypo: {
     textTransform: "none",
@@ -92,48 +99,54 @@ export default function BestSellers() {
     ],
     products = [products1, products2, products3];
   return (
-    <Card className={classes.card} component="section">
-      <Container>
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              classes={{ root: classes.heading }}
-              align="center"
-              variant="h2"
-              display="block"
-            >
-              Best Sellers
-            </Typography>
-          </Grid>
-
-          <MapProducts array={products} />
-        </Grid>
-      </Container>
+    <Card className={classes.card} id="bestSellers" component="section">
+      <MapProducts array={products} heading="Best Sellers" />
     </Card>
   );
 }
 
 export const MapProducts = (props) => {
-  const { array } = props;
+  const { array, heading } = props,
+    classes = useStyles(),
+    theme = useTheme(),
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Carousel showThumbs={false}>
-      {array.map((item, index) => {
-        return (
-          <Grid container key={index}>
-            <Item array={item} key={index} />
+    <Container>
+      <Grid container>
+        <Fade in={true} timeout={2000}>
+          <Grid item xs={12}>
+            <Typography
+              classes={{ root: classes.heading }}
+              align="center"
+              variant={matches ? "h4" : "h2"}
+              display="block"
+            >
+              {heading}
+            </Typography>
           </Grid>
-        );
-      })}
-    </Carousel>
+        </Fade>
+
+        <Carousel autoPlay showThumbs={false}>
+          {array.map((item, index) => {
+            return (
+              <Grid container key={index}>
+                <Item array={item} />
+              </Grid>
+            );
+          })}
+        </Carousel>
+      </Grid>
+    </Container>
   );
 };
 
 MapProducts.propTypes = {
   array: PropTypes.array.isRequired,
+  heading: PropTypes.string.isRequired,
 };
 
-export const Item = (props) => {
+const Item = (props) => {
   const { array } = props,
     classes = useStyles();
 
@@ -171,7 +184,7 @@ export const Item = (props) => {
               color="primary"
               variant="button"
             >
-              ADD TO CART Rs{item.price}
+              ADD TO CART Rs.{item.price}
             </Typography>
           </Button>
         </div>
