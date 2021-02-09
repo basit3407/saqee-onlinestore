@@ -12,7 +12,12 @@ import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: theme.palette.secondary.light,
-    paddingTop: "3%",
+    paddingTop: "5%",
+  },
+  containerGrid: {
+    [theme.breakpoints.down("sm")]: {
+      marginTop: theme.spacing(3),
+    },
   },
   gridItem: {
     [theme.breakpoints.down("sm")]: {
@@ -20,14 +25,20 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   image: {
-    margin: "4% 0 0 4%",
-    width: "70%",
+    width: "75%",
   },
-  heading: {
+
+  buttonDiv: {
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
+    marginBottom: "5%",
+  },
+  para: {
     marginTop: "5%",
   },
   button: {
-    margin: "10% 20% 0",
+    marginTop: "10%",
   },
   buttonColor: {
     backgroundColor: theme.palette.error.main,
@@ -44,42 +55,41 @@ export default function Top() {
 
   return (
     <Card elevation={0} className={classes.card} component="section">
-      <Grid container>
+      <Grid container className={classes.containerGrid}>
         <Grid className={classes.gridItem} item xs={12} md>
-          <img className={classes.image} src="images/homepage.jpg" alt="" />
+          <img className={classes.image} src="images/cosmetics.png" alt="" />
         </Grid>
         <Grid item xs={12} md>
           <Typography
-            color="textSecondary"
-            classes={{ root: classes.heading }}
-            variant={matches ? "h2" : "h1"}
+            variant={matches ? "h4" : "h1"}
             align={matches ? "center" : "left"}
           >
             Remain Beautiful Forever
           </Typography>
           <Typography
-            classes={{ root: classes.heading }}
-            color="textSecondary"
+            classes={{ root: classes.para }}
             variant={matches ? "h6" : "h4"}
             align={matches ? "center" : "left"}
           >
             Order our best sellers before someone else does
           </Typography>
-          <Button
-            classes={{
-              root: classes.button,
-              containedSecondary: classes.buttonColor,
-              sizeLarge: classes.buttonSize,
-            }}
-            variant="contained"
-            color="secondary"
-            size="large"
-            startIcon={<ShoppingBasketIcon color="primary" />}
-          >
-            <Typography color="primary" variant="button">
-              Start Shopping
-            </Typography>
-          </Button>
+          <div className={classes.buttonDiv}>
+            <Button
+              classes={{
+                root: classes.button,
+                containedSecondary: classes.buttonColor,
+                sizeLarge: classes.buttonSize,
+              }}
+              variant="contained"
+              size="large"
+              color="secondary"
+              startIcon={<ShoppingBasketIcon color="primary" />}
+            >
+              <Typography color="primary" variant="button">
+                Start Shopping
+              </Typography>
+            </Button>
+          </div>
         </Grid>
       </Grid>
     </Card>

@@ -14,7 +14,7 @@ const theme = createMuiTheme({
 
       contrastText: pink.A200,
 
-      light: red[100],
+      light: red[50],
     },
     error: {
       main: red.A400,
@@ -31,13 +31,14 @@ const theme = createMuiTheme({
       fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
       fontSize: "4.5rem",
       fontWeight: 500,
-      lineHeight: 1.5,
     },
     h2: {
       fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
       fontSize: "3.5rem",
       fontWeight: 500,
-      lineHeight: 1.5,
+    },
+    h4: {
+      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
     },
   },
 });

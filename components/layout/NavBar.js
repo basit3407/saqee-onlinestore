@@ -143,7 +143,7 @@ export default function NavBar() {
                     </IconButton>
                     <Popover
                       anchorReference="anchorPosition"
-                      anchorPosition={{ top: 110, left: 0 }}
+                      anchorPosition={{ top: 90, left: 0 }}
                       anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "left",
@@ -258,7 +258,7 @@ const Map = (props) => {
           variant="button"
           className={classes.menuLink}
           href={item.href}
-          color={matches ? "textSecondary" : "primary"}
+          color={matches ? "inherit" : "primary"}
         >
           {item.title}
         </Link>
