@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   Container,
-  Fade,
   Grid,
   makeStyles,
   Typography,
@@ -12,13 +11,22 @@ import {
 import PropTypes from "prop-types";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import FadeIn from "../Fadein";
 
 const useStyles = makeStyles((theme) => ({
+  "@keyframes fadein": {
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+  },
   card: {
     paddingTop: "5%",
   },
   heading: {
     marginBottom: "5%",
+  },
+  animate: {
+    animationName: "fadein",
+    animationDuration: "2s",
   },
   imageDiv: {
     textAlign: "center",
@@ -114,7 +122,7 @@ export const MapProducts = (props) => {
   return (
     <Container>
       <Grid container>
-        <Fade in={true} timeout={2000}>
+        <FadeIn timeout={1000}>
           <Grid item xs={12}>
             <Typography
               classes={{ root: classes.heading }}
@@ -125,9 +133,9 @@ export const MapProducts = (props) => {
               {heading}
             </Typography>
           </Grid>
-        </Fade>
+        </FadeIn>
 
-        <Carousel autoPlay showThumbs={false}>
+        <Carousel showThumbs={false}>
           {array.map((item, index) => {
             return (
               <Grid container key={index}>

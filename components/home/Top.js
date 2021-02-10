@@ -57,12 +57,12 @@ export default function Top() {
   return (
     <Card elevation={0} className={classes.card} component="section">
       <Grid container className={classes.containerGrid}>
-        <Fade in timeout={2000}>
+        <Fade in timeout={1000}>
           <Grid className={classes.gridItem} item xs={12} md>
             <img className={classes.image} src="images/cosmetics.png" alt="" />
           </Grid>
         </Fade>
-        <Fade in timeout={4000}>
+        <Fade in timeout={2000}>
           <Grid item xs={12} md>
             <Typography
               variant={matches ? "h4" : "h1"}

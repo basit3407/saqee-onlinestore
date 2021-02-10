@@ -22,7 +22,6 @@ import {
   Popover,
   InputBase,
 } from "@material-ui/core";
-
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -36,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   top: {
     background: `linear-gradient(to right,#f08ccd 0,#8cd0e3 100%)`,
   },
+
   topText: {
     animationName: "$blinker",
     animationDuration: "2s",
