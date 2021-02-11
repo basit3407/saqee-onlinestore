@@ -13,7 +13,7 @@ import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: theme.palette.secondary.light,
-    paddingTop: "5%",
+    paddingTop: "3%",
   },
   containerGrid: {
     [theme.breakpoints.down("sm")]: {
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: "10%",
+    borderRadius: 0,
   },
   buttonColor: {
     backgroundColor: theme.palette.error.main,

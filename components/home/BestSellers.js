@@ -14,19 +14,12 @@ import { Carousel } from "react-responsive-carousel";
 import FadeIn from "../Fadein";
 
 const useStyles = makeStyles((theme) => ({
-  "@keyframes fadein": {
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-  },
   card: {
     paddingTop: "5%",
+    boxShadow: "none",
   },
   heading: {
     marginBottom: "5%",
-  },
-  animate: {
-    animationName: "fadein",
-    animationDuration: "2s",
   },
   imageDiv: {
     textAlign: "center",
@@ -38,13 +31,20 @@ const useStyles = makeStyles((theme) => ({
     margin: "10% 0",
   },
   button: {
-    boxShadow: "10px -10px 10px #f7eb61",
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    "&:hover": {
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    },
+    borderRadius: 0,
   },
   buttonColor: {
-    backgroundColor: theme.palette.secondary.dark,
+    background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+    transition: "all 0.2s ease",
+    WebkitTransition: "all 0.2s ease",
+    backgroundSize: "200%",
 
     "&:hover": {
-      background: `linear-gradient(to right,#f08ccd 0,#8cd0e3 100%)`,
+      backgroundPosition: "left",
     },
   },
   buttonTypo: {
@@ -54,7 +54,34 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BestSellers() {
   const classes = useStyles(),
-    products1 = [
+    theme = useTheme(),
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
+
+  return (
+    <Card className={classes.card} id="bestSellers" component="section">
+      <Container>
+        <Grid container>
+          <FadeIn timeout={1000}>
+            <Grid item xs={12}>
+              <Typography
+                classes={{ root: classes.heading }}
+                align="center"
+                variant={matches ? "h4" : "h2"}
+                display="block"
+              >
+                Best Sellers
+              </Typography>
+            </Grid>
+          </FadeIn>
+        </Grid>
+        <MapProducts />
+      </Container>
+    </Card>
+  );
+}
+
+const MapProducts = () => {
+  const products1 = [
       {
         product: "Lipstick",
         price: "10",
@@ -106,52 +133,18 @@ export default function BestSellers() {
       },
     ],
     products = [products1, products2, products3];
-  return (
-    <Card className={classes.card} id="bestSellers" component="section">
-      <MapProducts array={products} heading="Best Sellers" />
-    </Card>
-  );
-}
-
-export const MapProducts = (props) => {
-  const { array, heading } = props,
-    classes = useStyles(),
-    theme = useTheme(),
-    matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Container>
-      <Grid container>
-        <FadeIn timeout={1000}>
-          <Grid item xs={12}>
-            <Typography
-              classes={{ root: classes.heading }}
-              align="center"
-              variant={matches ? "h4" : "h2"}
-              display="block"
-            >
-              {heading}
-            </Typography>
+    <Carousel showThumbs={false}>
+      {products.map((item, index) => {
+        return (
+          <Grid container key={index}>
+            <Item array={item} />
           </Grid>
-        </FadeIn>
-
-        <Carousel showThumbs={false}>
-          {array.map((item, index) => {
-            return (
-              <Grid container key={index}>
-                <Item array={item} />
-              </Grid>
-            );
-          })}
-        </Carousel>
-      </Grid>
-    </Container>
+        );
+      })}
+    </Carousel>
   );
-};
-
-MapProducts.propTypes = {
-  array: PropTypes.array.isRequired,
-  heading: PropTypes.string.isRequired,
 };
 
 const Item = (props) => {
@@ -189,7 +182,7 @@ const Item = (props) => {
           >
             <Typography
               classes={{ button: classes.buttonTypo }}
-              color="primary"
+              color="textSecondary"
               variant="button"
             >
               ADD TO CART Rs.{item.price}

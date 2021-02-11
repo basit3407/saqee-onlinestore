@@ -56,12 +56,14 @@ const useStyles = makeStyles((theme) => ({
       },
       cursor: "pointer",
     },
+    marginTop: theme.spacing(1),
   },
   //For nested hover to work we need to create empty class of child item
   item: {},
   bigMenu: {
     textAlign: "center",
   },
+  logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
     "&:hover": {
@@ -151,7 +153,7 @@ export default function NavBar() {
                     onClick={handleMenu}
                     className={classes.sideGridItem}
                   >
-                    <Sides icon={SearchIcon} text="search" />
+                    <Sides matches={matches} icon={SearchIcon} text="search" />
                   </div>
                 </Hidden>
                 <Hidden implementation="css" mdUp>
@@ -200,20 +202,17 @@ export default function NavBar() {
                   </Menu>
                 </Hidden>
               </Grid>
-              <Grid item xs={8}>
-                <Typography
-                  className={classes.headingNavbar}
-                  align="center"
-                  variant={matches ? "h6" : "h4"}
-                  color="primary"
-                >
-                  Saqees Online Store
-                </Typography>
+              <Grid className={classes.bigMenu} item xs={8}>
+                <img className={classes.logo} src="images/logo.png" alt="" />
               </Grid>
               <Grid style={{ textAlign: "right" }} item xs>
                 <Link href="#" underline="none">
                   <div className={classes.sideGridItem}>
-                    <Sides icon={ShoppingCartIcon} text="cart" />
+                    <Sides
+                      matches={matches}
+                      icon={ShoppingCartIcon}
+                      text="cart"
+                    />
                   </div>
                 </Link>
               </Grid>
@@ -237,16 +236,21 @@ export default function NavBar() {
 const Sides = (props) => {
   const classes = useStyles(),
     Icon = props.icon,
-    text = props.text;
+    { text, matches } = props;
 
   return (
     <>
-      <Icon className={classes.item} color="primary" />
+      <Icon
+        className={classes.item}
+        fontSize={matches ? "small" : "large"}
+        color="primary"
+      />
       <Typography
         variant="caption"
         className={classes.item}
         color="primary"
         display="block"
+        align="center"
       >
         {text}
       </Typography>
@@ -257,6 +261,7 @@ const Sides = (props) => {
 Sides.propTypes = {
   icon: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
+  matches: PropTypes.bool.isRequired,
 };
 
 const Map = (props) => {
@@ -265,7 +270,7 @@ const Map = (props) => {
     classes = useStyles(),
     sections = [
       { title: "BODY CARE PRODUCTS", href: "/" },
-      { title: "SKINCARE", href: "/about" },
+      { title: "SKINCARE", href: "#beauty" },
       { title: "OUTFITS", href: "/services" },
       { title: "FOOTWEAR", href: "/gallery" },
     ];
