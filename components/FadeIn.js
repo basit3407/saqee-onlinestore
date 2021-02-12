@@ -1,19 +1,17 @@
-import { Fade, useScrollTrigger } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { Fade } from "@material-ui/core";
 import PropTypes from "prop-types";
+import { cloneElement } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function FadeIn(props) {
   const { children, timeout } = props,
-    trigger = useScrollTrigger(),
-    [animate, setAnimate] = useState(false);
-
-  useEffect(() => {
-    trigger && !animate && setAnimate(true);
-  }, [animate, trigger]);
+    [ref, inView] = useInView({
+      triggerOnce: true,
+    });
 
   return (
-    <Fade in={animate} timeout={timeout}>
-      {children}
+    <Fade in={inView} timeout={timeout}>
+      {cloneElement(children, { ref: ref })}
     </Fade>
   );
 }
