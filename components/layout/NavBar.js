@@ -179,7 +179,7 @@ export default function NavBar() {
                     classes={{ paper: classes.searchPaper }}
                     PaperProps={{ elevation: 0 }}
                   >
-                    <SearchBar />
+                    <SearchBar handleClose={handleClose} />
                   </Popover>
 
                   <Menu
@@ -196,9 +196,13 @@ export default function NavBar() {
                     classes={{ paper: classes.menuPaper }}
                   >
                     <MenuItem>
-                      <SearchBar />
+                      <SearchBar handleClose={handleClose} />
                     </MenuItem>
-                    <Map matches={matches} element={MenuItem} />
+                    <Map
+                      handleClose={handleClose}
+                      matches={matches}
+                      element={MenuItem}
+                    />
                   </Menu>
                 </Hidden>
               </Grid>
@@ -266,10 +270,10 @@ Sides.propTypes = {
 
 const Map = (props) => {
   const Element = props.element,
-    { matches } = props,
+    { matches, handleClose } = props,
     classes = useStyles(),
     sections = [
-      { title: "BODY CARE PRODUCTS", href: "/" },
+      { title: "BODY CARE PRODUCTS", href: "#body" },
       { title: "SKINCARE", href: "#beauty" },
       { title: "OUTFITS", href: "/services" },
       { title: "FOOTWEAR", href: "/gallery" },
@@ -279,6 +283,7 @@ const Map = (props) => {
     return (
       <Element key={index}>
         <Link
+          onClick={handleClose}
           underline="none"
           variant="button"
           className={classes.menuLink}
@@ -295,10 +300,12 @@ const Map = (props) => {
 Map.propTypes = {
   element: PropTypes.elementType.isRequired,
   matches: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func,
 };
 
-const SearchBar = () => {
-  const classes = useStyles();
+const SearchBar = (props) => {
+  const classes = useStyles(),
+    { handleClose } = props;
   useEffect(() => {
     const names = document.getElementsByName("input");
     names.forEach((item) => {
@@ -311,6 +318,12 @@ const SearchBar = () => {
       <InputBase
         placeholder="What are you looking for ?"
         name="input"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleClose();
+            e.target.value = "";
+          }
+        }}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
@@ -318,4 +331,8 @@ const SearchBar = () => {
       />
     </div>
   );
+};
+
+SearchBar.propTypes = {
+  handleClose: PropTypes.func.isRequired,
 };

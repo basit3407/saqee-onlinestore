@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   img: {
     width: "110%",
     transition: "transform 4000ms",
+    WebkitTransition: "transform 4000ms",
+    MozTransition: "transform 4000ms",
+    msTransition: "transform 4000ms",
   },
   overlay: {
     position: "absolute",
@@ -35,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: "200%",
     transition: "all 0.2s",
     WebkitTransition: "all 0.2s",
+    MozTransition: "all 0.2s",
+    msTransition: "all 0.2s",
     "&:hover": {
       backgroundPosition: "left",
     },
@@ -45,7 +50,7 @@ export default function Beauty() {
   const classes = useStyles();
   return (
     <Card id="beauty" classes={{ root: classes.card }} component="section">
-      <Grid container alignItems="stretch">
+      <Grid container>
         <MapImages />
       </Grid>
     </Card>

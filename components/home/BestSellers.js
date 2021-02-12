@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
     background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
     transition: "all 0.2s ease",
     WebkitTransition: "all 0.2s ease",
+    msTransition: "all 0.2s ease",
+    MozTransition: "all 0.2s ease",
     backgroundSize: "200%",
 
     "&:hover": {
