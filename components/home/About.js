@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     margin: "7% 25%",
     color: theme.palette.secondary.dark,
+    textAlign: "center",
   },
   iconSubDiv: {
     textAlign: "center",
@@ -120,18 +121,16 @@ const MapIcons = () => {
     return (
       <Grid item xs key={index}>
         <div className={classes.iconDiv}>
-          <div className={classes.iconSubDiv}>
-            <FontAwesomeIcon icon={item.icon} className={classes.icon} />
-            <Typography
-              display="block"
-              color="inherit"
-              align="left"
-              variant="caption"
-              noWrap
-            >
-              {item.desc}
-            </Typography>
-          </div>
+          <FontAwesomeIcon icon={item.icon} className={classes.icon} />
+          <Typography
+            display="block"
+            color="inherit"
+            align="center"
+            variant="caption"
+            noWrap
+          >
+            {item.desc}
+          </Typography>
         </div>
       </Grid>
     );
