@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: theme.palette.secondary.light,
     paddingTop: "3%",
+    height: "100vh",
   },
   containerGrid: {
     [theme.breakpoints.down("sm")]: {
@@ -41,12 +42,11 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: "10%",
     borderRadius: 0,
-  },
-  buttonColor: {
     backgroundColor: theme.palette.error.main,
-  },
-  buttonSize: {
     padding: "2% 7%",
+    "&:hover": {
+      backgroundColor: theme.palette.error.main,
+    },
   },
 }));
 
@@ -82,12 +82,8 @@ export default function Top() {
               <Button
                 classes={{
                   root: classes.button,
-                  containedSecondary: classes.buttonColor,
-                  sizeLarge: classes.buttonSize,
                 }}
                 variant="contained"
-                size="large"
-                color="secondary"
                 startIcon={<ShoppingBasketIcon color="primary" />}
                 href="#bestSellers"
               >

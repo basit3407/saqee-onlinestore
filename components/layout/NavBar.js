@@ -273,9 +273,9 @@ const Map = (props) => {
     { matches, handleClose } = props,
     classes = useStyles(),
     sections = [
-      { title: "BODY CARE PRODUCTS", href: "#body" },
-      { title: "SKINCARE", href: "#beauty" },
-      { title: "OUTFITS", href: "/services" },
+      { title: "FACIAL PRODUCTS", href: "#beauty" },
+      { title: "AROMAS", href: "#body" },
+      { title: "ABOUT US", href: "#about" },
       { title: "FOOTWEAR", href: "/gallery" },
     ];
 

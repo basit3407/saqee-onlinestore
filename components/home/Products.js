@@ -2,8 +2,8 @@ import { Card, Grid, makeStyles, Typography, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    margin: "10% 0",
     boxShadow: "none",
+    margin: "10% 0 25%",
   },
   gridItem: {
     "& :hover": {
@@ -31,8 +31,6 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: "7%",
     borderRadius: 0,
-  },
-  buttonColor: {
     background: `linear-gradient(to right,${theme.palette.secondary.light} 50%,transparent 50%) right`,
     border: `1px solid ${theme.palette.secondary.light}`,
     backgroundSize: "200%",
@@ -78,11 +76,9 @@ const MapImages = () => {
             <Button
               classes={{
                 root: classes.button,
-                containedPrimary: classes.buttonColor,
               }}
               size="large"
               variant="contained"
-              color="primary"
             >
               <Typography variant="button">view products</Typography>
             </Button>

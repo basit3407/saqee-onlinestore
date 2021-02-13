@@ -32,12 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
-    "&:hover": {
-      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
-    },
     borderRadius: 0,
-  },
-  buttonColor: {
     background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
     transition: "all 0.2s ease",
     WebkitTransition: "all 0.2s ease",
@@ -47,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
     "&:hover": {
       backgroundPosition: "left",
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     },
   },
   buttonTypo: {
@@ -176,9 +172,7 @@ const Item = (props) => {
           <Button
             classes={{
               root: classes.button,
-              containedSecondary: classes.buttonColor,
             }}
-            color="secondary"
             size="large"
             variant="contained"
           >

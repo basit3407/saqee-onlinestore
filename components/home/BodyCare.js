@@ -10,7 +10,6 @@ import {
 const useStyles = makeStyles((theme) => ({
   card: {
     background: "linear-gradient(to bottom,#8cd0e3 0,#f08ccd 100%)",
-    margin: "5% 0",
   },
   gridItem: {
     "& :hover": {
@@ -46,11 +45,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 0,
     marginTop: "7%",
     boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
-    "&:hover": {
-      boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
-    },
-  },
-  buttonColor: {
     background:
       "linear-gradient(to right, rgb(140, 208, 227) 50%, rgb(240, 140, 205) 100%) left",
     backgroundSize: "200%",
@@ -58,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
     WebkitTransition: "all 0.2s",
     MozTransition: "all 0.2s",
     msTransition: "all 0.2s",
-
     "&:hover": {
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
       backgroundPosition: "right",
     },
   },
@@ -104,11 +98,9 @@ const MapImages = () => {
               <Button
                 classes={{
                   root: classes.button,
-                  containedPrimary: classes.buttonColor,
                 }}
                 size="large"
                 variant="contained"
-                color="primary"
               >
                 <Typography color="textSecondary" variant="button">
                   view products
