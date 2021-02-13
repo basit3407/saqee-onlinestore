@@ -12,13 +12,13 @@ import { faReadme } from "@fortawesome/free-brands-svg-icons";
 const useStyles = makeStyles((theme) => ({
   card: {
     boxShadow: "none",
-    marginTop: "5%",
+    margin: "5% 0",
   },
   img: {
     width: "100%",
   },
-  heading: {
-    marginTop: "25%",
+  outerDiv: {
+    marginTop: "35%",
     [theme.breakpoints.down("sm")]: {
       marginTop: "5%",
     },
@@ -58,40 +58,38 @@ export default function About() {
         </Grid>
         <FadeIn timeout={1000}>
           <Grid item xs={12} md>
-            <Typography
-              classes={{ root: classes.heading }}
-              align="center"
-              variant="h5"
-            >
-              BEHIND THE BRAND
-            </Typography>
-            <Typography
-              align="center"
-              classes={{ root: classes.para }}
-              variant="body1"
-            >
-              SaqeeOnlineStore is an independent beauty brand created for beauty
-              lovers across the world. Our product range features exciting and
-              cruelty-free products with innovative formulas and glamorous
-              packaging that stand out with exceptionally gorgeous color
-              results.
-            </Typography>
-            <Grid container>
-              <MapIcons />
-            </Grid>
-            <div className={classes.buttonDiv}>
-              <Button
-                classes={{
-                  root: classes.button,
-                }}
-                variant="contained"
-                startIcon={<FontAwesomeIcon icon={faReadme} color="#fff" />}
-                href="/about"
+            <div className={classes.outerDiv}>
+              <Typography align="center" variant="h5">
+                BEHIND THE BRAND
+              </Typography>
+              <Typography
+                align="center"
+                classes={{ root: classes.para }}
+                variant="body1"
               >
-                <Typography color="primary" variant="button">
-                  Read more
-                </Typography>
-              </Button>
+                SaqeeOnlineStore is an independent beauty brand created for
+                beauty lovers across the world. Our product range features
+                exciting and cruelty-free products with innovative formulas and
+                glamorous packaging that stand out with exceptionally gorgeous
+                color results.
+              </Typography>
+              <Grid container>
+                <MapIcons />
+              </Grid>
+              <div className={classes.buttonDiv}>
+                <Button
+                  classes={{
+                    root: classes.button,
+                  }}
+                  variant="contained"
+                  startIcon={<FontAwesomeIcon icon={faReadme} color="#fff" />}
+                  href="/about"
+                >
+                  <Typography color="primary" variant="button">
+                    Read more
+                  </Typography>
+                </Button>
+              </div>
             </div>
           </Grid>
         </FadeIn>
