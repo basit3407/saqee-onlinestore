@@ -273,10 +273,10 @@ const Map = (props) => {
     { matches, handleClose } = props,
     classes = useStyles(),
     sections = [
+      { title: "HOME", href: "/" },
       { title: "FACIAL PRODUCTS", href: "#beauty" },
       { title: "AROMAS", href: "#body" },
       { title: "ABOUT US", href: "#about" },
-      { title: "FOOTWEAR", href: "/gallery" },
     ];
 
   return sections.map((item, index) => {

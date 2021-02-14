@@ -84,7 +84,7 @@ export default function Footer() {
                 CONTACT
               </Typography>
               <p className={classes.para2}>
-                <Link href="#" color="inherit" underline="none">
+                <Link href="/contact" color="inherit" underline="none">
                   Contact us
                 </Link>
               </p>
