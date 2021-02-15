@@ -1,5 +1,4 @@
 import {
-  Card,
   Grid,
   makeStyles,
   Container,
@@ -8,7 +7,7 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     background: "linear-gradient(to bottom,#8cd0e3 0,#f08ccd 100%)",
   },
   gridItem: {
@@ -63,13 +62,13 @@ export default function BodyCare() {
   const classes = useStyles();
 
   return (
-    <Card id="body" classes={{ root: classes.card }} component="section">
+    <section className={classes.section}>
       <Container>
         <Grid container>
           <MapImages />
         </Grid>
       </Container>
-    </Card>
+    </section>
   );
 }
 

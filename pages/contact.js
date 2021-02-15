@@ -6,7 +6,6 @@ import {
   makeStyles,
   Box,
   Typography,
-  Divider,
   Link,
   Button,
 } from "@material-ui/core";
@@ -132,7 +131,7 @@ const Info = () => {
           </Link>
         </Typography>
       </div>
-      <Divider />
+      <hr />
       <div className={classes.email}>
         <Typography display="block" variant="body1">
           <strong>Mobile:</strong>

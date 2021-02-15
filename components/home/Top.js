@@ -1,5 +1,4 @@
 import {
-  Card,
   Grid,
   makeStyles,
   Typography,
@@ -11,7 +10,7 @@ import {
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     backgroundColor: theme.palette.secondary.light,
     paddingTop: "3%",
     height: "100vh",
@@ -56,7 +55,7 @@ export default function Top() {
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Card elevation={0} className={classes.card} component="section">
+    <section className={classes.section}>
       <Grid container className={classes.containerGrid}>
         <Fade in timeout={1000}>
           <Grid className={classes.gridItem} item xs={12} md>
@@ -95,6 +94,6 @@ export default function Top() {
           </Grid>
         </Fade>
       </Grid>
-    </Card>
+    </section>
   );
 }

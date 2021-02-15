@@ -1,5 +1,4 @@
 import {
-  Card,
   Grid,
   makeStyles,
   Typography,
@@ -15,7 +14,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     backgroundColor: theme.palette.secondary.dark,
     paddingBottom: theme.spacing(7),
   },
@@ -56,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Footer() {
   const classes = useStyles();
   return (
-    <Card className={classes.card} component="section">
+    <section className={classes.section}>
       <Container>
         <Grid container>
           <Grid item xs={12} md>
@@ -121,7 +120,7 @@ export default function Footer() {
           </Grid>
         </Grid>
       </Container>
-    </Card>
+    </section>
   );
 }
 

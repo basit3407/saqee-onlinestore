@@ -167,7 +167,7 @@ export default function NavBar() {
                   </IconButton>
                   <Popover
                     anchorReference="anchorPosition"
-                    anchorPosition={{ top: 110, left: 0 }}
+                    anchorPosition={{ top: 150, left: 0 }}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "left",

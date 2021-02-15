@@ -1,8 +1,7 @@
-import { Card, Grid, makeStyles, Typography, Button } from "@material-ui/core";
+import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    boxShadow: "none",
+  section: {
     margin: "10% 0 25%",
   },
   gridItem: {
@@ -47,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Beauty() {
   const classes = useStyles();
   return (
-    <Card id="beauty" classes={{ root: classes.card }} component="section">
+    <section className={classes.section}>
       <Grid container>
         <MapImages />
       </Grid>
-    </Card>
+    </section>
   );
 }
 

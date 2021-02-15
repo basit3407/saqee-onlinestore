@@ -1,4 +1,4 @@
-import { Card, Grid, makeStyles, Typography, Button } from "@material-ui/core";
+import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
 import FadeIn from "../Fadein";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,8 +10,7 @@ import {
 import { faReadme } from "@fortawesome/free-brands-svg-icons";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    boxShadow: "none",
+  section: {
     margin: "5% 0",
   },
   img: {
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function About() {
   const classes = useStyles();
   return (
-    <Card classes={{ root: classes.card }} id="about" component="section">
+    <section className={classes.section}>
       <Grid container>
         <Grid item xs={12} md>
           <img className={classes.img} src="images/about.png" alt="" />
@@ -95,7 +94,7 @@ export default function About() {
           </Grid>
         </FadeIn>
       </Grid>
-    </Card>
+    </section>
   );
 }
 

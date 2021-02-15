@@ -1,6 +1,5 @@
 import {
   Button,
-  Card,
   Container,
   Grid,
   makeStyles,
@@ -14,9 +13,8 @@ import { Carousel } from "react-responsive-carousel";
 import FadeIn from "../Fadein";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     paddingTop: "5%",
-    boxShadow: "none",
   },
   heading: {
     marginBottom: "5%",
@@ -56,7 +54,7 @@ export default function BestSellers() {
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Card className={classes.card} id="bestSellers" component="section">
+    <section className={classes.section}>
       <Container>
         <Grid container>
           <FadeIn timeout={1000}>
@@ -74,7 +72,7 @@ export default function BestSellers() {
         </Grid>
         <MapProducts />
       </Container>
-    </Card>
+    </section>
   );
 }
 

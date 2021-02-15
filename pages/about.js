@@ -1,5 +1,4 @@
 import {
-  Card,
   Grid,
   makeStyles,
   Typography,
@@ -8,9 +7,8 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     marginTop: "5%",
-    boxShadow: "none",
   },
   topDiv: {
     textAlign: "center",
@@ -31,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Top() {
   const classes = useStyles();
   return (
-    <Card className={classes.card} component="section">
+    <section className={classes.section}>
       <Container>
         <Grid container>
           <Grid item xs={12}>
@@ -88,7 +86,12 @@ export default function Top() {
               </Typography>
             </div>
           </Grid>
-          <Grid component={Box} item display={{ xs: "none", md: "block" }} md>
+          <Grid
+            component={Box}
+            item
+            display={{ xs: "none", md: "block" }}
+            md={6}
+          >
             <img
               className={classes.img}
               alt=""
@@ -97,6 +100,6 @@ export default function Top() {
           </Grid>
         </Grid>
       </Container>
-    </Card>
+    </section>
   );
 }
