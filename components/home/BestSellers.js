@@ -10,7 +10,7 @@ import {
 import PropTypes from "prop-types";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-import FadeIn from "../Fadein";
+import FadeIn from "../FadeIn";
 
 const useStyles = makeStyles((theme) => ({
   section: {

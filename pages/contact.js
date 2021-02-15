@@ -1,5 +1,4 @@
 import {
-  Card,
   Grid,
   TextField,
   Container,
@@ -12,7 +11,7 @@ import {
 import FadeIn from "../components/FadeIn";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
+  section: {
     margin: "5% 0",
   },
   root: {
@@ -47,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Contact() {
   const classes = useStyles();
   return (
-    <Card elevation={0} classes={{ root: classes.card }} component="section">
+    <section className={classes.section}>
       <Container>
         <Grid container>
           <FadeIn timeout={1000}>
@@ -56,9 +55,11 @@ export default function Contact() {
                 CONTACT US
               </Typography>
             </Grid>
-            <Grid item component={Box} md display={{ xs: "none", md: "block" }}>
-              <Info />
-            </Grid>
+          </FadeIn>
+          <Grid item component={Box} md display={{ xs: "none", md: "block" }}>
+            <Info />
+          </Grid>
+          <FadeIn timeout={400}>
             <Grid item xs={12} md={9}>
               <form>
                 <TextField
@@ -103,19 +104,17 @@ export default function Contact() {
               </form>
             </Grid>
           </FadeIn>
-          <FadeIn timeout={2000}>
-            <Grid
-              item
-              component={Box}
-              xs={12}
-              display={{ xs: "block", md: "none" }}
-            >
-              <Info />
-            </Grid>
-          </FadeIn>
+          <Grid
+            item
+            component={Box}
+            xs={12}
+            display={{ xs: "block", md: "none" }}
+          >
+            <Info />
+          </Grid>
         </Grid>
       </Container>
-    </Card>
+    </section>
   );
 }
 
@@ -123,28 +122,30 @@ const Info = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.info}>
-      <div className={classes.email}>
-        <Typography display="block" variant="body1">
-          <strong>Email:</strong>
-        </Typography>
-        <Typography display="block" variant="body2">
-          {"you can also email your quiries at \n"}
+    <FadeIn timeout={1000}>
+      <div className={classes.info}>
+        <div className={classes.email}>
+          <Typography display="block" variant="body1">
+            <strong>Email:</strong>
+          </Typography>
+          <Typography display="block" variant="body2">
+            {"you can also email your quiries at \n"}
 
-          <Link color="inherit" underline="always" href="mailto:@test.com">
-            test@test.com
-          </Link>
-        </Typography>
+            <Link color="inherit" underline="always" href="mailto:@test.com">
+              test@test.com
+            </Link>
+          </Typography>
+        </div>
+        <hr />
+        <div className={classes.email}>
+          <Typography display="block" variant="body1">
+            <strong>Mobile:</strong>
+          </Typography>
+          <Typography display="block" variant="body2">
+            {"you can call us at \n #########"}
+          </Typography>
+        </div>
       </div>
-      <hr />
-      <div className={classes.email}>
-        <Typography display="block" variant="body1">
-          <strong>Mobile:</strong>
-        </Typography>
-        <Typography display="block" variant="body2">
-          {"you can call us at \n #########"}
-        </Typography>
-      </div>
-    </div>
+    </FadeIn>
   );
 };

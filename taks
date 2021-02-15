@@ -1,10 +1,12 @@
-1.contact page
-2. map product pages with pictures
-3.sorting functionality
-4.set NavBar
-5.add cart functionality and add redux
-6.backend
+FrontEndTaksRemaining
 
+1. styling of products page and item page
+2.cart numbers in yellow circular div like bliss world when item is added to cart
+3.create private pages for adding items and setting prices
+4. search what to do of images to be added by admin
+5. implement auto update of best sellers(db)
+6.for images store file in file system and path in database
+7.refractoring or any other styling issues
 
 
 

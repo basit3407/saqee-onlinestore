@@ -2,7 +2,7 @@ import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   section: {
-    margin: "10% 0 25%",
+    margin: "10% 0",
   },
   gridItem: {
     "& :hover": {

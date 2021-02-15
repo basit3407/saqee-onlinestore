@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "5%",
   },
 }));
-export default function Top() {
+export default function About() {
   const classes = useStyles();
   return (
     <section className={classes.section}>

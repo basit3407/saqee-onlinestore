@@ -1,4 +1,4 @@
-import ProtoType from "../components/ProtoType";
+import ProtoType from "../../../components/ProtoType";
 
 export default function Lips() {
   const array = [
