@@ -153,7 +153,7 @@ const Item = (props) => {
         <div className={classes.imageDiv}>
           <img
             className={classes.image}
-            src={`images/${item.image}.png`}
+            src={`images/home/${item.image}.png`}
             alt=""
           />
         </div>

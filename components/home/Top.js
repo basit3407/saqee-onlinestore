@@ -59,7 +59,11 @@ export default function Top() {
       <Grid container className={classes.containerGrid}>
         <Fade in timeout={1000}>
           <Grid className={classes.gridItem} item xs={12} md>
-            <img className={classes.image} src="images/cosmetics.png" alt="" />
+            <img
+              className={classes.image}
+              src="images/home/cosmetics.png"
+              alt=""
+            />
           </Grid>
         </Fade>
         <Fade in timeout={2000}>

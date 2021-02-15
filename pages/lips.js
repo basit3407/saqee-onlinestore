@@ -3,7 +3,7 @@ import ProtoType from "../components/ProtoType";
 export default function Lips() {
   const array = [
     {
-      img: "mosturizingLipstick",
+      img: "mosturizing",
       name: "Mosturizing Lipstick",
       price: 500,
     },

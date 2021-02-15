@@ -66,7 +66,11 @@ const MapImages = () => {
     return (
       <Grid className={classes.gridItem} item xs={12} md key={index}>
         <div className={classes.imgDiv}>
-          <img className={classes.img} src={`images/${item.img}.png`} alt="" />
+          <img
+            className={classes.img}
+            src={`images/home/${item.img}.png`}
+            alt=""
+          />
           <div className={classes.overlay}>
             <Typography display="block" variant="h4">
               {item.caption}

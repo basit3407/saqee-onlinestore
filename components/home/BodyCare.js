@@ -86,7 +86,7 @@ const MapImages = () => {
           <div className={classes.imgDiv}>
             <img
               className={classes.img}
-              src={`images/${item.img}.png`}
+              src={`images/home/${item.img}.png`}
               alt=""
             />
             <div className={classes.overlay}>

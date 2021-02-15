@@ -53,10 +53,12 @@ export default function About() {
   return (
     <section className={classes.section}>
       <Grid container>
-        <Grid item xs={12} md>
-          <img className={classes.img} src="images/about.png" alt="" />
-        </Grid>
         <FadeIn timeout={1000}>
+          <Grid item xs={12} md>
+            <img className={classes.img} src="images/home/about.png" alt="" />
+          </Grid>
+        </FadeIn>
+        <FadeIn timeout={2000}>
           <Grid item xs={12} md>
             <div className={classes.outerDiv}>
               <Typography align="center" variant="h5">
@@ -118,20 +120,22 @@ const MapIcons = () => {
 
   return icons.map((item, index) => {
     return (
-      <Grid item xs key={index}>
-        <div className={classes.iconDiv}>
-          <FontAwesomeIcon icon={item.icon} className={classes.icon} />
-          <Typography
-            display="block"
-            color="inherit"
-            align="center"
-            variant="caption"
-            noWrap
-          >
-            {item.desc}
-          </Typography>
-        </div>
-      </Grid>
+      <FadeIn key={index} timeout={2000}>
+        <Grid item xs>
+          <div className={classes.iconDiv}>
+            <FontAwesomeIcon icon={item.icon} className={classes.icon} />
+            <Typography
+              display="block"
+              color="inherit"
+              align="center"
+              variant="caption"
+              noWrap
+            >
+              {item.desc}
+            </Typography>
+          </div>
+        </Grid>
+      </FadeIn>
     );
   });
 };
