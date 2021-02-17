@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import FadeIn from "../components/FadeIn";
+import Image from "next/image";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -108,7 +109,7 @@ ProtoType.propTypes = {
 };
 
 const MapArray = (props) => {
-  const { array, heading } = props,
+  const { array } = props,
     classes = useStyles(),
     router = useRouter();
 
@@ -116,13 +117,21 @@ const MapArray = (props) => {
     return (
       <FadeIn key={index} timeout={2000}>
         <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={3}>
-          <img
+          <Image
             className={classes.img}
-            src={`images/${heading}/${item.img}.png`}
+            src={item.img}
             alt=""
+            width={250}
+            height={250}
             onClick={() => router.push("/")}
           />
-          <Link href={`/`} underline="none" color="textPrimary" variant="body1">
+          <Link
+            display="block"
+            href={`/`}
+            underline="none"
+            color="textPrimary"
+            variant="body1"
+          >
             {item.name}
           </Link>
           <Typography variant="body1">

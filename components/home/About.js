@@ -1,5 +1,5 @@
 import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
-import FadeIn from "../Fadein";
+import FadeIn from "../FadeIn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFemale,

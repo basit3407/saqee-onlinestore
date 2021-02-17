@@ -7,6 +7,13 @@ FrontEndTaksRemaining
 5. implement auto update of best sellers(db)
 6.for images store file in file system and path in database
 7.refractoring or any other styling issues
+8.login page
+
+
+we now know how to load images from google bucket.now we need to upload. will do this in backend when we get there
+
+
+still need to add animations and of fade and button color change to basitminhas.com and prevaileng.com
 
 
 
