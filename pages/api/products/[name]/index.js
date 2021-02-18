@@ -1,23 +1,38 @@
 import { connectToDatabase } from "../../../../util/mongodb";
 import validate from "../../../../validation/product";
+//capitalize first letter only to avoid errors
+import capitalize from "lodash.capitalize";
 
 export default async function productsHandler(req, res) {
   const {
       query: { name },
       method,
     } = req,
+    Name = capitalize(name),
     { db } = await connectToDatabase();
+
+  console.log("get request");
 
   switch (method) {
     case "GET":
       // @route GET api/products/[name]
       // @desc get products of [name] from data base
       // @access public
-      {
-        const products = await db.collection(name).find({}).toArray();
 
-        res.status(200).json({ products: products });
-      }
+      await db
+        .listCollections({ name: Name })
+        .next(async function (err, collection) {
+          //check if collection exists and give error if it doesnt
+          if (!collection)
+            return res
+              .status(404)
+              .json({ collectionExist: "collection does not exist" });
+
+          //if no error return results
+          const products = await db.collection(Name).find({}).toArray();
+
+          res.status(200).json(products);
+        });
 
       break;
     case "POST":

@@ -10,8 +10,11 @@ import {
   Link,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
-import FadeIn from "../components/FadeIn";
 import Image from "next/image";
+import FadeIn from "../../../components/FadeIn";
+import axios from "axios";
+import ErrorPage from "next/error";
+import capitalize from "lodash.capitalize";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -49,9 +52,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProtoType(props) {
-  const { heading, array } = props,
-    classes = useStyles();
+export default function ProtoType({ array, error }) {
+  const classes = useStyles(),
+    router = useRouter(),
+    { name } = router.query,
+    Name = capitalize(name);
+
+  if (error) {
+    return <ErrorPage statusCode={error} />;
+  }
   return (
     <section className={classes.section}>
       <Grid container>
@@ -63,7 +72,7 @@ export default function ProtoType(props) {
                 align="center"
                 variant="h3"
               >
-                {heading}
+                {Name}
               </Typography>
             </Container>
             <div className={classes.toolbar}>
@@ -90,7 +99,7 @@ export default function ProtoType(props) {
       </Grid>
       <Container>
         <Grid container>
-          <MapArray heading={heading} array={array} />
+          <MapArray heading={Name} array={array} />
         </Grid>
       </Container>
     </section>
@@ -98,19 +107,23 @@ export default function ProtoType(props) {
 }
 
 ProtoType.propTypes = {
-  heading: PropTypes.string.isRequired,
+  error: PropTypes.number,
   array: PropTypes.arrayOf(
     PropTypes.shape({
-      img: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired,
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      price: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      brand: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      countInStock: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
     })
   ),
 };
 
-const MapArray = (props) => {
-  const { array } = props,
-    classes = useStyles(),
+const MapArray = ({ array }) => {
+  const classes = useStyles(),
     router = useRouter();
 
   return array.map((item, index) => {
@@ -119,7 +132,7 @@ const MapArray = (props) => {
         <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={3}>
           <Image
             className={classes.img}
-            src={item.img}
+            src={item.image}
             alt=""
             width={250}
             height={250}
@@ -132,14 +145,33 @@ const MapArray = (props) => {
             color="textPrimary"
             variant="body1"
           >
-            {item.name}
+            {item.title}
           </Link>
           <Typography variant="body1">
             {/* place thousand separator coma */}
-            Rs.{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            Rs.{item.price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </Typography>
         </Grid>
       </FadeIn>
     );
   });
 };
+
+export async function getServerSideProps({ params }) {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:3000/api/products/${params.name}`
+    );
+    return {
+      props: {
+        array: data,
+      },
+    };
+  } catch (e) {
+    return {
+      props: {
+        error: e.response.status,
+      },
+    };
+  }
+}

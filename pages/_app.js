@@ -3,12 +3,15 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { Provider } from "react-redux";
+import { useStore } from "../store";
 import theme from "../styles/theme";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 
 export default function MyApp(props) {
-  const { Component, pageProps } = props;
+  const { Component, pageProps } = props,
+    store = useStore(pageProps.initialReduxState);
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -28,10 +31,12 @@ export default function MyApp(props) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <NavBar />
-        <Component {...pageProps} />
-        <Footer />
+        <Provider store={store}>
+          <CssBaseline />
+          <NavBar />
+          <Component {...pageProps} />
+          <Footer />
+        </Provider>
       </ThemeProvider>
     </>
   );

@@ -11,11 +11,10 @@ export default async function productHandler(req, res) {
 
   switch (method) {
     case "GET":
+      // @route GET api/products/[name]/[id]
+      // @desc get product of [id] from products of [name] from data base
+      // @access public
       {
-        // @route GET api/products/[name]/[id]
-        // @desc get product of [id] from products of [name] from data base
-        // @access public
-
         //get product by Id
         const product = await db
           .collection(name)
@@ -26,11 +25,10 @@ export default async function productHandler(req, res) {
       break;
 
     case "PUT":
+      // @route PUT api/products/[name]/[id]
+      // @desc edit product of [id] in products of [name] in data base
+      // @access Admin
       {
-        // @route PUT api/products/[name]/[id]
-        // @desc edit product of [id] in products of [name] in data base
-        // @access Admin
-
         // Form validation
         const { errors, isValid } = validate(req.body);
         //if not valid retrun error

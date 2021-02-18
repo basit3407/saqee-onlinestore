@@ -15,9 +15,13 @@ export default function validate(data) {
       errors[property] = `${property} field is required`;
   }
 
-  //if count in stock is not a number.return error
+  //if count in stock is not a number,return error
   if (!validator.isInt(data.countInStock))
-    errors.countInStock = "please enter the number";
+    errors.countInStock = "please enter the count in numbers";
+
+  //if price is not a number,return error
+  if (!validator.isInt(data.price))
+    errors.price = "please enter the price in numbers";
 
   return {
     errors,
