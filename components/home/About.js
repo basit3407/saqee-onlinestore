@@ -8,7 +8,6 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { faReadme } from "@fortawesome/free-brands-svg-icons";
-import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -102,7 +101,7 @@ export default function About() {
   );
 }
 
-const MapIcons = (props) => {
+const MapIcons = () => {
   const icons = [
       { icon: faFemale, desc: "Feminine" },
       {
@@ -120,7 +119,7 @@ const MapIcons = (props) => {
     ],
     classes = useStyles();
 
-  return array.map((item, index) => {
+  return icons.map((item, index) => {
     return (
       <FadeIn key={index} timeout={2000}>
         <Grid item xs>
@@ -140,13 +139,4 @@ const MapIcons = (props) => {
       </FadeIn>
     );
   });
-};
-
-MapIcons.propTypes = {
-  array: PropTypes.arrayOf(
-    PropTypes.shape({
-      icon: PropTypes.object.isRequired,
-      desc: PropTypes.string.isRequired,
-    })
-  ),
 };

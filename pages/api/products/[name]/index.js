@@ -1,5 +1,5 @@
-import { connectToDatabase } from "../../../../styles/util/mongodb";
-import validate from "../../../../styles/validation/product";
+import { connectToDatabase } from "../../../../util/mongodb";
+import validate from "../../../../validation/product";
 //capitalize first letter only to avoid errors
 import capitalize from "lodash.capitalize";
 
@@ -12,6 +12,7 @@ export default async function productsHandler(req, res) {
     { db } = await connectToDatabase();
 
   console.log("get request");
+  console.log(req.body);
 
   switch (method) {
     case "GET":
@@ -40,13 +41,13 @@ export default async function productsHandler(req, res) {
       // @desc create product in products of [name] in data base
       // @access public
       {
-        // Form validation
-        const { errors, isValid } = validate(req.body);
-        //if not valid retrun error
-        if (!isValid) return res.status(400).json(errors);
+        // // Form validation
+        // const { errors, isValid } = validate(req.body);
+        // //if not valid retrun error
+        // if (!isValid) return res.status(400).json(errors);
 
         //if no errors save product
-        await db.collection(name).insertOne(req.body);
+        await db.collection(Name).insertMany(req.body);
 
         res.status(200).json({ message: "product saved" });
       }
