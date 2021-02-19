@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   AppBar,
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
+    cursor: "pointer",
     "&:hover": {
       color: theme.palette.secondary.main,
     },
@@ -76,13 +77,12 @@ const useStyles = makeStyles((theme) => ({
   menuPaper: {
     backgroundColor: theme.palette.secondary.light,
     width: "100%",
-    marginLeft: theme.spacing(0),
   },
   searchPaper: {
     backgroundColor: theme.palette.secondary.light,
-    width: "90%",
+
+    width: "99%",
     maxWidth: "unset",
-    marginLeft: theme.spacing(0),
   },
   search: {
     borderRadius: theme.shape.borderRadius,
@@ -116,18 +116,26 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavBar() {
   const classes = useStyles(),
-    [open, setOpen] = useState(false),
-    [open1, setOpen1] = useState(false),
+    //for using toolbar as anchor point for search popover and menu
+    divRef = useRef(),
+    //anchor for search popover
+    [anchorSearch, setAnchorSearch] = useState(null),
+    //anchor for menu
+    [anchorMenu, setAnchorMenu] = useState(null),
+    //for opening search bar popever
+    openSearch = Boolean(anchorSearch),
+    //for opening menu
+    openMenu = Boolean(anchorMenu),
     theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
     handleMenu = (event) => {
       const { id } = event.currentTarget;
-      if (id === "menu") return setOpen(true);
-      setOpen1(true);
+      if (id === "menu") return setAnchorMenu(divRef.current);
+      setAnchorSearch(divRef.current);
     },
     handleClose = () => {
-      setOpen(false);
-      setOpen1(false);
+      setAnchorMenu(null);
+      setAnchorSearch(null);
     };
 
   return (
@@ -143,7 +151,7 @@ export default function NavBar() {
         </Typography>
       </div>
       <AppBar position="sticky">
-        <Toolbar className={classes.toolbar}>
+        <Toolbar ref={divRef} className={classes.toolbar}>
           <Container>
             <Grid className={classes.root} spacing={1} container>
               <Grid item xs>
@@ -166,34 +174,38 @@ export default function NavBar() {
                     <MenuIcon />
                   </IconButton>
                   <Popover
-                    anchorReference="anchorPosition"
-                    anchorPosition={{ top: 150, left: 0 }}
+                    anchorEl={anchorSearch}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "left",
                     }}
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                     keepMounted
-                    open={open1}
+                    open={openSearch}
                     onClose={handleClose}
                     classes={{ paper: classes.searchPaper }}
                     PaperProps={{ elevation: 0 }}
+                    //important for keeping popover to full left
+                    marginThreshold={0}
                   >
                     <SearchBar handleClose={handleClose} />
                   </Popover>
 
                   <Menu
-                    anchorReference="anchorPosition"
-                    anchorPosition={{ top: 65, left: 0 }}
+                    anchorEl={anchorMenu}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "left",
                     }}
+                    //important for custom position of anchor origin
+                    getContentAnchorEl={null}
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                     keepMounted
-                    open={open}
+                    open={openMenu}
                     onClose={handleClose}
                     classes={{ paper: classes.menuPaper }}
+                    //important for keeping menu to full left
+                    marginThreshold={0}
                   >
                     <MenuItem>
                       <SearchBar handleClose={handleClose} />
@@ -273,11 +285,14 @@ const Map = (props) => {
     { matches, handleClose } = props,
     classes = useStyles(),
     sections = [
-      { title: "HOME", href: "/" },
-      { title: "FACIAL PRODUCTS", href: "#beauty" },
-      { title: "AROMAS", href: "#body" },
-      { title: "ABOUT US", href: "#about" },
-    ];
+      { title: "Home", href: "/" },
+      { title: "SHOP" },
+      { title: "CONTACT US", href: "/contact" },
+      { title: "ABOUT US", href: "/about" },
+    ],
+    handleMouseOver = () => {
+      console.log("i got called");
+    };
 
   return sections.map((item, index) => {
     return (
@@ -286,6 +301,8 @@ const Map = (props) => {
           onClick={handleClose}
           underline="none"
           variant="button"
+          //when mouse is over SHOP show popup
+          onMouseOver={() => item.title === "SHOP" && handleMouseOver()}
           className={classes.menuLink}
           href={item.href}
           color={matches ? "inherit" : "primary"}

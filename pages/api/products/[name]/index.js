@@ -11,9 +11,6 @@ export default async function productsHandler(req, res) {
     Name = capitalize(name),
     { db } = await connectToDatabase();
 
-  console.log("get request");
-  console.log(req.body);
-
   switch (method) {
     case "GET":
       // @route GET api/products/[name]

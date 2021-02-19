@@ -135,7 +135,7 @@ const MapProducts = () => {
     products = [products1, products2, products3];
 
   return (
-    <Carousel autoPlay showThumbs={false}>
+    <Carousel showThumbs={false}>
       {products.map((item, index) => {
         return (
           <Grid container key={index}>
