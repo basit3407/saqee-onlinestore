@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import Image from "next/image";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
   img: {
-    width: "95%",
     [theme.breakpoints.down("sm")]: {
       margin: "5% 0",
     },
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BodyCare() {
+export default function Products2() {
   const classes = useStyles();
 
   return (
@@ -74,8 +74,8 @@ export default function BodyCare() {
 
 const MapImages = () => {
   const images = [
-      { img: "perfume", caption: "Perfumes" },
-      { img: "nailPolish2", caption: "Nail Paints" },
+      { img: "kitchen", caption: "Kitchen Tools" },
+      { img: "babies", caption: "Little Ones" },
     ],
     classes = useStyles();
 
@@ -84,9 +84,11 @@ const MapImages = () => {
       <Grid item classes={{ root: classes.gridItem }} xs={12} md key={index}>
         <Grid className={classes.gridItem} item xs={12} md key={index}>
           <div className={classes.imgDiv}>
-            <img
+            <Image
+              width={1500}
+              height={1500}
               className={classes.img}
-              src={`images/home/${item.img}.png`}
+              src={`/images/home/${item.img}.png`}
               alt=""
             />
             <div className={classes.overlay}>

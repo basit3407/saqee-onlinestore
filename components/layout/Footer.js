@@ -69,8 +69,9 @@ export default function Footer() {
                 variant="body2"
               >
                 Saqee Online Store deals in glamorous, high-quality and
-                cruelty-free makeup poducts along with clothing and footwear for
-                ladies. Female-founded with a mission to empower women.
+                cruelty-free makeup poducts along with
+                clothing,handbags,kitchenware and babies collection for ladies.
+                Female-founded with a mission to empower women.
               </Typography>
               <div className={classes.icons}>
                 <MapIcons />

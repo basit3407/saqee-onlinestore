@@ -8,6 +8,7 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { faReadme } from "@fortawesome/free-brands-svg-icons";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -69,11 +70,12 @@ export default function About() {
                 classes={{ root: classes.para }}
                 variant="body1"
               >
-                SaqeeOnlineStore is an independent beauty brand created for
-                beauty lovers across the world. Our product range features
-                exciting and cruelty-free products with innovative formulas and
-                glamorous packaging that stand out with exceptionally gorgeous
-                color results.
+                Saqee&apos;s Online Store is an independent online shopping
+                brand created for female shopping lovers across the world. Our
+                product range includes garments,cruelty-free beauty
+                products,handbags, kitchenware and collection for babies. our
+                mission is to ensure the availablity of good quality products at
+                affordable prices to all the women.
               </Typography>
               <Grid container>
                 <MapIcons />
@@ -100,7 +102,7 @@ export default function About() {
   );
 }
 
-const MapIcons = () => {
+const MapIcons = (props) => {
   const icons = [
       { icon: faFemale, desc: "Feminine" },
       {
@@ -118,7 +120,7 @@ const MapIcons = () => {
     ],
     classes = useStyles();
 
-  return icons.map((item, index) => {
+  return array.map((item, index) => {
     return (
       <FadeIn key={index} timeout={2000}>
         <Grid item xs>
@@ -138,4 +140,13 @@ const MapIcons = () => {
       </FadeIn>
     );
   });
+};
+
+MapIcons.propTypes = {
+  array: PropTypes.arrayOf(
+    PropTypes.shape({
+      icon: PropTypes.object.isRequired,
+      desc: PropTypes.string.isRequired,
+    })
+  ),
 };

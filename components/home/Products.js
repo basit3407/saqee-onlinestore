@@ -1,5 +1,5 @@
 import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
-
+import Image from "next/image";
 const useStyles = makeStyles((theme) => ({
   section: {
     margin: "10% 0",
@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   img: {
-    width: "110%",
     transition: "transform 4000ms",
     WebkitTransition: "transform 4000ms",
     MozTransition: "transform 4000ms",
@@ -43,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Beauty() {
+export default function Products() {
   const classes = useStyles();
   return (
     <section className={classes.section}>
@@ -56,9 +55,9 @@ export default function Beauty() {
 
 const MapImages = () => {
   const images = [
-      { img: "lips", caption: "Lips" },
-      { img: "eyes", caption: "Eyes" },
-      { img: "face", caption: "Face" },
+      { img: "dresses", caption: "Garments" },
+      { img: "eyes", caption: "Cosmetics" },
+      { img: "handbags", caption: "Handbags" },
     ],
     classes = useStyles();
 
@@ -66,13 +65,15 @@ const MapImages = () => {
     return (
       <Grid className={classes.gridItem} item xs={12} md key={index}>
         <div className={classes.imgDiv}>
-          <img
+          <Image
             className={classes.img}
-            src={`images/home/${item.img}.png`}
+            width={1500}
+            height={1500}
+            src={`/images/home/${item.img}.png`}
             alt=""
           />
           <div className={classes.overlay}>
-            <Typography display="block" variant="h4">
+            <Typography display="block" color="textSecondary" variant="h4">
               {item.caption}
             </Typography>
 
@@ -83,7 +84,9 @@ const MapImages = () => {
               size="large"
               variant="contained"
             >
-              <Typography variant="button">view products</Typography>
+              <Typography color="textSecondary" variant="button">
+                view products
+              </Typography>
             </Button>
           </div>
         </div>
