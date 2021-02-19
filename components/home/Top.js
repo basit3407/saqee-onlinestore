@@ -72,7 +72,7 @@ export default function Top() {
               variant={matches ? "h4" : "h1"}
               align={matches ? "center" : "left"}
             >
-              Remain Beautiful Forever
+              Here shopping becomes easy
             </Typography>
             <Typography
               classes={{ root: classes.para }}

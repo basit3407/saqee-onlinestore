@@ -8,8 +8,9 @@ import {
   useTheme,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import FadeIn from "../FadeIn";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,9 +44,6 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     },
   },
-  buttonTypo: {
-    textTransform: "none",
-  },
 }));
 
 export default function BestSellers() {
@@ -54,7 +52,7 @@ export default function BestSellers() {
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <section className={classes.section}>
+    <section id="bestSellers" className={classes.section}>
       <Container>
         <Grid container>
           <FadeIn timeout={1000}>
@@ -79,59 +77,65 @@ export default function BestSellers() {
 const MapProducts = () => {
   const products1 = [
       {
-        product: "Lipstick",
-        price: "10",
-        image: "lipstick",
+        category: "fabrics",
+        title: "Shirt & Trousers (2 piece)",
+        brand: "Aiman Zaman",
+        price: 2250,
+        image: 4,
       },
       {
-        product: "Perfumes",
-        price: "15",
-        image: "perfumes",
+        category: "fabrics",
+        title: "Shirt, Duppatta & Lehenga (3 piece)",
+        brand: "Aisha Imran",
+        price: 3450,
+        image: 5,
       },
       {
-        product: "Nail Polish",
-        price: "20",
-        image: "nailPolish",
+        category: "fabrics",
+        title: "Shirt, Duppatta & Trousers (3 piece)",
+        brand: "Gul Warin",
+        price: 3550,
+        image: 2,
       },
     ],
     products2 = [
       {
-        product: "Lipstick",
-        price: "10",
-        image: "lipstick",
+        category: "kitchen items",
+        price: 350,
+        image: 9,
       },
       {
-        product: "Perfumes",
-        price: "15",
-        image: "perfumes",
+        category: "kitchen items",
+        price: 950,
+        image: 10,
       },
       {
-        product: "Nail Polish",
-        price: "20",
-        image: "nailPolish",
+        category: "kitchen items",
+        price: 750,
+        image: 11,
       },
     ],
     products3 = [
       {
-        product: "Lipstick",
-        price: "10",
-        image: "lipstick",
+        category: "kitchen items",
+        price: 1350,
+        image: 12,
       },
       {
-        product: "Perfumes",
-        price: "15",
-        image: "perfumes",
+        category: "kitchen items",
+        price: 1250,
+        image: 13,
       },
       {
-        product: "Nail Polish",
-        price: "20",
-        image: "nailPolish",
+        category: "kitchen items",
+        price: 950,
+        image: 14,
       },
     ],
     products = [products1, products2, products3];
 
   return (
-    <Carousel showThumbs={false}>
+    <Carousel autoPlay showThumbs={false}>
       {products.map((item, index) => {
         return (
           <Grid container key={index}>
@@ -151,19 +155,24 @@ const Item = (props) => {
     return (
       <Grid item xs={12} md={4} key={index}>
         <div className={classes.imageDiv}>
-          <img
-            className={classes.image}
-            src={`images/home/${item.image}.png`}
+          <Image
+            src={`https://storage.googleapis.com/saqeeonlinestore-images/bestSellers/bestSeller${item.image}.jpeg`}
             alt=""
+            width={500}
+            height={500}
           />
         </div>
+        <Typography color="primary">{item.title}</Typography>
+        <Typography variant="caption" color="primary">
+          {item.brand}
+        </Typography>
         <Typography
           color="primary"
           display="block"
           align="center"
           variant="body1"
         >
-          {item.product}
+          Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
         </Typography>
 
         <div className={classes.buttonDiv}>
@@ -174,12 +183,8 @@ const Item = (props) => {
             size="large"
             variant="contained"
           >
-            <Typography
-              classes={{ button: classes.buttonTypo }}
-              color="textSecondary"
-              variant="button"
-            >
-              ADD TO CART Rs.{item.price}
+            <Typography color="textSecondary" variant="button">
+              View Product
             </Typography>
           </Button>
         </div>
@@ -189,5 +194,13 @@ const Item = (props) => {
 };
 
 Item.propTypes = {
-  array: PropTypes.array.isRequired,
+  array: PropTypes.arrayOf(
+    PropTypes.shape({
+      category: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      brand: PropTypes.string,
+      image: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+    })
+  ),
 };

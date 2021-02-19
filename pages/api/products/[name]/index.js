@@ -1,5 +1,5 @@
-import { connectToDatabase } from "../../../../util/mongodb";
-import validate from "../../../../validation/product";
+import { connectToDatabase } from "../../../../styles/util/mongodb";
+import validate from "../../../../styles/validation/product";
 //capitalize first letter only to avoid errors
 import capitalize from "lodash.capitalize";
 
