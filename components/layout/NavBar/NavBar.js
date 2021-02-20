@@ -66,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
   logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
-    cursor: "pointer",
     "&:hover": {
       color: theme.palette.secondary.main,
     },
@@ -110,14 +109,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NavBar() {
-  const mainMenuItems = [
+  const mainMenuBigScreenItems = [
       { title: "Home", href: "/" },
       { title: "SHOP", href: "#" },
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },
     ],
+    mainMenuSmallScreenItems = [
+      { title: "Home", href: "/" },
+      { title: "Garments", href: "/products/garments" },
+      { title: "Cosmetics", href: "products/Cosmetics" },
+      { title: "Handbags", href: "/products/handbags" },
+      { title: "Kitchenware", href: "/products/kitchenware" },
+      { title: "Little Ones", href: "/products/babies" },
+      { title: "CONTACT US", href: "/contact" },
+      { title: "ABOUT US", href: "/about" },
+    ],
     classes = useStyles(),
-    //for using toolbar as anchor point for search popover and menu
+    //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
     divRef = useRef(),
     //anchor for search popover
     [anchorSearch, setAnchorSearch] = useState(null),
@@ -203,9 +212,9 @@ export default function NavBar() {
                     </MenuItem>
                     <MapMenu
                       handleClose={handleClose}
-                      matches={matches}
+                      textColor="textSecondary"
                       element={MenuItem}
-                      menuItems={mainMenuItems}
+                      menuItems={mainMenuSmallScreenItems}
                     />
                   </Menu>
                 </Hidden>
@@ -237,7 +246,8 @@ export default function NavBar() {
                   divRef={divRef}
                   matches={matches}
                   element={Fragment}
-                  menuItems={mainMenuItems}
+                  menuItems={mainMenuBigScreenItems}
+                  textColor={"primary"}
                 />
               </Grid>
             </Grid>
@@ -256,12 +266,12 @@ export default function NavBar() {
         anchorShopping={anchorShopping}
         openShopping={openShopping}
         handleClose={handleClose}
-        matches={matches}
       />
     </>
   );
 }
 
+//this function is for side icons of cart and search.
 const Sides = (props) => {
   const classes = useStyles(),
     Icon = props.icon,
@@ -293,25 +303,25 @@ Sides.propTypes = {
   matches: PropTypes.bool.isRequired,
 };
 
+//This function map the items for small screen menu,big screen menu and shopping menu
 export const MapMenu = (props) => {
   const Element = props.element,
-    { matches, handleClose, setAnchorShopping, divRef, menuItems } = props,
+    { textColor, setAnchorShopping, divRef, menuItems } = props,
     classes = useStyles();
 
   return menuItems.map((item, index) => {
     return (
       <Element key={index}>
         <Link
-          onClick={handleClose}
           underline="none"
           variant="button"
-          className={classes.menuLink}
+          classes={{ root: classes.menuLink }}
           href={item.href}
-          //open shopping menu when hovered on SHOP in bigscreen only
+          //open shopping menu when hovered on SHOP only
           onMouseOver={() =>
             item.title === "SHOP" && setAnchorShopping(divRef.current)
           }
-          color={matches ? "inherit" : "primary"}
+          color={textColor}
         >
           {item.title}
         </Link>
@@ -329,11 +339,11 @@ MapMenu.propTypes = {
   ).isRequired,
   element: PropTypes.elementType.isRequired,
   divRef: PropTypes.object,
-  matches: PropTypes.bool,
+  textColor: PropTypes.string.isRequired,
   setAnchorShopping: PropTypes.func,
-  handleClose: PropTypes.func,
 };
 
+//This function is for search bar
 export const SearchBar = (props) => {
   const classes = useStyles(),
     { handleClose } = props;

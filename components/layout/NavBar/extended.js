@@ -9,6 +9,9 @@ const useStyles = makeStyles((theme) => ({
     width: "99%",
     maxWidth: "unset",
   },
+  shoppingPaper: {
+    backgroundColor: theme.palette.secondary.light,
+  },
 }));
 
 export const SearchPopover = (props) => {
@@ -44,7 +47,7 @@ SearchPopover.propTypes = {
 
 export const ShoppingMenu = (props) => {
   const classes = useStyles(),
-    { anchorShopping, openShopping, handleClose, matches } = props,
+    { anchorShopping, openShopping, handleClose } = props,
     shoppingMenuItems = [
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
@@ -60,7 +63,7 @@ export const ShoppingMenu = (props) => {
         vertical: "bottom",
         horizontal: "center",
       }}
-      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
       open={openShopping}
       onClose={handleClose}
@@ -73,9 +76,8 @@ export const ShoppingMenu = (props) => {
       <div>
         <MapMenu
           element={MenuItem}
-          handleClose={handleClose}
           menuItems={shoppingMenuItems}
-          matches={matches}
+          textColor={"textSecondary"}
         />
       </div>
     </Menu>
@@ -86,5 +88,4 @@ ShoppingMenu.propTypes = {
   handleClose: PropTypes.func.isRequired,
   anchorShopping: PropTypes.object,
   openShopping: PropTypes.bool.isRequired,
-  matches: PropTypes.bool.isRequired,
 };
