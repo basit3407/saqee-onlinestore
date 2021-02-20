@@ -4,7 +4,7 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../styles/theme";
-import NavBar from "../components/layout/NavBar";
+import NavBar from "../components/layout/NavBar/NavBar";
 import Footer from "../components/layout/Footer";
 
 export default function MyApp(props) {

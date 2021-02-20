@@ -19,12 +19,12 @@ import {
   MenuItem,
   useTheme,
   useMediaQuery,
-  Popover,
   InputBase,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
+import { SearchPopover, ShoppingMenu } from "./extended";
 
 const useStyles = makeStyles((theme) => ({
   "@keyframes blinker": {
@@ -78,12 +78,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.light,
     width: "100%",
   },
-  searchPaper: {
-    backgroundColor: theme.palette.secondary.light,
 
-    width: "99%",
-    maxWidth: "unset",
-  },
   search: {
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -115,17 +110,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NavBar() {
-  const classes = useStyles(),
+  const mainMenuItems = [
+      { title: "Home", href: "/" },
+      { title: "SHOP", href: "#" },
+      { title: "CONTACT US", href: "/contact" },
+      { title: "ABOUT US", href: "/about" },
+    ],
+    classes = useStyles(),
     //for using toolbar as anchor point for search popover and menu
     divRef = useRef(),
     //anchor for search popover
     [anchorSearch, setAnchorSearch] = useState(null),
-    //anchor for menu
+    //anchor for main menu in small screens
     [anchorMenu, setAnchorMenu] = useState(null),
+    //anchor for shopping menu
+    [anchorShopping, setAnchorShopping] = useState(null),
     //for opening search bar popever
     openSearch = Boolean(anchorSearch),
-    //for opening menu
+    //for opening main menu in small screens
     openMenu = Boolean(anchorMenu),
+    //for opening shopping menu
+    openShopping = Boolean(anchorShopping),
     theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
     handleMenu = (event) => {
@@ -136,6 +141,7 @@ export default function NavBar() {
     handleClose = () => {
       setAnchorMenu(null);
       setAnchorSearch(null);
+      setAnchorShopping(null);
     };
 
   return (
@@ -173,24 +179,8 @@ export default function NavBar() {
                   >
                     <MenuIcon />
                   </IconButton>
-                  <Popover
-                    anchorEl={anchorSearch}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left",
-                    }}
-                    transformOrigin={{ vertical: "top", horizontal: "left" }}
-                    keepMounted
-                    open={openSearch}
-                    onClose={handleClose}
-                    classes={{ paper: classes.searchPaper }}
-                    PaperProps={{ elevation: 0 }}
-                    //important for keeping popover to full left
-                    marginThreshold={0}
-                  >
-                    <SearchBar handleClose={handleClose} />
-                  </Popover>
 
+                  {/* main menu in small screen */}
                   <Menu
                     anchorEl={anchorMenu}
                     anchorOrigin={{
@@ -208,12 +198,14 @@ export default function NavBar() {
                     marginThreshold={0}
                   >
                     <MenuItem>
+                      {/* searchbar in small screen */}
                       <SearchBar handleClose={handleClose} />
                     </MenuItem>
-                    <Map
+                    <MapMenu
                       handleClose={handleClose}
                       matches={matches}
                       element={MenuItem}
+                      menuItems={mainMenuItems}
                     />
                   </Menu>
                 </Hidden>
@@ -233,18 +225,39 @@ export default function NavBar() {
                 </Link>
               </Grid>
               <Grid
+                //hide main menu of big screen on smaller screens
                 display={{ xs: "none", md: "block" }}
                 component={Box}
                 className={classes.bigMenu}
                 item
                 xs={12}
               >
-                <Map matches={matches} element={Fragment} />
+                <MapMenu
+                  setAnchorShopping={setAnchorShopping}
+                  divRef={divRef}
+                  matches={matches}
+                  element={Fragment}
+                  menuItems={mainMenuItems}
+                />
               </Grid>
             </Grid>
           </Container>
         </Toolbar>
       </AppBar>
+
+      {/* search popover */}
+      <SearchPopover
+        anchorSearch={anchorSearch}
+        openSearch={openSearch}
+        handleClose={handleClose}
+      />
+      {/* shopping Menu */}
+      <ShoppingMenu
+        anchorShopping={anchorShopping}
+        openShopping={openShopping}
+        handleClose={handleClose}
+        matches={matches}
+      />
     </>
   );
 }
@@ -280,31 +293,24 @@ Sides.propTypes = {
   matches: PropTypes.bool.isRequired,
 };
 
-const Map = (props) => {
+export const MapMenu = (props) => {
   const Element = props.element,
-    { matches, handleClose } = props,
-    classes = useStyles(),
-    sections = [
-      { title: "Home", href: "/" },
-      { title: "SHOP" },
-      { title: "CONTACT US", href: "/contact" },
-      { title: "ABOUT US", href: "/about" },
-    ],
-    handleMouseOver = () => {
-      console.log("i got called");
-    };
+    { matches, handleClose, setAnchorShopping, divRef, menuItems } = props,
+    classes = useStyles();
 
-  return sections.map((item, index) => {
+  return menuItems.map((item, index) => {
     return (
       <Element key={index}>
         <Link
           onClick={handleClose}
           underline="none"
           variant="button"
-          //when mouse is over SHOP show popup
-          onMouseOver={() => item.title === "SHOP" && handleMouseOver()}
           className={classes.menuLink}
           href={item.href}
+          //open shopping menu when hovered on SHOP in bigscreen only
+          onMouseOver={() =>
+            item.title === "SHOP" && setAnchorShopping(divRef.current)
+          }
           color={matches ? "inherit" : "primary"}
         >
           {item.title}
@@ -314,13 +320,21 @@ const Map = (props) => {
   });
 };
 
-Map.propTypes = {
+MapMenu.propTypes = {
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      href: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   element: PropTypes.elementType.isRequired,
-  matches: PropTypes.bool.isRequired,
+  divRef: PropTypes.object,
+  matches: PropTypes.bool,
+  setAnchorShopping: PropTypes.func,
   handleClose: PropTypes.func,
 };
 
-const SearchBar = (props) => {
+export const SearchBar = (props) => {
   const classes = useStyles(),
     { handleClose } = props;
   useEffect(() => {
