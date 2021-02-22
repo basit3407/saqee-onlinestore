@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
+// /* eslint-disable jsx-a11y/no-static-element-interactions */
+// /* eslint-disable jsx-a11y/click-events-have-key-events */
 
 import { useState, Fragment, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
+    cursor: "pointer",
     "&:hover": {
       color: theme.palette.secondary.main,
     },
@@ -171,10 +172,13 @@ export default function NavBar() {
             <Grid className={classes.root} spacing={1} container>
               <Grid item xs>
                 <Hidden implementation="css" smDown>
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
                   <div
                     id="search"
                     onClick={handleMenu}
                     className={classes.sideGridItem}
+                    role="button"
+                    tabIndex={0}
                   >
                     <Sides matches={matches} icon={SearchIcon} text="search" />
                   </div>

@@ -20,7 +20,7 @@
     "@pulumi/pulumi": "^2.20.0",
     "axios": "^0.21.1",
     "is-empty": "^1.2.0",
-    "lodash.capitalize": "^4.2.1",
+    "js-cookie": "^2.2.1",
     "mongodb": "^3.6.4",
     "next": "10.0.6",
     "prop-types": "^15.7.2",

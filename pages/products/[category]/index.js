@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useRouter } from "next/router";
 import {
   Grid,
@@ -14,7 +12,7 @@ import Image from "next/image";
 import FadeIn from "../../../components/FadeIn";
 import axios from "axios";
 import ErrorPage from "next/error";
-import capitalize from "lodash.capitalize";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -52,11 +50,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProtoType({ array, error }) {
-  const classes = useStyles(),
+export default function Products(props) {
+  const { error, array } = props,
+    classes = useStyles(),
     router = useRouter(),
-    { name } = router.query,
-    Name = capitalize(name);
+    { category } = router.query,
+    //convert 1st letter of query to upperCase and remaining to lowercase for heading.
+    Category = category[0].toUpperCase() + category.slice(1).toLowerCase();
 
   if (error) {
     return <ErrorPage statusCode={error} />;
@@ -72,7 +72,7 @@ export default function ProtoType({ array, error }) {
                 align="center"
                 variant="h3"
               >
-                {Name}
+                {Category}
               </Typography>
             </Container>
             <div className={classes.toolbar}>
@@ -99,14 +99,14 @@ export default function ProtoType({ array, error }) {
       </Grid>
       <Container>
         <Grid container>
-          <MapArray heading={Name} array={array} />
+          <MapArray array={array} />
         </Grid>
       </Container>
     </section>
   );
 }
 
-ProtoType.propTypes = {
+Products.propTypes = {
   error: PropTypes.number,
   array: PropTypes.arrayOf(
     PropTypes.shape({
@@ -114,16 +114,25 @@ ProtoType.propTypes = {
       title: PropTypes.string.isRequired,
       price: PropTypes.string.isRequired,
       image: PropTypes.string.isRequired,
-      brand: PropTypes.string.isRequired,
       category: PropTypes.string.isRequired,
       countInStock: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      brand: PropTypes.string,
+      auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+      variations: PropTypes.arrayOf(
+        PropTypes.shape({
+          variationTitle: PropTypes.string,
+          variations: PropTypes.arrayOf(PropTypes.string),
+        })
+      ),
     })
   ),
 };
 
-const MapArray = ({ array }) => {
-  const classes = useStyles(),
+const MapArray = (props) => {
+  const { array } = props,
+    [isAdmin, setIsAdmin] = useState(false),
+    classes = useStyles(),
     router = useRouter();
 
   return array.map((item, index) => {
@@ -151,20 +160,27 @@ const MapArray = ({ array }) => {
             {/* place thousand separator coma */}
             Rs.{item.price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </Typography>
+          {/* if admin show count in stock */}
+          {isAdmin && (
+            <Typography display="block" variant="caption">
+              count in stock:{item.countInStock}
+            </Typography>
+          )}
         </Grid>
       </FadeIn>
     );
   });
 };
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps(context) {
+  const { category } = context.params;
   try {
     const { data } = await axios.get(
-      `http://localhost:3000/api/products/${params.name}`
+      `http://localhost:3000/api/products/${category}`
     );
     return {
       props: {
-        array: data,
+        array: data.products,
       },
     };
   } catch (e) {
