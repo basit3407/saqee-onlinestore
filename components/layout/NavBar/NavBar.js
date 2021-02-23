@@ -212,7 +212,7 @@ export default function NavBar() {
                   >
                     <MenuItem>
                       {/* searchbar in small screen */}
-                      <SearchBar handleClose={handleClose} />
+                      <SearchBar handleClose={handleClose} id="small" />
                     </MenuItem>
                     <MapMenu
                       handleClose={handleClose}
@@ -350,18 +350,18 @@ MapMenu.propTypes = {
 //This function is for search bar
 export const SearchBar = (props) => {
   const classes = useStyles(),
-    { handleClose } = props;
+    { handleClose, id } = props;
+
+  //Focus the input when loaded
   useEffect(() => {
-    const names = document.getElementsByName("input");
-    names.forEach((item) => {
-      item.focus();
-    });
+    document.getElementById(id).focus();
   });
 
   return (
     <div className={classes.search}>
       <InputBase
         placeholder="What are you looking for ?"
+        id={id}
         name="input"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -380,4 +380,5 @@ export const SearchBar = (props) => {
 
 SearchBar.propTypes = {
   handleClose: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
 };

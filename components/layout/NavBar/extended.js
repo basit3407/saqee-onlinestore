@@ -34,7 +34,7 @@ export const SearchPopover = (props) => {
       //important for keeping popover to full left
       marginThreshold={0}
     >
-      <SearchBar handleClose={handleClose} />
+      <SearchBar id="big" handleClose={handleClose} />
     </Popover>
   );
 };

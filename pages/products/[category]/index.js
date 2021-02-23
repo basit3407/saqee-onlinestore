@@ -131,6 +131,7 @@ Products.propTypes = {
 
 const MapArray = (props) => {
   const { array } = props,
+    // eslint-disable-next-line no-unused-vars
     [isAdmin, setIsAdmin] = useState(false),
     classes = useStyles(),
     router = useRouter();

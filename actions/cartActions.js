@@ -1,13 +1,17 @@
 import Cookie from "js-cookie";
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../actionTypes/cart";
 
-export const addToCart = (title, qty, variation) => (dispatch, getstate) => {
+export const addToCart = (title, qty, variations, price) => (
+  dispatch,
+  getstate
+) => {
   dispatch({
     type: CART_ADD_ITEM,
     payload: {
       title: title,
-      variation,
+      variations: variations,
       qty: qty,
+      price: price,
     },
   });
 
@@ -19,16 +23,17 @@ export const addToCart = (title, qty, variation) => (dispatch, getstate) => {
   Cookie.set("cartItems", { items: cartItems, qty: totalQty });
 };
 
-export const removeFromCart = (title, qty, variation) => (
+export const removeFromCart = (title, qty, variations, price) => (
   dispatch,
   getstate
 ) => {
   dispatch({
-    type: CART_ADD_ITEM,
+    type: CART_REMOVE_ITEM,
     payload: {
       title: title,
-      variation,
+      variations: variations,
       qty: qty,
+      price: price,
     },
   });
 

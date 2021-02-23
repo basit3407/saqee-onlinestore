@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import {
   Box,
   Button,
@@ -6,33 +7,84 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
+import RemoveIcon from "@material-ui/icons/Remove";
+import AddIcon from "@material-ui/icons/Add";
+import { useDispatch } from "react-redux";
 import ErrorPage from "next/error";
 import Image from "next/image";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { addToCart } from "../../../actions/cartActions";
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   auxillaryImages: {
     textAlign: "center",
+  },
+  quantitySelector: {
+    border: "1px solid #dbdada",
   },
 }));
 
 export default function Product(props) {
   const { error, product } = props,
     router = useRouter(),
+    dispatch = useDispatch(),
     classes = useStyles(),
     //image to be displayed on main
     [mainImage, setMainImage] = useState(product.image),
-    //quantity of product being ordered
-    [qty, setQty] = useState(1),
-    //variations of product being ordered
-    [variations, setVariations] = useState(null);
+    //Qty and variation of the product being ordered by client
+    [orderDetails, setOrderDetails] = useState({
+      qty: 0,
+      variations: {},
+    });
+
+  //save the image url to localstorage to be used on other pages
+  useEffect(() => {
+    localStorage.setItem(`${product.title}Image`, product.image);
+  }, [product.title, product.image]);
+
+  //This functions sets the quanitity and variations of order from customer.
+  const handleChange = (event) => {
+    const { id, value, tagName } = event.target;
+
+    if (tagName === "INPUT")
+      return setOrderDetails({ ...orderDetails, qty: value });
+
+    return setOrderDetails({
+      ...orderDetails,
+      variations: { ...orderDetails.variations, [id]: value },
+    });
+  };
+
+  //This function handles the clicks of increase or decrease icons in quantitySelector component
+  const handleClick = (event) => {
+    const { id } = event.currentTarget;
+
+    if (id === "addIcon")
+      return setOrderDetails((prevVal) => {
+        return { ...prevVal, qty: prevVal.qty + 1 };
+      });
+
+    if (id === "removeIcon")
+      return setOrderDetails((prevVal) => {
+        return { ...prevVal, qty: prevVal.qty > 0 ? prevVal.qty - 1 : 0 };
+      });
+  };
 
   //Add to cart function
   const handleAddToCart = () => {
-    router.push(`/cart/${router.query}?qty=${qty}?`);
+    dispatch(
+      addToCart(
+        product.title,
+        orderDetails.qty,
+        orderDetails.variations,
+        product.price
+      )
+    );
+    router.push("/cart");
   };
 
   if (error) {
@@ -94,26 +146,25 @@ export default function Product(props) {
               </div>
 
               {/* if in stock and variations are present show variations */}
-              {product.countInStock > 0 && product.variations && (
+              {product.countInStock > 0 && product.variations.length && (
                 <div>
-                  <MapVariations variations={product.variations} />
+                  <MapVariations
+                    handleChange={handleChange}
+                    variations={product.variations}
+                    orderDetails={orderDetails}
+                  />
                 </div>
               )}
               {/* if in stock show quantity and add to cart button */}
               {product.countInStock > 0 && (
                 <>
                   <div>
-                    <Typography>Qty: </Typography>
-                    <select value={qty} onBlur={(e) => setQty(e.target.value)}>
-                      {/* convert count in stock to array and iterate of keys so that user cannot select more than amount in stock */}
-                      {[...Array(product.countInStock).keys()].map((x) => {
-                        return (
-                          <option key={x + 1} value={x + 1}>
-                            {x + 1}
-                          </option>
-                        );
-                      })}
-                    </select>
+                    <Typography display="block">Qty: </Typography>
+                    <QuantitySelector
+                      value={orderDetails.qty}
+                      handleChange={handleChange}
+                      handleClick={handleClick}
+                    />
                   </div>
                   <div>
                     <Button onClick={handleAddToCart}>Add to cart</Button>
@@ -176,13 +227,17 @@ MapAuxillaryImages.propTypes = {
 
 // This function is for mapping variations of product
 const MapVariations = (props) => {
-  const { variations } = props;
+  const { variations, handleChange, orderDetails } = props;
 
   return variations.map((item) => {
     return (
       <>
         <Typography>{item.title}</Typography>
-        <select>
+        <select
+          value={orderDetails.variations.item.title}
+          onBlur={handleChange}
+          id={item.title}
+        >
           {item.variations.map((variation, index) => {
             return <option key={index}>{variation}</option>;
           })}
@@ -199,6 +254,34 @@ MapVariations.propTypes = {
       variations: PropTypes.arrayOf(PropTypes.string.isRequired),
     })
   ).isRequired,
+  handleChange: PropTypes.func.isRequired,
+  orderDetails: PropTypes.shape({
+    qty: PropTypes.number.isRequired,
+    variations: PropTypes.objectOf(PropTypes.string.isRequired),
+  }),
+};
+
+//This function sets the quantity of the product being ordered.
+export const QuantitySelector = (props) => {
+  const classes = useStyles(),
+    { handleChange, value, handleClick } = props;
+  return (
+    <div className={classes.quantitySelector}>
+      <span id="removeIcon" role="button" tabIndex={0} onClick={handleClick}>
+        <RemoveIcon />
+      </span>
+      <input onChange={handleChange} type="text" value={value} />
+      <span id="addIcon" role="button" tabIndex={0} onClick={handleClick}>
+        <AddIcon />
+      </span>
+    </div>
+  );
+};
+
+QuantitySelector.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 export async function getServerSideProps(context) {
@@ -207,6 +290,7 @@ export async function getServerSideProps(context) {
     const { data } = await axios.get(
       `http://localhost:3000/api/products/${category}/${title}`
     );
+
     return {
       props: {
         product: data.product,
