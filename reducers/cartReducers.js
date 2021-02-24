@@ -3,8 +3,6 @@ import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../actionTypes/cart";
 
 const initialState = {
   cartItems: [],
-  totalQty: 0,
-  totalPrice: 0,
 };
 
 export default function cartReducer(state = initialState, action) {
@@ -23,11 +21,6 @@ export default function cartReducer(state = initialState, action) {
 
         if (variationExists) {
           return {
-            //if variationExists increase the total quantity and total price of items
-            totalQty: state.totalQty + action.payload.qty,
-            totalPrice:
-              state.totalPrice + action.payload.qty * action.payload.price,
-
             //increase the qty of the item which has same variations
             cartItems: state.cartItems.map((cartItem) => {
               if (isEqual(cartItem.variations, action.payload.variations))
@@ -45,9 +38,6 @@ export default function cartReducer(state = initialState, action) {
 
       // if products with this title are not present, or variations are not exact  update the cart and increase total qty
       return {
-        totalQty: state.totalQty + action.payload.qty,
-        totalPrice:
-          state.totalPrice + action.payload.qty * action.payload.price,
         cartItems: [...state.cartItems, action.payload],
       };
     }
@@ -67,11 +57,6 @@ export default function cartReducer(state = initialState, action) {
         return cartItem;
       });
       return {
-        //decrease the total quantity and total price of cart items
-        totalQty: state.totalQty - action.payload.qty,
-        totalPrice:
-          state.totalPrice - action.payload.qty * action.payload.price,
-
         //return updated cartItems.but if qty of item is 0,remove that item.
         cartItems: updatedCartItems.filter((item) => item.qty > 0),
       };

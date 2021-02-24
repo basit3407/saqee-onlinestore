@@ -4,6 +4,8 @@ import {
   Typography,
   makeStyles,
   Box,
+  TextField,
+  Button,
 } from "@material-ui/core";
 import Image from "next/image";
 import isEmpty from "is-empty";
@@ -11,12 +13,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { QuantitySelector } from "./products/[category]/[title]";
 import { addToCart, removeFromCart } from "../actions/cartActions";
 
+// eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({
   heading: {},
+  remove: {},
+  textField: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 0,
+      border: "1px solid #dbdada",
+    },
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      border: "1px solid #dbdada",
+    },
+    "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      border: "1px solid #dbdada",
+    },
+  },
 }));
 
 export default function Cart() {
-  const classes = useSTyles();
+  const classes = useSTyles(),
+    { cartItems } = useSelector((state) => state.cart);
 
   return (
     <section>
@@ -47,6 +64,38 @@ export default function Cart() {
         <Grid container>
           <MapCartItems />
         </Grid>
+        <Grid container>
+          <Grid item xs={12} sm={4}>
+            <Typography display="block">Add Order Note</Typography>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              placeholder="How can we help you?"
+              multiline
+              size="small"
+              classes={{ root: classes.textField }}
+              rows="10"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm>
+            <div>
+              <Typography display="block">
+                {/* calculate the total amout of money and render */}
+                TOTAL:Rs.{cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
+              </Typography>
+              <Typography display="block" variant="body2">
+                shipping calculated at checkout
+              </Typography>
+              <div>
+                <Button>Checkout</Button>
+              </div>
+              <div>
+                <Button>Continue Shopping</Button>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
       </Container>
     </section>
   );
@@ -73,26 +122,45 @@ const MapCartItems = () => {
         </Typography>
         {/* if variations exist map variations */}
         {!isEmpty(item.variations) &&
-          Object.keys(item.variations).map((key, index) => {
+          Object.keys(item.variations).map((property, index) => {
             return (
               <Typography display="block" key={index} variant="body2">
-                {key}:{item.variations[key]}
+                {property}:{item.variations[property]}
               </Typography>
             );
           })}
         <Typography display="block" variant="body2">
-          {item.price}
+          Rs.{item.price}
         </Typography>
       </Grid>
       <Grid item xs={2}>
         <div>
+          {/* Call the Quantity selector component from products page and pass it functions of handleChange and handleClick */}
           <QuantitySelector
             value={item.qty}
-            handleChange={() =>
-              dispatch(
-                addToCart(item.title, item.qty, item.variations, item.price)
-              )
-            }
+            handleChange={(event) => {
+              const { value } = event.target;
+              //if entered value is greater than the items already present in cart. then increment the cart.
+              value > item.qty &&
+                dispatch(
+                  addToCart(
+                    item.title,
+                    value - item.qty,
+                    item.variations,
+                    item.price
+                  )
+                );
+              //if entered value is less than the items already present in cart. then decrement the cart.
+              value < item.qty &&
+                dispatch(
+                  removeFromCart(
+                    item.title,
+                    item.qty - value,
+                    item.variations,
+                    item.price
+                  )
+                );
+            }}
             handleClick={(event) => {
               const { id } = event.target;
               if (id === "addIcon")
@@ -107,6 +175,18 @@ const MapCartItems = () => {
             }}
           />
         </div>
+        <a
+          className={classes.remove}
+          onClick={() =>
+            removeFromCart(item.title, item.qty, item.variations, item.price)
+          }
+          href
+        >
+          remove
+        </a>
+      </Grid>
+      <Grid xs={2}>
+        <Typography>Rs.{item.price * item.qty}</Typography>
       </Grid>
     </div>;
   });
