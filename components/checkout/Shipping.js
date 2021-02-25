@@ -4,7 +4,6 @@ import {
   Grid,
   Typography,
   Button,
-  Collapse,
   TextField,
 } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
@@ -13,13 +12,14 @@ import { useStyles } from "../../pages/checkout";
 
 export default function Shipping(props) {
   const classes = useStyles(),
-    { matches, editClicked, handleClick } = props;
+    { matches, editClicked, handleClick, isDone, handleSubmit } = props;
+
   return (
     <Grid container item xs={12} md={9}>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
-            <DoneIcon classes={{ root: classes.icon }} />
+            {isDone ? <DoneIcon classes={{ root: classes.icon }} /> : "2"}
           </Avatar>
           <Typography
             classes={{ root: classes.stepHeader }}
@@ -41,8 +41,12 @@ export default function Shipping(props) {
           </Button>
         </Box>
       </Grid>
-      {/* <Collapse timeout={400} in={editClicked}> */}
-      <Grid item xs={12}>
+
+      <Grid
+        classes={{ root: editClicked ? classes.show : classes.collapse }}
+        item
+        xs={12}
+      >
         <div className={classes.shipping}>
           <Typography display="block" variant="h6">
             Shipping Address
@@ -51,18 +55,19 @@ export default function Shipping(props) {
             <TextField fullWidth placeholder="Name" />
             <TextField fullWidth placeholder="Addres" />
           </form>
-          <Button variant="contained" name="shipping" onClick={handleClick}>
+          <Button variant="contained" name="shipping" onClick={handleSubmit}>
             Continue as Guest
           </Button>
         </div>
       </Grid>
-      {/* </Collapse> */}
     </Grid>
   );
 }
 
 Shipping.propTypes = {
   editClicked: PropTypes.bool.isRequired,
+  isDone: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   matches: PropTypes.bool.isRequired,
 };

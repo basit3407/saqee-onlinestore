@@ -4,24 +4,32 @@ import {
   Avatar,
   Typography,
   Button,
-  Collapse,
   TextField,
   Link,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
+import validator from "validator";
+import isEmpty from "is-empty";
 import { useStyles } from "../../pages/checkout";
+import { useState, useEffect } from "react";
 
 export default function Customer(props) {
   const classes = useStyles(),
-    { editClicked, handleClick, matches } = props;
+    { editClicked, handleClick, isDone, matches, handleSubmit } = props,
+    [email, setEmail] = useState(null),
+    [inValidEmail, setinValidEmail] = useState(false);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem("email"));
+  }, []);
 
   return (
     <Grid container item xs={12} md={9}>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
-            <DoneIcon classes={{ root: classes.icon }} />
+            {isDone ? <DoneIcon classes={{ root: classes.icon }} /> : "1"}
           </Avatar>
           <Typography
             classes={{ root: classes.stepHeader }}
@@ -38,15 +46,15 @@ export default function Customer(props) {
             classes={{ root: classes.email }}
             align={matches ? "center" : "left"}
           >
-            email@test.com
+            {email}
           </Typography>
         </Box>
       </Grid>
       <Grid item xs={2}>
         <Box display={editClicked ? "none" : "block"}>
           <Button
-            name="customer"
             onClick={handleClick}
+            name="customer"
             classes={{ root: classes.editButton }}
           >
             <Typography variant="caption">Edit</Typography>
@@ -54,16 +62,42 @@ export default function Customer(props) {
         </Box>
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid
+        item
+        classes={{
+          root: editClicked ? classes.show : classes.collapse,
+        }}
+        xs={12}
+      >
         <div>
           <Typography display="block">
             Checking out as a <strong>Guest</strong>?You&apos;ll be able to save
             your details to create an account with us later.
           </Typography>
           <Typography display="block">Email Address</Typography>
-          <TextField fullWidth />
+          <TextField
+            fullWidth
+            placeholder="Email"
+            type="email"
+            value={email ? email : ""}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {/* if invalid email show error */}
+          {inValidEmail && <span>please enter valid email address</span>}
           <div>
-            <Button variant="contained" name="customer" onClick={handleClick}>
+            <Button
+              variant="contained"
+              name="customer"
+              onClick={(e) => {
+                // check that email is not empty.
+                if (isEmpty(email)) return setinValidEmail(true);
+                //check if email format is valid.
+                if (!validator.isEmail(email)) return setinValidEmail(true);
+                //if valid then save the email in local storage.
+                localStorage.setItem("email", email);
+                handleSubmit(e);
+              }}
+            >
               Continue as Guest
             </Button>
           </div>
@@ -78,6 +112,8 @@ export default function Customer(props) {
 
 Customer.propTypes = {
   editClicked: PropTypes.bool.isRequired,
+  isDone: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   matches: PropTypes.bool.isRequired,
 };
