@@ -7,6 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Top from "../components/checkout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
@@ -58,10 +59,14 @@ export const useStyles = makeStyles((theme) => ({
     transition: "max-height 0.2s ease",
     transitionDuration: "0.4s",
   },
+  error: {
+    color: theme.palette.error.main,
+  },
 }));
 export default function Checkout() {
   const theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
+    router = useRouter(),
     //For checking the state of edit button for opening dropdowns
     [editClicked, setEditClicked] = useState({
       customer: false,
@@ -88,8 +93,11 @@ export default function Checkout() {
 
     setIsDone(isDone);
 
-    //if customer section has not been done,set edit clicked to false
-    !isDone.customer && setEditClicked({ ...editClicked, customer: true });
+    !isDone.customer
+      ? setEditClicked({ ...editClicked, customer: true }) //if customer section has not been done,open customer section
+      : !isDone.shipping
+      ? setEditClicked({ ...editClicked, shipping: true }) // if customer section is done but shipping is not done open shipping
+      : setEditClicked({ ...editClicked, payment: true }); //if both customer and shipping are done open payment
   }, [editClicked]);
 
   const handleClick = (event) => {
@@ -103,18 +111,27 @@ export default function Checkout() {
     //save isDone to local storage
     localStorage.setItem(name, JSON.stringify(true));
 
-    //customer section done, open shipping section if it is not done.
-    name === "customer" && !isDone.shipping
-      ? setEditClicked({ ...editClicked, customer: false, shipping: true })
-      : setEditClicked({ ...editClicked, customer: false });
+    //customer section done,
+    if (name === "customer")
+      return !isDone.shipping
+        ? setEditClicked({
+            ...editClicked,
+            customer: false,
+            shipping: true, //open shipping section if it is not done
+          })
+        : setEditClicked({ ...editClicked, customer: false, payment: true }); //if shipping already done,open payment
 
-    //payment section done, open payment section if it is not done
-    name === "shipping" && !isDone.payment
-      ? setEditClicked({ ...editClicked, shipping: false, payment: true })
-      : setEditClicked({ ...editClicked, shipping: false });
+    //shipping section done,
+    if (name === "shipping")
+      return setEditClicked({
+        ...editClicked,
+        shipping: false,
+        payment: true, //open payment section
+      });
 
-    //payment done
+    //payment done, redirect to thank you page
     setEditClicked({ ...editClicked, payment: false });
+    router.push(`/thankYou?name=${name}`);
   };
   return (
     <>

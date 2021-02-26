@@ -7,7 +7,8 @@ export default async function productsHandler(req, res) {
       method,
     } = req,
     //convert the first letter of query to uppercase and remaining to lowercase.
-    Category = category[0].toUpperCase() + category.slice(1).toLowerCase(),
+    Category =
+      category.charAt[0].toUpperCase() + category.slice(1).toLowerCase(),
     { db } = await connectToDatabase();
 
   switch (method) {

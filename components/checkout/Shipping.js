@@ -8,18 +8,41 @@ import {
 } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { useStyles } from "../../pages/checkout";
+import validate from "../../validation/shippingDetails";
 
 export default function Shipping(props) {
   const classes = useStyles(),
-    { matches, editClicked, handleClick, isDone, handleSubmit } = props;
+    { matches, editClicked, handleClick, isDone, handleSubmit } = props,
+    [details, setDetails] = useState({
+      name: "",
+      number: "",
+      address1: "",
+      address2: "",
+      city: "",
+      postalCode: "",
+      country: "",
+    }),
+    { name, number, address1, address2, city, postalCode, country } = details,
+    [errors, setErrors] = useState(null);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setDetails({ ...details, [name]: value });
+  };
 
   return (
     <Grid container item xs={12} md={9}>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
-            {isDone ? <DoneIcon classes={{ root: classes.icon }} /> : "2"}
+            {isDone.shipping ? ( //if shipping is done show tick,else show number
+              <DoneIcon classes={{ root: classes.icon }} />
+            ) : (
+              "2"
+            )}
           </Avatar>
           <Typography
             classes={{ root: classes.stepHeader }}
@@ -31,15 +54,17 @@ export default function Shipping(props) {
       </Grid>
       <Grid item xs={6}></Grid>
       <Grid item xs={2}>
-        <Box display={editClicked ? "none" : "block"}>
-          <Button
-            name="shipping"
-            onClick={handleClick}
-            classes={{ root: classes.editButton }}
-          >
-            <Typography variant="caption">Edit</Typography>
-          </Button>
-        </Box>
+        {isDone && ( //only show edit button of if done
+          <Box display={editClicked ? "none" : "block"}>
+            <Button
+              name="shipping"
+              onClick={handleClick}
+              classes={{ root: classes.editButton }}
+            >
+              <Typography variant="caption">Edit</Typography>
+            </Button>
+          </Box>
+        )}
       </Grid>
 
       <Grid
@@ -52,12 +77,82 @@ export default function Shipping(props) {
             Shipping Address
           </Typography>
           <form>
-            <TextField fullWidth placeholder="Name" />
-            <TextField fullWidth placeholder="Addres" />
+            <TextField
+              onChange={handleChange}
+              name="name"
+              fullWidth
+              placeholder="Name"
+              value={name}
+            />
+            {errors.name && (
+              <span className={classes.error}>{errors.name}</span>
+            )}
+            <TextField
+              onChange={handleChange}
+              name="number"
+              fullWidth
+              placeholder="Number"
+              value={number}
+            />
+            {errors.number && (
+              <span className={classes.error}>{errors.number}</span>
+            )}
+            <TextField
+              onChange={handleChange}
+              name="address1"
+              fullWidth
+              placeholder="Addres Line1"
+              value={address1}
+            />
+            {errors.address1 && (
+              <span className={classes.error}>{errors.address1}</span>
+            )}
+            <TextField
+              onChange={handleChange}
+              name="address2"
+              fullWidth
+              placeholder="Addres Line2(optional)"
+              value={address2}
+            />
+            <TextField
+              onChange={handleChange}
+              value={city}
+              name="city"
+              placeholder="City"
+            />
+            {errors.city && (
+              <span className={classes.error}>{errors.city}</span>
+            )}
+            <TextField
+              onChange={handleChange}
+              name="postalCode"
+              placeholder="Postal Code"
+              value={postalCode}
+            />
+            <TextField
+              onChange={handleChange}
+              name="country"
+              fullWidth
+              placeholder="Country"
+              value={country}
+            />
+            {errors.country && (
+              <span className={classes.error}>{errors.country}</span>
+            )}
+
+            <Button
+              onClick={(event) => {
+                //check validation
+                const { errors, isValid } = validate(details);
+                //if valid submit form else show errors
+                isValid ? handleSubmit(event) : setErrors(errors);
+              }}
+              variant="contained"
+              name="shipping"
+            >
+              Continue
+            </Button>
           </form>
-          <Button variant="contained" name="shipping" onClick={handleSubmit}>
-            Continue as Guest
-          </Button>
         </div>
       </Grid>
     </Grid>

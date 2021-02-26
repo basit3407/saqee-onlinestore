@@ -56,7 +56,8 @@ export default function Products(props) {
     router = useRouter(),
     { category } = router.query,
     //convert 1st letter of query to upperCase and remaining to lowercase for heading.
-    Category = category[0].toUpperCase() + category.slice(1).toLowerCase();
+    Category =
+      category.charAt[0].toUpperCase() + category.slice(1).toLowerCase();
 
   if (error) {
     return <ErrorPage statusCode={error} />;

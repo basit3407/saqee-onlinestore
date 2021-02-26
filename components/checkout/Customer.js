@@ -83,7 +83,11 @@ export default function Customer(props) {
             onChange={(e) => setEmail(e.target.value)}
           />
           {/* if invalid email show error */}
-          {inValidEmail && <span>please enter valid email address</span>}
+          {inValidEmail && (
+            <span className={classes.error}>
+              please enter valid email address
+            </span>
+          )}
           <div>
             <Button
               variant="contained"
