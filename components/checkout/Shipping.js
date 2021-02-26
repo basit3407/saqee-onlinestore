@@ -9,23 +9,26 @@ import {
 import DoneIcon from "@material-ui/icons/Done";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useStyles } from "../../pages/checkout";
 import validate from "../../validation/shippingDetails";
+import { saveShippingDetails } from "../../actions/cartActions";
 
 export default function Shipping(props) {
   const classes = useStyles(),
+    dispatch = useDispatch(),
     { matches, editClicked, handleClick, isDone, handleSubmit } = props,
     [details, setDetails] = useState({
       name: "",
       number: "",
-      address1: "",
+      address: "",
       address2: "",
       city: "",
       postalCode: "",
       country: "",
     }),
-    { name, number, address1, address2, city, postalCode, country } = details,
-    [errors, setErrors] = useState(null);
+    { name, number, address, address2, city, postalCode, country } = details,
+    [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -99,13 +102,13 @@ export default function Shipping(props) {
             )}
             <TextField
               onChange={handleChange}
-              name="address1"
+              name="address"
               fullWidth
               placeholder="Addres Line1"
-              value={address1}
+              value={address}
             />
-            {errors.address1 && (
-              <span className={classes.error}>{errors.address1}</span>
+            {errors.address && (
+              <span className={classes.error}>{errors.address}</span>
             )}
             <TextField
               onChange={handleChange}
@@ -129,23 +132,26 @@ export default function Shipping(props) {
               placeholder="Postal Code"
               value={postalCode}
             />
-            <TextField
-              onChange={handleChange}
-              name="country"
-              fullWidth
-              placeholder="Country"
-              value={country}
-            />
-            {errors.country && (
-              <span className={classes.error}>{errors.country}</span>
+            {errors.postalCode && (
+              <span className={classes.error}>{errors.postalCode}</span>
             )}
+            <div>
+              <Typography>Country:</Typography>
+              {/* eslint-disable-next-line jsx-a11y/no-onchange */}
+              <select name="country" onChange={handleChange} value={country}>
+                <option>Pakistan</option>
+              </select>
+            </div>
 
             <Button
               onClick={(event) => {
                 //check validation
                 const { errors, isValid } = validate(details);
                 //if valid submit form else show errors
-                isValid ? handleSubmit(event) : setErrors(errors);
+                if (isValid) {
+                  dispatch(saveShippingDetails(details));
+                  handleSubmit(event);
+                } else setErrors(errors);
               }}
               variant="contained"
               name="shipping"

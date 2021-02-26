@@ -1,4 +1,3 @@
-import validator from "validator";
 import isEmpty from "is-empty";
 
 export default function validate(data) {
@@ -13,15 +12,14 @@ export default function validate(data) {
         property === "brand" ||
         property === "variations"
       )
-    ) {
-      //return error if any of the compulsory fields is empty
+    )
       if (isEmpty(data[property]))
+        //return error if any of the compulsory fields is empty
         errors[property] = `${property} field is required`;
       // if countInStock or price is not a number return error
-      if (property === "countInStock" || property === "price")
-        if (!validator.isInt(data[property]))
-          errors[property] = `please the the ${property} in numbers`;
-    }
+      else if (property === "countInStock" || property === "price")
+        if (!data[property].match("/^d+$/"))
+          errors[property] = `please type the the ${property} in numbers`;
   }
 
   return {

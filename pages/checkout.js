@@ -7,7 +7,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Top from "../components/checkout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
@@ -66,7 +65,6 @@ export const useStyles = makeStyles((theme) => ({
 export default function Checkout() {
   const theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
-    router = useRouter(),
     //For checking the state of edit button for opening dropdowns
     [editClicked, setEditClicked] = useState({
       customer: false,
@@ -98,7 +96,10 @@ export default function Checkout() {
       : !isDone.shipping
       ? setEditClicked({ ...editClicked, shipping: true }) // if customer section is done but shipping is not done open shipping
       : setEditClicked({ ...editClicked, payment: true }); //if both customer and shipping are done open payment
-  }, [editClicked]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {});
 
   const handleClick = (event) => {
     const name = event.currentTarget.getAttribute("name");
@@ -108,7 +109,8 @@ export default function Checkout() {
   const handleSubmit = (event) => {
     const name = event.currentTarget.getAttribute("name");
 
-    //save isDone to local storage
+    //set isDone to true and save to local storage for future
+    setIsDone({ ...isDone, [name]: true });
     localStorage.setItem(name, JSON.stringify(true));
 
     //customer section done,
@@ -129,9 +131,9 @@ export default function Checkout() {
         payment: true, //open payment section
       });
 
-    //payment done, redirect to thank you page
-    setEditClicked({ ...editClicked, payment: false });
-    router.push(`/thankYou?name=${name}`);
+    // //payment done,save
+    // setEditClicked({ ...editClicked, payment: false });
+    // router.push(`/thankYou?name=${name}`);
   };
   return (
     <>

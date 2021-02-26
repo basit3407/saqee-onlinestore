@@ -1,5 +1,9 @@
 import Cookie from "js-cookie";
-import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../actionTypes/cart";
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  SAVE_SHIPPING_DETAILS,
+} from "../actionTypes/cart";
 
 export const addToCart = (title, qty, variations, price) => (
   dispatch,
@@ -43,4 +47,8 @@ export const removeFromCart = (title, qty, variations, price) => (
   } = getstate();
   //save to cookie so that cookie always has updated state
   Cookie.set("cartItems", { items: cartItems, qty: totalQty });
+};
+
+export const saveShippingDetails = (details) => (dispatch) => {
+  dispatch({ type: SAVE_SHIPPING_DETAILS, payload: details });
 };

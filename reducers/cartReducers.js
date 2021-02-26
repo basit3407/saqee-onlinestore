@@ -1,8 +1,13 @@
 import isEqual from "lodash.isequal";
-import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../actionTypes/cart";
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  SAVE_SHIPPING_DETAILS,
+} from "../actionTypes/cart";
 
 const initialState = {
   cartItems: [],
+  shippingDetails: {},
 };
 
 export default function cartReducer(state = initialState, action) {
@@ -21,6 +26,7 @@ export default function cartReducer(state = initialState, action) {
 
         if (variationExists) {
           return {
+            ...state,
             //increase the qty of the item which has same variations
             cartItems: state.cartItems.map((cartItem) => {
               if (isEqual(cartItem.variations, action.payload.variations))
@@ -38,6 +44,7 @@ export default function cartReducer(state = initialState, action) {
 
       // if products with this title are not present, or variations are not exact  update the cart and increase total qty
       return {
+        ...state,
         cartItems: [...state.cartItems, action.payload],
       };
     }
@@ -57,10 +64,17 @@ export default function cartReducer(state = initialState, action) {
         return cartItem;
       });
       return {
+        ...state,
         //return updated cartItems.but if qty of item is 0,remove that item.
         cartItems: updatedCartItems.filter((item) => item.qty > 0),
       };
     }
+
+    case SAVE_SHIPPING_DETAILS:
+      return {
+        ...state,
+        shippingDetails: action.payload,
+      };
 
     default:
       return state;
