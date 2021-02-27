@@ -1,17 +1,25 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
-import { Provider } from "react-redux";
-import { useStore } from "../store";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Cookie from "js-cookie";
 import theme from "../styles/theme";
 import NavBar from "../components/layout/NavBar/NavBar";
 import Footer from "../components/layout/Footer";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props,
-    store = useStore(pageProps.initialReduxState);
+    //get cart items from cookie
+    savedCartItems = Cookie.getJSON().cartItems.cartItems,
+    //if no cookie saved,set to empty array
+    [cartItems, setCartItems] = useState(savedCartItems ? savedCartItems : []),
+    //this prop will be passed to all the pages
+    passedProps = {
+      ...pageProps,
+      cartItems: cartItems,
+      setCartItems: setCartItems,
+    };
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -31,12 +39,10 @@ export default function MyApp(props) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <CssBaseline />
-          <NavBar />
-          <Component {...pageProps} />
-          <Footer />
-        </Provider>
+        <CssBaseline />
+        <NavBar />
+        <Component {...passedProps} />
+        <Footer />
       </ThemeProvider>
     </>
   );

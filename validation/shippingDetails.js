@@ -1,4 +1,4 @@
-import isEmpty from "is-empty";
+import { isEmpty } from "./product";
 
 export default function validate(data) {
   const errors = {};
@@ -6,7 +6,7 @@ export default function validate(data) {
   for (const property in data) {
     //exclude optional properties from validation
     if (property !== "address2")
-      if (isEmpty(data[property]))
+      if (data[property])
         //return error if any of the compulsory fields is empty
         errors[property] = `${property} is required`;
       //phone number validation

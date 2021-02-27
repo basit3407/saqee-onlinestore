@@ -8,9 +8,10 @@ import {
   Button,
 } from "@material-ui/core";
 import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
+import Cookie from "js-cookie";
+import PropTypes from "prop-types";
+import isEqual from "lodash.isequal";
 import { QuantitySelector } from "./products/[category]/[title]";
-import { addToCart, removeFromCart } from "../actions/cartActions";
 import { isEmpty } from "../validation/product";
 
 // eslint-disable-next-line no-unused-vars
@@ -31,9 +32,9 @@ const useSTyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Cart() {
+export default function Cart(props) {
   const classes = useSTyles(),
-    { cartItems } = useSelector((state) => state.cart);
+    { cartItems, setCartItems } = props;
 
   return (
     <section>
@@ -62,7 +63,7 @@ export default function Cart() {
           </Grid>
         </Grid>
         <Grid container>
-          <MapCartItems />
+          <MapCartItems cartItems={cartItems} setCartItems={setCartItems} />
         </Grid>
         <Grid container>
           <Grid item xs={12} sm={4}>
@@ -101,10 +102,21 @@ export default function Cart() {
   );
 }
 
-const MapCartItems = () => {
-  const { cartItems } = useSelector((state) => state.cart),
-    classes = useSTyles(),
-    dispatch = useDispatch();
+Cart.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.number,
+      price: PropTypes.number,
+    })
+  ),
+  setCartItems: PropTypes.func,
+};
+
+const MapCartItems = (props) => {
+  const { cartItems, setCartItems } = props,
+    classes = useSTyles();
 
   return cartItems.map((item, index) => {
     <div>
@@ -140,46 +152,41 @@ const MapCartItems = () => {
             value={item.qty}
             handleChange={(event) => {
               const { value } = event.target;
-              //if entered value is greater than the items already present in cart. then increment the cart.
-              value > item.qty &&
-                dispatch(
-                  addToCart(
-                    item.title,
-                    value - item.qty,
-                    item.variations,
-                    item.price
-                  )
-                );
-              //if entered value is less than the items already present in cart. then decrement the cart.
-              value < item.qty &&
-                dispatch(
-                  removeFromCart(
-                    item.title,
-                    item.qty - value,
-                    item.variations,
-                    item.price
-                  )
-                );
+
+              setCartItems([
+                ...cartItems,
+                {
+                  ...item,
+                  qty: value,
+                },
+              ]);
+
+              Cookie.set("cartItems", { cartItems: cartItems });
             }}
             handleClick={(event) => {
               const { id } = event.target;
-              if (id === "addIcon")
-                return dispatch(
-                  addToCart(item.title, 1, item.variations, item.price)
-                );
+              let qty;
 
-              if (id === "removeIcon")
-                dispatch(
-                  removeFromCart(item.title, 1, item.variations, item.price)
-                );
+              if (id === "addIcon") qty = item.qty + 1;
+              else if (id === "removeIcon") qty = item.qty - 1;
+
+              const updatedCartItems = [...cartItems, { ...item, qty: qty }];
+              //if qty of item has become zero,remove it
+              setCartItems(
+                updatedCartItems.filter((cartItem) => cartItem.qty > 0)
+              );
+              Cookie.set("cartItems", { cartItems: cartItems });
             }}
           />
         </div>
         <a
           className={classes.remove}
-          onClick={() =>
-            removeFromCart(item.title, item.qty, item.variations, item.price)
-          }
+          onClick={() => {
+            setCartItems(
+              cartItems.filter((cartItem) => !isEqual(cartItem, item))
+            );
+            Cookie.set("cartItems", { cartItems: cartItems });
+          }}
           href
         >
           remove
@@ -190,4 +197,16 @@ const MapCartItems = () => {
       </Grid>
     </div>;
   });
+};
+
+MapCartItems.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.number,
+      price: PropTypes.number,
+    })
+  ),
+  setCartItems: PropTypes.func,
 };

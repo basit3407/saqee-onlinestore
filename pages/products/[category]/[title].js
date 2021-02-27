@@ -9,14 +9,13 @@ import {
 } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
-import { useDispatch } from "react-redux";
 import ErrorPage from "next/error";
 import Image from "next/image";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { addToCart } from "../../../actions/cartActions";
+import Cookie from "js-cookie";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -29,9 +28,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Product(props) {
-  const { error, product } = props,
+  const { error, product, cartItems, setCartItems } = props,
     router = useRouter(),
-    dispatch = useDispatch(),
     classes = useStyles(),
     //image to be displayed on main
     [mainImage, setMainImage] = useState(product.image),
@@ -76,14 +74,18 @@ export default function Product(props) {
 
   //Add to cart function
   const handleAddToCart = () => {
-    dispatch(
-      addToCart(
-        product.title,
-        orderDetails.qty,
-        orderDetails.variations,
-        product.price
-      )
-    );
+    //Add new cart item
+    setCartItems([
+      ...cartItems,
+      {
+        title: product.title,
+        qty: orderDetails.qty,
+        variations: orderDetails.variations,
+        price: product.price,
+      },
+    ]);
+
+    Cookie.set("cartItems", { cartItems: cartItems });
     router.push("/cart");
   };
 
@@ -198,6 +200,15 @@ Product.propTypes = {
       })
     ),
   }),
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.number,
+      price: PropTypes.number,
+    })
+  ),
+  setCartItems: PropTypes.func,
 };
 
 // this function is for mapping auxillary images
