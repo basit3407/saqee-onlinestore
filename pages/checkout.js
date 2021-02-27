@@ -7,9 +7,11 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import Top from "../components/checkout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
+import Payment from "../components/checkout/Payment";
 
 export const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -62,35 +64,45 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.error.main,
   },
 }));
-export default function Checkout() {
+export default function Checkout(props) {
   const theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
-    //For checking the state of edit button for opening dropdowns
-    [editClicked, setEditClicked] = useState({
-      customer: false,
-      shipping: false,
-      payment: false,
-    }),
-    //For changing state of avatar icon from number to tick and remembring user details
-    [isDone, setIsDone] = useState({
-      customer: false,
-      shipping: false,
-      payment: false,
-    });
+    { cartItems } = props;
 
-  //Set values of isdone on page load from localstorage if exists else set to false
+  //For checking the state of edit button for opening dropdowns
+  const [editClicked, setEditClicked] = useState({
+    customer: false,
+    shipping: false,
+    payment: false,
+  });
+
+  //Load customer and shipping sections isDone state from local storage if exists,else set to false
+  const customer = localStorage.getItem("customer"),
+    shipping = localStorage.getItem("shipping"),
+    Done = {
+      customer: customer ? JSON.parse(customer) : false,
+      shipping: shipping ? JSON.parse(shipping) : false,
+    },
+    [isDone, setIsDone] = useState(Done);
+
+  //Load shipping details from local storage if exists,else set to empty string
+  const details = localStorage.getItem("shippingDetails"),
+    detailsExist =
+      details == null
+        ? {
+            name: "",
+            number: "",
+            address: "",
+            address2: "",
+            city: "",
+            postalCode: "",
+            country: "",
+          }
+        : JSON.parse(details),
+    [shippingDetails, setShippingDetails] = useState(detailsExist);
+
+  //on page load do following
   useEffect(() => {
-    const customer = localStorage.getItem("customer"),
-      shipping = localStorage.getItem("shipping"),
-      payment = localStorage.getItem("payment"),
-      isDone = {
-        customer: customer ? JSON.parse(customer) : false,
-        shipping: shipping ? JSON.parse(shipping) : false,
-        payment: payment ? JSON.parse(payment) : false,
-      };
-
-    setIsDone(isDone);
-
     !isDone.customer
       ? setEditClicked({ ...editClicked, customer: true }) //if customer section has not been done,open customer section
       : !isDone.shipping
@@ -99,13 +111,20 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {});
+  //For handling change in shipping details
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
+    setShippingDetails({ ...shippingDetails, [name]: value });
+  };
+
+  //For handling click of edit button on sections
   const handleClick = (event) => {
     const name = event.currentTarget.getAttribute("name");
     setEditClicked({ ...editClicked, [name]: true });
   };
 
+  // For handling submitting of customer and shipping sections
   const handleSubmit = (event) => {
     const name = event.currentTarget.getAttribute("name");
 
@@ -124,16 +143,13 @@ export default function Checkout() {
         : setEditClicked({ ...editClicked, customer: false, payment: true }); //if shipping already done,open payment
 
     //shipping section done,
-    if (name === "shipping")
-      return setEditClicked({
-        ...editClicked,
-        shipping: false,
-        payment: true, //open payment section
-      });
-
-    // //payment done,save
-    // setEditClicked({ ...editClicked, payment: false });
-    // router.push(`/thankYou?name=${name}`);
+    //save shipping details to localStorage for future
+    localStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
+    setEditClicked({
+      ...editClicked,
+      shipping: false,
+      payment: true, //open payment section
+    });
   };
   return (
     <>
@@ -162,6 +178,14 @@ export default function Checkout() {
             handleClick={handleClick}
             handleSubmit={handleSubmit}
             matches={matches}
+            shippingDetails={shippingDetails}
+            handleChange={handleChange}
+          />
+          <Payment
+            matches={matches}
+            shippingDetails={shippingDetails}
+            cartItems={cartItems}
+            editClicked={editClicked.payment}
           />
           <Grid
             component={Box}
@@ -176,3 +200,14 @@ export default function Checkout() {
     </>
   );
 }
+
+Checkout.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.number,
+      price: PropTypes.number,
+    })
+  ),
+};

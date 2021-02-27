@@ -10,18 +10,20 @@ import {
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
 import { useStyles } from "../../pages/checkout";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { validateEmail } from "../../validation/user";
 
 export default function Customer(props) {
   const classes = useStyles(),
-    { editClicked, handleClick, isDone, matches, handleSubmit } = props,
-    [email, setEmail] = useState(null),
-    [inValidEmail, setinValidEmail] = useState(false);
+    { editClicked, handleClick, isDone, matches, handleSubmit } = props;
 
-  useEffect(() => {
-    setEmail(localStorage.getItem("email"));
-  }, []);
+  //if email is already saved get it,else save null;
+  const savedEmail = localStorage.getItem("email"), //will be null if nothing is saved
+    savedEmailExist = savedEmail,
+    [email, setEmail] = useState(savedEmailExist);
+
+  //validation of email
+  const [inValidEmail, setinValidEmail] = useState(false);
 
   return (
     <Grid container item xs={12} md={9}>

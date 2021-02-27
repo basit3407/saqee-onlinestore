@@ -9,17 +9,19 @@ import NavBar from "../components/layout/NavBar/NavBar";
 import Footer from "../components/layout/Footer";
 
 export default function MyApp(props) {
-  const { Component, pageProps } = props,
-    //get cart items from cookie
-    savedCartItems = Cookie.getJSON().cartItems.cartItems,
-    //if no cookie saved,set to empty array
-    [cartItems, setCartItems] = useState(savedCartItems ? savedCartItems : []),
-    //this prop will be passed to all the pages
-    passedProps = {
-      ...pageProps,
-      cartItems: cartItems,
-      setCartItems: setCartItems,
-    };
+  const { Component, pageProps } = props;
+
+  //get cart items from  cookie if exist,else set to empty array;
+  const savedCartItems = Cookie.getJSON().cartItems.cartItems,
+    itemsExist = savedCartItems == null ? [] : savedCartItems,
+    [cartItems, setCartItems] = useState(itemsExist);
+
+  //this prop will be passed to all the pages
+  const passedProps = {
+    ...pageProps,
+    cartItems: cartItems,
+    setCartItems: setCartItems,
+  };
 
   useEffect(() => {
     // Remove the server-side injected CSS.

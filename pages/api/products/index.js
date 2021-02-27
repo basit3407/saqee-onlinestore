@@ -29,19 +29,25 @@ export default async function productsHandler(req, res) {
               }
             : {},
           //if sort selected then sort also.
-          sortWord = sort ? { [sort]: 1 } : {},
-          //combine above 3 quiries and fetch data from database.
-          products = await db
+          sortWord = sort ? { [sort]: 1 } : {};
+        //combine above 3 quiries and fetch data from database.
+        try {
+          const products = await db
             .collection("products")
             .find({ ...category, ...searchKeyword })
             .sort(sortWord)
             .toArray();
-
-        //give error if no products
-        if (!products.length)
-          return res.status(404).json({ error: "no such category" });
-
-        res.status(200).json({ products: products });
+          //give error if no products
+          if (!products.length)
+            return res.status(404).json({ error: "no such category" });
+          //if no errors send success response
+          res.status(200).json({ products: products });
+        } catch (e) {
+          e &&
+            res
+              .status(500)
+              .json({ error: "there was some problem,please try again" });
+        }
       }
 
       break;
@@ -55,10 +61,16 @@ export default async function productsHandler(req, res) {
         // //if not valid retrun error
         // if (!isValid) return res.status(400).json(errors);
 
-        //if no errors save product
-        await db.collection("products").insertMany(req.body);
-
-        res.status(200).json({ message: "product saved" });
+        //if no errors save
+        try {
+          await db.collection("products").insertMany(req.body);
+          res.status(200).json({ message: "product saved" });
+        } catch (e) {
+          e &&
+            res
+              .status(500)
+              .json({ error: "there was some problem,please try again" });
+        }
       }
 
       break;

@@ -171,10 +171,13 @@ const MapCartItems = (props) => {
               else if (id === "removeIcon") qty = item.qty - 1;
 
               const updatedCartItems = [...cartItems, { ...item, qty: qty }];
+
               //if qty of item has become zero,remove it
-              setCartItems(
-                updatedCartItems.filter((cartItem) => cartItem.qty > 0)
+              const nonEmptyCartItems = updatedCartItems.filter(
+                (cartItem) => cartItem.qty > 0
               );
+              setCartItems(nonEmptyCartItems);
+
               Cookie.set("cartItems", { cartItems: cartItems });
             }}
           />
@@ -182,9 +185,11 @@ const MapCartItems = (props) => {
         <a
           className={classes.remove}
           onClick={() => {
-            setCartItems(
-              cartItems.filter((cartItem) => !isEqual(cartItem, item))
+            const remainingItems = cartItems.filter(
+              //using lodash to equate equal objects. selected item will be removed on click
+              (cartItem) => !isEqual(cartItem, item)
             );
+            setCartItems(remainingItems);
             Cookie.set("cartItems", { cartItems: cartItems });
           }}
           href

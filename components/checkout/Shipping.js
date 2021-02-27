@@ -17,24 +17,17 @@ import { saveShippingDetails } from "../../actions/cartActions";
 export default function Shipping(props) {
   const classes = useStyles(),
     dispatch = useDispatch(),
-    { matches, editClicked, handleClick, isDone, handleSubmit } = props,
-    [details, setDetails] = useState({
-      name: "",
-      number: "",
-      address: "",
-      address2: "",
-      city: "",
-      postalCode: "",
-      country: "",
-    }),
-    { name, number, address, address2, city, postalCode, country } = details,
+    {
+      matches,
+      editClicked,
+      handleClick,
+      isDone,
+      handleSubmit,
+      shippingDetails,
+      handleChange,
+    } = props,
+    { name, number, address, address2, city, postalCode } = shippingDetails,
     [errors, setErrors] = useState({});
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setDetails({ ...details, [name]: value });
-  };
 
   return (
     <Grid container item xs={12} md={9}>
@@ -55,7 +48,17 @@ export default function Shipping(props) {
           </Typography>
         </Box>
       </Grid>
-      <Grid item xs={6}></Grid>
+      <Grid item xs={6}>
+        <Box display={editClicked ? "none" : "block"}>
+          <Typography
+            variant={matches ? "body2" : "body1"}
+            classes={{ root: classes.email }}
+            align={matches ? "center" : "left"}
+          >
+            {city}
+          </Typography>
+        </Box>
+      </Grid>
       <Grid item xs={2}>
         {isDone && ( //only show edit button of if done
           <Box display={editClicked ? "none" : "block"}>
@@ -138,7 +141,7 @@ export default function Shipping(props) {
             <div>
               <Typography>Country:</Typography>
               {/* eslint-disable-next-line jsx-a11y/no-onchange */}
-              <select name="country" onChange={handleChange} value={country}>
+              <select name="country">
                 <option>Pakistan</option>
               </select>
             </div>
@@ -146,10 +149,10 @@ export default function Shipping(props) {
             <Button
               onClick={(event) => {
                 //check validation
-                const { errors, isValid } = validate(details);
+                const { errors, isValid } = validate(shippingDetails);
                 //if valid submit form else show errors
                 if (isValid) {
-                  dispatch(saveShippingDetails(details));
+                  dispatch(saveShippingDetails(shippingDetails));
                   handleSubmit(event);
                 } else setErrors(errors);
               }}
@@ -171,4 +174,13 @@ Shipping.propTypes = {
   handleClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   matches: PropTypes.bool.isRequired,
+  shippingDetails: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    address2: PropTypes.string,
+    city: PropTypes.string.isRequired,
+    postalCode: PropTypes.string.isRequired,
+  }),
+  handleChange: PropTypes.func.isRequired,
 };

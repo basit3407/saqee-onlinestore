@@ -75,7 +75,7 @@ export default function Product(props) {
   //Add to cart function
   const handleAddToCart = () => {
     //Add new cart item
-    setCartItems([
+    const updatedCartItems = [
       ...cartItems,
       {
         title: product.title,
@@ -83,7 +83,8 @@ export default function Product(props) {
         variations: orderDetails.variations,
         price: product.price,
       },
-    ]);
+    ];
+    setCartItems(updatedCartItems);
 
     Cookie.set("cartItems", { cartItems: cartItems });
     router.push("/cart");
