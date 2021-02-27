@@ -8,10 +8,10 @@ import {
   Button,
 } from "@material-ui/core";
 import Image from "next/image";
-import isEmpty from "is-empty";
 import { useDispatch, useSelector } from "react-redux";
 import { QuantitySelector } from "./products/[category]/[title]";
 import { addToCart, removeFromCart } from "../actions/cartActions";
+import { isEmpty } from "../validation/product";
 
 // eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({

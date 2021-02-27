@@ -1,5 +1,3 @@
-import isEmpty from "is-empty";
-
 export default function validate(data) {
   const errors = {};
 
@@ -27,4 +25,14 @@ export default function validate(data) {
     errors,
     isValid: isEmpty(errors),
   };
+}
+
+export function isEmpty(obj) {
+  for (const prop in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+      return false;
+    }
+  }
+
+  return true;
 }
