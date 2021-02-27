@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
 import { QuantitySelector } from "./products/[category]/[title]";
 import { isEmpty } from "../validation/product";
+import { useRouter } from "next/router";
 
 // eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({
@@ -34,6 +35,7 @@ const useSTyles = makeStyles((theme) => ({
 
 export default function Cart(props) {
   const classes = useSTyles(),
+    router = useRouter(),
     { cartItems, setCartItems } = props;
 
   return (
@@ -89,7 +91,9 @@ export default function Cart(props) {
                 shipping calculated at checkout
               </Typography>
               <div>
-                <Button>Checkout</Button>
+                <Button onClick={() => router.push("/checkout")}>
+                  Checkout
+                </Button>
               </div>
               <div>
                 <Button>Continue Shopping</Button>

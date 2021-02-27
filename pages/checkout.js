@@ -76,33 +76,51 @@ export default function Checkout(props) {
     payment: false,
   });
 
-  //Load customer and shipping sections isDone state from local storage if exists,else set to false
-  const customer = localStorage.getItem("customer"),
-    shipping = localStorage.getItem("shipping"),
-    Done = {
-      customer: customer ? JSON.parse(customer) : false,
-      shipping: shipping ? JSON.parse(shipping) : false,
-    },
-    [isDone, setIsDone] = useState(Done);
+  //Done status of customer and shipping sections
+  const [isDone, setIsDone] = useState({
+    customer: false,
+    shipping: false,
+  });
 
-  //Load shipping details from local storage if exists,else set to empty string
-  const details = localStorage.getItem("shippingDetails"),
-    detailsExist =
-      details == null
-        ? {
-            name: "",
-            number: "",
-            address: "",
-            address2: "",
-            city: "",
-            postalCode: "",
-            country: "",
-          }
-        : JSON.parse(details),
-    [shippingDetails, setShippingDetails] = useState(detailsExist);
+  //shipping details of order
+  const [shippingDetails, setShippingDetails] = useState({
+    name: "",
+    number: "",
+    address: "",
+    address2: "",
+    city: "",
+    postalCode: "",
+    country: "",
+  });
 
-  //on page load do following
+  //on Page Load do the following:
   useEffect(() => {
+    //Load customer and shipping sections isDone state from local storage if exists,else set to false
+    const customer = localStorage.getItem("customer"),
+      shipping = localStorage.getItem("shipping"),
+      isDone = {
+        customer: customer == null ? false : JSON.parse(customer),
+        shipping: shipping == null ? false : JSON.parse(shipping),
+      };
+    setIsDone(isDone);
+
+    //Load shipping details from local storage if exists,else set to empty string
+    const details = localStorage.getItem("shippingDetails"),
+      shippingDetails =
+        details == null
+          ? {
+              name: "",
+              number: "",
+              address: "",
+              address2: "",
+              city: "",
+              postalCode: "",
+              country: "",
+            }
+          : JSON.parse(details);
+    setShippingDetails(shippingDetails);
+
+    //isDone actions
     !isDone.customer
       ? setEditClicked({ ...editClicked, customer: true }) //if customer section has not been done,open customer section
       : !isDone.shipping

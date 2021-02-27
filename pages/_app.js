@@ -12,8 +12,8 @@ export default function MyApp(props) {
   const { Component, pageProps } = props;
 
   //get cart items from  cookie if exist,else set to empty array;
-  const savedCartItems = Cookie.getJSON().cartItems.cartItems,
-    itemsExist = savedCartItems == null ? [] : savedCartItems,
+  const savedCartItems = Cookie.getJSON("cartItems"),
+    itemsExist = savedCartItems == null ? [] : savedCartItems.cartItems,
     [cartItems, setCartItems] = useState(itemsExist);
 
   //this prop will be passed to all the pages

@@ -2,9 +2,9 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import Cookie from "js-cookie";
 import axios from "axios";
-import useRouter from "next/router";
 import { Button, Grid, Typography, Box, Avatar } from "@material-ui/core";
 import { useStyles } from "../../pages/checkout";
+import { useRouter } from "next/router";
 export default function Payment(props) {
   const { cartItems, shippingDetails, matches, editClicked } = props,
     classes = useStyles(),
@@ -31,14 +31,14 @@ export default function Payment(props) {
 
   return (
     <Grid container item xs={12} md={9}>
-      <Grid item xs={12}>
+      <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>3</Avatar>
           <Typography
             classes={{ root: classes.stepHeader }}
             variant={matches ? "body1" : "h6"}
           >
-            Customer
+            Payment
           </Typography>
         </Box>
       </Grid>

@@ -10,20 +10,26 @@ import {
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
 import { useStyles } from "../../pages/checkout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { validateEmail } from "../../validation/user";
 
 export default function Customer(props) {
   const classes = useStyles(),
     { editClicked, handleClick, isDone, matches, handleSubmit } = props;
 
-  //if email is already saved get it,else save null;
-  const savedEmail = localStorage.getItem("email"), //will be null if nothing is saved
-    savedEmailExist = savedEmail,
-    [email, setEmail] = useState(savedEmailExist);
+  //undefined because nextjs gives error of localstorage due to its server side
+  const [email, setEmail] = useState("");
 
   //validation of email
   const [inValidEmail, setinValidEmail] = useState(false);
+
+  //on page load
+  useEffect(() => {
+    //if email is already saved get it,else save null;
+    const savedEmail = localStorage.getItem("email"),
+      email = savedEmail == null ? "" : savedEmail;
+    setEmail(email);
+  }, []);
 
   return (
     <Grid container item xs={12} md={9}>
@@ -94,13 +100,14 @@ export default function Customer(props) {
               variant="contained"
               name="customer"
               onClick={(e) => {
-                // check that email is not empty.
-                if (email) return setinValidEmail(true);
-                //check if email format is valid.
-                if (!validateEmail(email)) return setinValidEmail(true);
-                //if valid then save the email in local storage.
-                localStorage.setItem("email", email);
-                handleSubmit(e);
+                //email validation
+                if (!validateEmail(email)) setinValidEmail(true);
+                else {
+                  localStorage.setItem("email", email);
+                  handleSubmit(e);
+                  //remove error of email validation if present
+                  inValidEmail && setinValidEmail(false);
+                }
               }}
             >
               Continue as Guest

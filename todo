@@ -2,7 +2,9 @@ sides checkooout
 thankyou page
 search dialog
 testing
-see ealse from tasks
+see else from tasks
+
+remove cookie and replace with localstorage. dont write useeffects comment. its needless. 
+test completely tomorrow
 
 
-test 2nd grid with Box with props of box of customer and shipping

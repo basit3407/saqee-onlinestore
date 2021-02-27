@@ -9,14 +9,11 @@ import {
 import DoneIcon from "@material-ui/icons/Done";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useStyles } from "../../pages/checkout";
 import validate from "../../validation/shippingDetails";
-import { saveShippingDetails } from "../../actions/cartActions";
 
 export default function Shipping(props) {
   const classes = useStyles(),
-    dispatch = useDispatch(),
     {
       matches,
       editClicked,
@@ -150,11 +147,8 @@ export default function Shipping(props) {
               onClick={(event) => {
                 //check validation
                 const { errors, isValid } = validate(shippingDetails);
-                //if valid submit form else show errors
-                if (isValid) {
-                  dispatch(saveShippingDetails(shippingDetails));
-                  handleSubmit(event);
-                } else setErrors(errors);
+                //if Valid submit details
+                isValid ? handleSubmit(event) : setErrors(errors);
               }}
               variant="contained"
               name="shipping"
