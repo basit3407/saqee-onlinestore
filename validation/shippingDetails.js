@@ -11,8 +11,9 @@ export default function validate(data) {
         errors[property] = `${property} is required`;
       //phone number validation
       else if (property === "number")
-        if (!data[property].match("^[0-9-+]{10,15}$"))
+        if (!"^[0-9-+]{10,15}$".test(data[property]))
           errors[property] = "please enter valid phone number";
+    // if (!data[property].test("^[0-9-+]{10,15}$"))
   }
 
   return {

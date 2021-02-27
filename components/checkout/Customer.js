@@ -9,10 +9,9 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
-import validator from "validator";
-import isEmpty from "is-empty";
 import { useStyles } from "../../pages/checkout";
 import { useState, useEffect } from "react";
+import { validateEmail } from "../../validation/user";
 
 export default function Customer(props) {
   const classes = useStyles(),
@@ -94,9 +93,9 @@ export default function Customer(props) {
               name="customer"
               onClick={(e) => {
                 // check that email is not empty.
-                if (isEmpty(email)) return setinValidEmail(true);
+                if (email) return setinValidEmail(true);
                 //check if email format is valid.
-                if (!validator.isEmail(email)) return setinValidEmail(true);
+                if (!validateEmail(email)) return setinValidEmail(true);
                 //if valid then save the email in local storage.
                 localStorage.setItem("email", email);
                 handleSubmit(e);
