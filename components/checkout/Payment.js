@@ -10,24 +10,27 @@ export default function Payment(props) {
     router = useRouter();
 
   //for handling error on dispatching order to server
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
 
   // For dispatching order to server
-  const handleSubmit = () => {
-    axios
-      .post("http://localhost:3000/order", {
-        cartItems: cartItems,
-        shippingDetails: shippingDetails,
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          localStorage.removeItem("cartItems");
-          router.push("/thankyou");
-        }
-      })
-      .catch((error) => error && setError(true));
-  };
-
+  const handleSubmit = () =>
+    //if cart is empty,show error.else dispatch order
+    cartItems.length
+      ? axios
+          .post("http://localhost:3000/order", {
+            cartItems: cartItems,
+            shippingDetails: shippingDetails,
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              localStorage.removeItem("cartItems");
+              router.push("/thankyou");
+            }
+          })
+          .catch(
+            (err) => err && setError("There was some issue please try again")
+          )
+      : setError("Your cart is empty,please do some shopping");
   return (
     <Grid container item xs={12} md={9}>
       <Grid item xs={4}>
@@ -46,18 +49,21 @@ export default function Payment(props) {
         xs={12}
         classes={{ root: editClicked ? classes.show : classes.collapse }}
       >
-        <Typography>items will be deliverd to following adress:</Typography>
+        <Typography variant="h6">Shipping Details</Typography>
+        <Typography>Address</Typography>
         <Typography>{shippingDetails.address}</Typography>
+        <Typography>City</Typography>
+        <Typography>{shippingDetails.city}</Typography>
+        <Typography>Phone Number</Typography>
+        <Typography>{shippingDetails.number}</Typography>
         <Typography>Payment Method</Typography>
         <select>
           <option>cash on delivery</option>
         </select>
-        <Button variant="contained" onClick={handleSubmit}></Button>
-        {error && (
-          <span className={classes.error}>
-            there was some issue,please try again
-          </span>
-        )}
+        <Button variant="contained" onClick={handleSubmit}>
+          Place Order
+        </Button>
+        {error && <span className={classes.error}>{error}</span>}
       </Grid>
     </Grid>
   );

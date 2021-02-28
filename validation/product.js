@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 export default function validate(data) {
   const errors = {};
 
@@ -16,9 +17,8 @@ export default function validate(data) {
         errors[property] = `${property} field is required`;
       // if countInStock or price is not a number return error
       else if (property === "countInStock" || property === "price")
-        if (!"/^d+$/".test(data[property]))
+        if (!/^d+$/.test(data[property]))
           errors[property] = `please type the the ${property} in numbers`;
-    // if (!data[property].test("/^d+$/"))
   }
 
   return {
@@ -27,12 +27,13 @@ export default function validate(data) {
   };
 }
 
+//This function checks for empty objects
 export function isEmpty(obj) {
   for (const prop in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+    if (obj.hasOwnProperty(prop)) {
       return false;
     }
   }
 
-  return true;
+  return JSON.stringify(obj) === JSON.stringify({});
 }

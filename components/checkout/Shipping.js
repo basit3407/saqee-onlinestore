@@ -31,7 +31,7 @@ export default function Shipping(props) {
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
-            {isDone.shipping ? ( //if shipping is done show tick,else show number
+            {isDone ? ( //if shipping is done show tick,else show number
               <DoneIcon classes={{ root: classes.icon }} />
             ) : (
               "2"
@@ -52,7 +52,7 @@ export default function Shipping(props) {
             classes={{ root: classes.email }}
             align={matches ? "center" : "left"}
           >
-            {city}
+            {address},{city}
           </Typography>
         </Box>
       </Grid>
@@ -147,6 +147,7 @@ export default function Shipping(props) {
               onClick={(event) => {
                 //check validation
                 const { errors, isValid } = validate(shippingDetails);
+                console.log(isValid, errors);
                 //if Valid submit details
                 isValid ? handleSubmit(event) : setErrors(errors);
               }}

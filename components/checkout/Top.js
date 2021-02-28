@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Top(props) {
   const classes = useStyles(),
-    { matches } = props;
+    { matches, heading } = props;
 
   return (
     <section>
@@ -33,7 +33,7 @@ export default function Top(props) {
                 classes={{ root: classes.headingBox }}
               >
                 <Typography variant={matches ? "h6" : "h4"}>
-                  Checkout
+                  {heading}
                 </Typography>
               </Box>
             </Container>
@@ -45,5 +45,6 @@ export default function Top(props) {
 }
 
 Top.propTypes = {
-  matches: PropTypes.bool.isRequired,
+  matches: PropTypes.bool,
+  heading: PropTypes.string.isRequired,
 };

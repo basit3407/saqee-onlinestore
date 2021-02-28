@@ -12,6 +12,8 @@ import Top from "../components/checkout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";
+import Billing from "../components/checkout/Billing";
+import { useRouter } from "next/router";
 
 export const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -60,14 +62,24 @@ export const useStyles = makeStyles((theme) => ({
     transition: "max-height 0.2s ease",
     transitionDuration: "0.4s",
   },
+  billing: {},
   error: {
     color: theme.palette.error.main,
+  },
+  wrapperDiv: {
+    position: "relative",
+  },
+  overlap: {
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
 }));
 export default function Checkout(props) {
   const theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
-    { cartItems } = props;
+    { cartItems } = props,
+    router = useRouter();
 
   //For checking the state of edit button for opening dropdowns
   const [editClicked, setEditClicked] = useState({
@@ -90,20 +102,20 @@ export default function Checkout(props) {
     address2: "",
     city: "",
     postalCode: "",
-    country: "",
   });
 
   //on Page Load do the following:
   useEffect(() => {
+    //if cart is empty redirect to carts page
+    !cartItems.length && router.push("/cart");
     //Load customer and shipping sections isDone state from local storage if exists,else set to false
     const customer = localStorage.getItem("customer"),
       shipping = localStorage.getItem("shipping"),
       isDone = {
-        customer: customer == null ? false : JSON.parse(customer),
-        shipping: shipping == null ? false : JSON.parse(shipping),
+        customer: customer ? JSON.parse(customer) : false,
+        shipping: shipping ? JSON.parse(shipping) : false,
       };
     setIsDone(isDone);
-
     //Load shipping details from local storage if exists,else set to empty string
     const details = localStorage.getItem("shippingDetails"),
       shippingDetails =
@@ -115,11 +127,9 @@ export default function Checkout(props) {
               address2: "",
               city: "",
               postalCode: "",
-              country: "",
             }
           : JSON.parse(details);
     setShippingDetails(shippingDetails);
-
     //isDone actions
     !isDone.customer
       ? setEditClicked({ ...editClicked, customer: true }) //if customer section has not been done,open customer section
@@ -132,7 +142,6 @@ export default function Checkout(props) {
   //For handling change in shipping details
   const handleChange = (event) => {
     const { name, value } = event.target;
-
     setShippingDetails({ ...shippingDetails, [name]: value });
   };
 
@@ -145,11 +154,9 @@ export default function Checkout(props) {
   // For handling submitting of customer and shipping sections
   const handleSubmit = (event) => {
     const name = event.currentTarget.getAttribute("name");
-
     //set isDone to true and save to local storage for future
     setIsDone({ ...isDone, [name]: true });
     localStorage.setItem(name, JSON.stringify(true));
-
     //customer section done,
     if (name === "customer")
       return !isDone.shipping
@@ -159,7 +166,6 @@ export default function Checkout(props) {
             shipping: true, //open shipping section if it is not done
           })
         : setEditClicked({ ...editClicked, customer: false, payment: true }); //if shipping already done,open payment
-
     //shipping section done,
     //save shipping details to localStorage for future
     localStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
@@ -169,9 +175,10 @@ export default function Checkout(props) {
       payment: true, //open payment section
     });
   };
+
   return (
     <>
-      <Top matches={matches} />
+      <Top matches={matches} heading="checkout" />
       <section>
         <Container>
           <Grid container>
@@ -181,7 +188,9 @@ export default function Checkout(props) {
               container
               item
               xs={12}
-            ></Grid>
+            >
+              {cartItems.length && <Billing cartItems={cartItems} />}
+            </Grid>
           </Grid>
           <Customer
             editClicked={editClicked.customer}

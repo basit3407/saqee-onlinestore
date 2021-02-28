@@ -13,6 +13,7 @@ import isEqual from "lodash.isequal";
 import { QuantitySelector } from "./products/[category]/[title]";
 import { isEmpty } from "../validation/product";
 import { useRouter } from "next/router";
+import Top from "../components/checkout/Top";
 
 // eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({
@@ -38,70 +39,82 @@ export default function Cart(props) {
     { cartItems, setCartItems } = props;
 
   return (
-    <section>
-      <Container>
+    <>
+      <Top heading="Cart" />
+      {cartItems.length ? (
+        <section>
+          <Container>
+            <Grid
+              container
+              component={Box}
+              display={{ xs: "hidden", sm: "block" }}
+            >
+              <Grid item xs={4}>
+                <Typography>Product</Typography>
+              </Grid>
+              <Grid item xs={4}></Grid>
+              <Grid item xs={2}>
+                <Typography>Quantity</Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography>Total</Typography>
+              </Grid>
+            </Grid>
+            <Grid container>
+              <MapCartItems cartItems={cartItems} setCartItems={setCartItems} />
+            </Grid>
+            <Grid container>
+              <Grid item xs={12} sm={4}>
+                <Typography display="block">Add Order Note</Typography>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  placeholder="How can we help you?"
+                  multiline
+                  size="small"
+                  classes={{ root: classes.textField }}
+                  rows="10"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm>
+                <div>
+                  <Typography display="block">
+                    {/* calculate the total amout of money and render */}
+                    TOTAL:Rs.
+                    {cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
+                  </Typography>
+                  <Typography display="block" variant="body2">
+                    shipping calculated at checkout
+                  </Typography>
+                  <div>
+                    <Button onClick={() => router.push("/checkout")}>
+                      Checkout
+                    </Button>
+                  </div>
+                  <div>
+                    <Button>Continue Shopping</Button>
+                  </div>
+                </div>
+              </Grid>
+            </Grid>
+          </Container>
+        </section>
+      ) : (
         <Grid container>
           <Grid item xs={12}>
-            <Typography
-              classes={{ root: classes.heading }}
-              display="block"
-              variant="h4"
-            >
-              Cart
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container component={Box} display={{ xs: "hidden", sm: "block" }}>
-          <Grid item xs={4}>
-            <Typography>Product</Typography>
-          </Grid>
-          <Grid item xs={4}></Grid>
-          <Grid item xs={2}>
-            <Typography>Quantity</Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography>Total</Typography>
-          </Grid>
-        </Grid>
-        <Grid container>
-          <MapCartItems cartItems={cartItems} setCartItems={setCartItems} />
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sm={4}>
-            <Typography display="block">Add Order Note</Typography>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              placeholder="How can we help you?"
-              multiline
-              size="small"
-              classes={{ root: classes.textField }}
-              rows="10"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sm>
             <div>
-              <Typography display="block">
-                {/* calculate the total amout of money and render */}
-                TOTAL:Rs.{cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
-              </Typography>
-              <Typography display="block" variant="body2">
-                shipping calculated at checkout
-              </Typography>
+              <Typography>Your cart is empty,do some shopping</Typography>
               <div>
-                <Button onClick={() => router.push("/checkout")}>
-                  Checkout
+                <Button href="/" variant="contained">
+                  Shop
                 </Button>
-              </div>
-              <div>
-                <Button>Continue Shopping</Button>
               </div>
             </div>
           </Grid>
         </Grid>
-      </Container>
-    </section>
+      )}
+    </>
   );
 }
 
@@ -155,7 +168,6 @@ const MapCartItems = (props) => {
             value={item.qty}
             handleChange={(event) => {
               const { value } = event.target;
-
               setCartItems([
                 ...cartItems,
                 {
@@ -163,24 +175,17 @@ const MapCartItems = (props) => {
                   qty: value,
                 },
               ]);
-
               localStorage.setItem("cartItems", JSON.stringify(cartItems));
             }}
             handleClick={(event) => {
               const { id } = event.target;
-              let qty;
-
-              if (id === "addIcon") qty = item.qty + 1;
-              else if (id === "removeIcon") qty = item.qty - 1;
-
+              const qty = id === "addIcon" ? item.qty + 1 : item.qty - 1;
               const updatedCartItems = [...cartItems, { ...item, qty: qty }];
-
               //if qty of item has become zero,remove it
               const nonEmptyCartItems = updatedCartItems.filter(
                 (cartItem) => cartItem.qty > 0
               );
               setCartItems(nonEmptyCartItems);
-
               localStorage.setItem("cartItems", JSON.stringify(cartItems));
             }}
           />

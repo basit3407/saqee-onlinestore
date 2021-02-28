@@ -28,8 +28,8 @@ export default function MyApp(props) {
     }
 
     //get cart items from  localstorage if exist,else set to empty array;
-    const savedCartItems = localStorage.getItem(JSON.parse("cartItems")),
-      cartItems = savedCartItems == null ? [] : savedCartItems.cartItems;
+    const savedCartItems = localStorage.getItem("cartItems"),
+      cartItems = savedCartItems ? JSON.parse(savedCartItems) : [];
     setCartItems(cartItems);
   }, []);
 

@@ -16,7 +16,7 @@ export default async function ordersHandler(req, res) {
       try {
         await db
           .collection("orders")
-          .insertOne({ ...cartItems, shippingDetails: shippingDetails });
+          .insertOne({ Items: cartItems, shippingDetails: shippingDetails });
         res.status(200).json({ message: "order saved" });
       } catch (e) {
         e &&

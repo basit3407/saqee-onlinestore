@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import isEqual from "lodash.isequal";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -46,45 +47,45 @@ export default function Product(props) {
   //This functions sets the quanitity and variations of order from customer.
   const handleChange = (event) => {
     const { id, value, tagName } = event.target;
-
-    if (tagName === "INPUT")
-      return setOrderDetails({ ...orderDetails, qty: value });
-
-    return setOrderDetails({
-      ...orderDetails,
-      variations: { ...orderDetails.variations, [id]: value },
-    });
+    const order =
+      tagName === "INPUT"
+        ? { ...orderDetails, qty: value }
+        : {
+            ...orderDetails,
+            variations: { ...orderDetails.variations, [id]: value },
+          };
+    setOrderDetails(order);
   };
 
   //This function handles the clicks of increase or decrease icons in quantitySelector component
   const handleClick = (event) => {
     const { id } = event.currentTarget;
-
-    if (id === "addIcon")
-      return setOrderDetails((prevVal) => {
-        return { ...prevVal, qty: prevVal.qty + 1 };
-      });
-
-    if (id === "removeIcon")
-      return setOrderDetails((prevVal) => {
-        return { ...prevVal, qty: prevVal.qty > 0 ? prevVal.qty - 1 : 0 };
-      });
+    const order =
+      id === "addIcon"
+        ? { ...orderDetails, qty: orderDetails.qty + 1 }
+        : {
+            ...orderDetails,
+            qty: orderDetails.qty > 0 ? orderDetails.qty - 1 : 0,
+          };
+    setOrderDetails(order);
   };
 
   //Add to cart function
   const handleAddToCart = () => {
-    //Add new cart item
-    const updatedCartItems = [
-      ...cartItems,
-      {
-        title: product.title,
-        qty: orderDetails.qty,
-        variations: orderDetails.variations,
-        price: product.price,
-      },
-    ];
+    const orderedItem = {
+      title: product.title,
+      qty: orderDetails.qty,
+      variations: orderDetails.variations,
+      price: product.price,
+    };
+    const updatedCartItems = checkDuplicate(cartItems, orderedItem) //check if ordered item is already present
+      ? cartItems.map((item) =>
+          isEqual(item.variations, orderedItem.variations) //duplicate item
+            ? { ...item, qty: item.qty + orderedItem.qty } //increase the qty of duplicate item
+            : item
+        )
+      : [...cartItems, orderedItem]; // if no duplicate item,add the ordered item
     setCartItems(updatedCartItems);
-
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     router.push("/cart");
   };
@@ -293,6 +294,22 @@ QuantitySelector.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+};
+
+//This funtions checks if the duplicate of ordered item is present or not.
+const checkDuplicate = (cartItems, orderedItem) => {
+  //   check if items with this title are already present in cart
+  const duplicateTitles = cartItems.filter(
+    (cartItem) => cartItem.title === orderedItem.title
+  );
+
+  return !duplicateTitles
+    ? false //if duplicate titles are not present return false
+    : duplicateTitles.find(
+        (item) => isEqual(item.variations, orderedItem.variations) //if duplicate titles are present check if any have exact same variations
+      )
+    ? true
+    : false;
 };
 
 export async function getServerSideProps(context) {
