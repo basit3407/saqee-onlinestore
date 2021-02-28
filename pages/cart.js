@@ -8,7 +8,6 @@ import {
   Button,
 } from "@material-ui/core";
 import Image from "next/image";
-import Cookie from "js-cookie";
 import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
 import { QuantitySelector } from "./products/[category]/[title]";
@@ -165,7 +164,7 @@ const MapCartItems = (props) => {
                 },
               ]);
 
-              Cookie.set("cartItems", { cartItems: cartItems });
+              localStorage.setItem("cartItems", JSON.stringify(cartItems));
             }}
             handleClick={(event) => {
               const { id } = event.target;
@@ -182,7 +181,7 @@ const MapCartItems = (props) => {
               );
               setCartItems(nonEmptyCartItems);
 
-              Cookie.set("cartItems", { cartItems: cartItems });
+              localStorage.setItem("cartItems", JSON.stringify(cartItems));
             }}
           />
         </div>
@@ -194,7 +193,7 @@ const MapCartItems = (props) => {
               (cartItem) => !isEqual(cartItem, item)
             );
             setCartItems(remainingItems);
-            Cookie.set("cartItems", { cartItems: cartItems });
+            localStorage.setItem("cartItems", JSON.stringify(cartItems));
           }}
           href
         >

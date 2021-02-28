@@ -15,7 +15,6 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Cookie from "js-cookie";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
@@ -86,7 +85,7 @@ export default function Product(props) {
     ];
     setCartItems(updatedCartItems);
 
-    Cookie.set("cartItems", { cartItems: cartItems });
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
     router.push("/cart");
   };
 

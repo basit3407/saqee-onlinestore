@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import Cookie from "js-cookie";
 import axios from "axios";
 import { Button, Grid, Typography, Box, Avatar } from "@material-ui/core";
 import { useStyles } from "../../pages/checkout";
@@ -22,7 +21,7 @@ export default function Payment(props) {
       })
       .then((response) => {
         if (response.status === 200) {
-          Cookie.remove("cartItems", { path: "" });
+          localStorage.removeItem("cartItems");
           router.push("/thankyou");
         }
       })
