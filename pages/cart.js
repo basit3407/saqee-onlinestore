@@ -13,7 +13,7 @@ import isEqual from "lodash.isequal";
 import { QuantitySelector } from "./products/[category]/[title]";
 import { isEmpty } from "../validation/product";
 import { useRouter } from "next/router";
-import Top from "../components/checkout/Top";
+import Top from "../components/layout/Top";
 
 // eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({

@@ -156,7 +156,7 @@ const Item = (props) => {
       <Grid item xs={12} md={4} key={index}>
         <div className={classes.imageDiv}>
           <Image
-            src={`https://storage.googleapis.com/saqeeonlinestore-images/bestSellers/bestSeller${item.image}.jpeg`}
+            src={`/images/bestsellers/bestsellers (${item.image}).jpeg`}
             alt=""
             width={500}
             height={500}
