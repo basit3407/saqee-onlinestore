@@ -107,7 +107,7 @@ export default function Checkout(props) {
   //on Page Load do the following:
   useEffect(() => {
     //if cart is empty redirect to carts page
-    // !cartItems.length && router.push("/cart");
+    !cartItems.length && router.push("/cart");
     //Load customer and shipping sections isDone state from local storage if exists,else set to false
     const customer = localStorage.getItem("customer"),
       shipping = localStorage.getItem("shipping"),
@@ -176,7 +176,9 @@ export default function Checkout(props) {
               item
               xs={12}
             >
-              {cartItems.length > 0 && <Billing cartItems={cartItems} />}
+              {cartItems.length > 0 && (
+                <Billing cartItems={cartItems} city={cartItems.city} />
+              )}
             </Grid>
           </Grid>
           <Customer

@@ -52,7 +52,8 @@ export default function Shipping(props) {
             classes={{ root: classes.email }}
             align={matches ? "center" : "left"}
           >
-            {address},{city}
+            {address},
+            {city.charAt[0].toUpperCase() + city.slice(1).toLowerCase()}
           </Typography>
         </Box>
       </Grid>

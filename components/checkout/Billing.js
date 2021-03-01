@@ -4,7 +4,7 @@ import { Typography, Grid, Avatar } from "@material-ui/core";
 import useStyles from "../../pages/checkout";
 
 export default function Billing(props) {
-  const { cartItems } = props,
+  const { cartItems, city } = props,
     classes = useStyles();
 
   return (
@@ -49,7 +49,13 @@ export default function Billing(props) {
       </Grid>
       <Grid item xs={6}></Grid>
       <Grid item xs={3}>
-        <Typography display="block">Rs: shipping Price</Typography>
+        <Typography display="block">
+          Rs.
+          {city.charAt[0].toUpperCase() + city.slice(1).toLowerCase() ===
+          "Karachi"
+            ? 200
+            : 250}
+        </Typography>
       </Grid>
       <Grid item xs={3}>
         <Typography>Total</Typography>
@@ -73,4 +79,5 @@ Billing.propTypes = {
       price: PropTypes.string,
     })
   ),
+  city: PropTypes.string,
 };

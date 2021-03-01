@@ -20,6 +20,7 @@ import {
   useTheme,
   useMediaQuery,
   InputBase,
+  Avatar,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
     marginTop: theme.spacing(1),
+    position: "relative",
   },
   //For nested hover to work we need to create empty class of child item
   item: {},
@@ -107,9 +109,26 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(1),
     },
   },
+  avatar: {
+    "&.MuiAvatar-colorDefault": {
+      backgroundColor: theme.palette.secondary.dark,
+    },
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+
+    [theme.breakpoints.down("sm")]: {
+      width: theme.spacing(2),
+      height: theme.spacing(2),
+    },
+    margin: "1% 0",
+    fontSize: "1rem",
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
 }));
 
-export default function NavBar() {
+export default function NavBar(props) {
   const mainMenuBigScreenItems = [
       { title: "Home", href: "/" },
       { title: "SHOP", href: "#" },
@@ -126,6 +145,7 @@ export default function NavBar() {
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },
     ],
+    { cartItems } = props,
     classes = useStyles(),
     //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
     divRef = useRef(),
@@ -234,6 +254,12 @@ export default function NavBar() {
                       icon={ShoppingCartIcon}
                       text="cart"
                     />
+                    {Array.isArray(cartItems) && //in SSR initialState is undefined,
+                      cartItems.length > 0 && (
+                        <Avatar classes={{ root: classes.avatar }}>
+                          {cartItems.reduce((a, c) => a + c.qty, 0)}
+                        </Avatar>
+                      )}
                   </div>
                 </Link>
               </Grid>
@@ -275,7 +301,18 @@ export default function NavBar() {
   );
 }
 
-//this function is for side icons of cart and search.
+NavBar.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.number,
+      price: PropTypes.number,
+    })
+  ),
+};
+
+//This function is for side icons of cart and search.
 const Sides = (props) => {
   const classes = useStyles(),
     Icon = props.icon,
