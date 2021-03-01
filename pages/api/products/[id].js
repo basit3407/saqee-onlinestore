@@ -1,19 +1,22 @@
+import { ObjectID } from "mongodb";
 import { connectToDatabase } from "../../../util/mongodb";
 import validate from "../../../validation/product";
 
 export default async function productHandler(req, res) {
   const {
-      query: { category, title },
+      query: { category, id },
       method,
     } = req,
     { db } = await connectToDatabase(),
-    //search by title insted of _id for SEO
-    searchQuery = { category: category, title: title };
+    searchQuery = { category: category, _id: ObjectID(id) };
+  //check if id is valid objectId
+  if (!/^[0-9a-fA-F]{24}$/.test(id))
+    return res.status(404).json({ error: "product donot exist" });
 
   switch (method) {
     case "GET":
-      // @route GET api/products/[category]/[title]
-      // @desc get product of [title] from products of [category] from data base
+      // @route GET api/products/[category]/[id]
+      // @desc get product of [id] from products of [category] from data base
       // @access public
       {
         try {
@@ -33,8 +36,8 @@ export default async function productHandler(req, res) {
       break;
 
     case "PUT":
-      // @route PUT api/products/[category]/[title]
-      // @desc edit product of [title] in products of [category] in data base
+      // @route PUT api/products/[category]/[id]
+      // @desc edit product of [id] in products of [category] in data base
       // @access Admin
       {
         try {
@@ -57,8 +60,8 @@ export default async function productHandler(req, res) {
       break;
 
     case "DELETE":
-      // @route DELETE api/products/[category]/[title]
-      // @desc delete product of [title] in products of [category] in data base
+      // @route DELETE api/products/[category]/[id]
+      // @desc delete product of [id] in products of [category] in data base
       // @access Admin
       try {
         await db.collection("products").deleteOne(searchQuery);

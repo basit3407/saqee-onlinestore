@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import Top from "../components/layout/Top";
+import Top from "../components/checkout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";

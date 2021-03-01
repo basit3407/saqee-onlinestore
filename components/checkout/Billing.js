@@ -51,10 +51,7 @@ export default function Billing(props) {
       <Grid item xs={3}>
         <Typography display="block">
           Rs.
-          {city.charAt[0].toUpperCase() + city.slice(1).toLowerCase() ===
-          "Karachi"
-            ? 200
-            : 250}
+          {city === "Karachi" || city === "karachi" ? 200 : 250}
         </Typography>
       </Grid>
       <Grid item xs={3}>

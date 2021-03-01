@@ -103,7 +103,7 @@ export default function Product(props) {
               <Image src={mainImage} width={500} height={500} />
             </div>
             {/* if auxillary images are present render them */}
-            {product.auxillaryImages.length && (
+            {product.auxillaryImages && (
               <div className={classes.auxillaryImages}>
                 {/*hide the small image if it is set as main image */}
                 <Box
@@ -130,7 +130,11 @@ export default function Product(props) {
           <Grid item xs={12} md>
             <div>
               <Typography variant="h4">{product.title}</Typography>
-              {/* if description is present render description */}
+              {/* if brand and description are present render description */}
+              {product.brand && (
+                <Typography variant="body2">{product.brand}</Typography>
+              )}
+
               {product.description && (
                 <Typography variant="body2">{product.description}</Typography>
               )}
@@ -147,7 +151,7 @@ export default function Product(props) {
               </div>
 
               {/* if in stock and variations are present show variations */}
-              {product.countInStock > 0 && product.variations.length && (
+              {product.countInStock > 0 && product.variations && (
                 <div>
                   <MapVariations
                     handleChange={handleChange}
@@ -310,10 +314,10 @@ const checkDuplicate = (cartItems, orderedItem) => {
 };
 
 export async function getServerSideProps(context) {
-  const { category, title } = context.params;
+  const { category, id } = context.params;
   try {
     const { data } = await axios.get(
-      `http://localhost:3000/api/products/${category}/${title}`
+      `http://localhost:3000/api/products/${category}/${id}`
     );
 
     return {

@@ -254,12 +254,11 @@ export default function NavBar(props) {
                       icon={ShoppingCartIcon}
                       text="cart"
                     />
-                    {Array.isArray(cartItems) && //in SSR initialState is undefined,
-                      cartItems.length > 0 && (
-                        <Avatar classes={{ root: classes.avatar }}>
-                          {cartItems.reduce((a, c) => a + c.qty, 0)}
-                        </Avatar>
-                      )}
+                    {cartItems && cartItems.length > 0 && (
+                      <Avatar classes={{ root: classes.avatar }}>
+                        {cartItems.reduce((a, c) => a + c.qty, 0)}
+                      </Avatar>
+                    )}
                   </div>
                 </Link>
               </Grid>

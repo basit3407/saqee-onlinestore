@@ -112,7 +112,7 @@ Products.propTypes = {
   array: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      title: PropTypes.string,
       price: PropTypes.string.isRequired,
       image: PropTypes.string.isRequired,
       category: PropTypes.string.isRequired,
