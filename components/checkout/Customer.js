@@ -101,13 +101,12 @@ export default function Customer(props) {
               name="customer"
               onClick={(e) => {
                 //email validation
-                if (!validateEmail(email)) setinValidEmail(true);
-                else {
-                  localStorage.setItem("email", email);
-                  handleSubmit(e);
-                  //remove error of email validation if present
-                  inValidEmail && setinValidEmail(false);
-                }
+                if (!validateEmail(email)) return setinValidEmail(true);
+
+                localStorage.setItem("email", email);
+                handleSubmit(e);
+                //remove error of email validation if present
+                inValidEmail && setinValidEmail(false);
               }}
             >
               Continue as Guest

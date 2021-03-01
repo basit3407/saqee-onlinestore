@@ -131,11 +131,12 @@ export default function Checkout(props) {
           : JSON.parse(details);
     setShippingDetails(shippingDetails);
     //isDone actions
-    !isDone.customer
-      ? setEditClicked({ ...editClicked, customer: true }) //if customer section has not been done,open customer section
+    const editClick = !isDone.customer
+      ? { ...editClicked, customer: true } //if customer section has not been done,open customer section
       : !isDone.shipping
-      ? setEditClicked({ ...editClicked, shipping: true }) // if customer section is done but shipping is not done open shipping
-      : setEditClicked({ ...editClicked, payment: true }); //if both customer and shipping are done open payment
+      ? { ...editClicked, shipping: true } // if customer section is done but shipping is not done open shipping
+      : { ...editClicked, payment: true }; //if both customer and shipping are done open payment
+    setEditClicked(editClick);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -154,26 +155,15 @@ export default function Checkout(props) {
   // For handling submitting of customer and shipping sections
   const handleSubmit = (event) => {
     const name = event.currentTarget.getAttribute("name");
-    //set isDone to true and save to local storage for future
-    setIsDone({ ...isDone, [name]: true });
-    localStorage.setItem(name, JSON.stringify(true));
-    //customer section done,
-    if (name === "customer")
-      return !isDone.shipping
-        ? setEditClicked({
-            ...editClicked,
-            customer: false,
-            shipping: true, //open shipping section if it is not done
-          })
-        : setEditClicked({ ...editClicked, customer: false, payment: true }); //if shipping already done,open payment
-    //shipping section done,
-    //save shipping details to localStorage for future
-    localStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
-    setEditClicked({
-      ...editClicked,
-      shipping: false,
-      payment: true, //open payment section
-    });
+    setIsDone({ ...isDone, [name]: true }); //set isDone to true
+    localStorage.setItem(name, JSON.stringify(true)); //save to local storage for future
+    const editClick =
+      name === "customer" //customer section done,
+        ? !isDone.shipping
+          ? { ...editClicked, customer: false, shipping: true } //open shipping section if it is not done
+          : { ...editClicked, customer: false, payment: true } //if shipping already done,open payment
+        : { ...editClicked, shipping: false, payment: true }; //shipping section done,open payment section
+    setEditClicked(editClick);
   };
 
   return (

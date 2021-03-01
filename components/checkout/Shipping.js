@@ -147,9 +147,14 @@ export default function Shipping(props) {
               onClick={(event) => {
                 //check validation
                 const { errors, isValid } = validate(shippingDetails);
-                console.log(isValid, errors);
-                //if Valid submit details
-                isValid ? handleSubmit(event) : setErrors(errors);
+                if (!isValid) return setErrors(errors); //show validation errors
+                //if no errors save to localStorage for future and submit
+                localStorage.setItem(
+                  "shippingDetails",
+                  JSON.stringify(shippingDetails)
+                );
+                handleSubmit(event);
+                errors && setErrors({}); //remove errors on success
               }}
               variant="contained"
               name="shipping"

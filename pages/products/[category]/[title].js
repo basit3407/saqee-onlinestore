@@ -300,16 +300,15 @@ QuantitySelector.propTypes = {
 const checkDuplicate = (cartItems, orderedItem) => {
   //   check if items with this title are already present in cart
   const duplicateTitles = cartItems.filter(
-    (cartItem) => cartItem.title === orderedItem.title
+    (item) => item.title === orderedItem.title
   );
-
-  return !duplicateTitles
-    ? false //if duplicate titles are not present return false
-    : duplicateTitles.find(
-        (item) => isEqual(item.variations, orderedItem.variations) //if duplicate titles are present check if any have exact same variations
-      )
-    ? true
-    : false;
+  //if duplicate titles are present check if any have exact same variations
+  return (
+    duplicateTitles.length &&
+    duplicateTitles.find((item) =>
+      isEqual(item.variations, orderedItem.variations)
+    )
+  );
 };
 
 export async function getServerSideProps(context) {

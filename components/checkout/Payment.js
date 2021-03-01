@@ -14,23 +14,20 @@ export default function Payment(props) {
 
   // For dispatching order to server
   const handleSubmit = () =>
-    //if cart is empty,show error.else dispatch order
-    cartItems.length
-      ? axios
-          .post("http://localhost:3000/order", {
-            cartItems: cartItems,
-            shippingDetails: shippingDetails,
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              localStorage.removeItem("cartItems");
-              router.push("/thankyou");
-            }
-          })
-          .catch(
-            (err) => err && setError("There was some issue please try again")
-          )
-      : setError("Your cart is empty,please do some shopping");
+    axios
+      .post("http://localhost:3000/order", {
+        cartItems: cartItems,
+        shippingDetails: shippingDetails,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          localStorage.removeItem("cartItems");
+          error && setError(""); //remove error if present
+          router.push("/thankyou");
+        }
+      })
+      .catch((err) => err && setError("There was some issue please try again"));
+
   return (
     <Grid container item xs={12} md={9}>
       <Grid item xs={4}>
