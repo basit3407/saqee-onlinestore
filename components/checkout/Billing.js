@@ -33,6 +33,33 @@ export default function Billing(props) {
           </Grid>
         </>;
       })}
+      <Grid item xs={3}>
+        <Typography>Subtotal</Typography>
+      </Grid>
+      <Grid item xs={6}></Grid>
+      <Grid item xs={3}>
+        <Typography display="block">
+          {/* calculate the total amout of money and render */}
+          TOTAL:Rs.
+          {cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
+        </Typography>
+      </Grid>
+      <Grid item xs={3}>
+        <Typography>Shipping</Typography>
+      </Grid>
+      <Grid item xs={6}></Grid>
+      <Grid item xs={3}>
+        <Typography display="block">Rs: shipping Price</Typography>
+      </Grid>
+      <Grid item xs={3}>
+        <Typography>Total</Typography>
+      </Grid>
+      <Grid item xs={6}></Grid>
+      <Grid item xs={3}>
+        <Typography display="block" variant="h6">
+          Rs: Total Price
+        </Typography>
+      </Grid>
     </div>
   );
 }
@@ -42,8 +69,8 @@ Billing.propTypes = {
     PropTypes.shape({
       title: PropTypes.string,
       variations: PropTypes.objectOf(PropTypes.object),
-      qty: PropTypes.number,
-      price: PropTypes.number,
+      qty: PropTypes.string,
+      price: PropTypes.string,
     })
   ),
 };

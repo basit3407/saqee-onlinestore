@@ -118,17 +118,14 @@ export default function Checkout(props) {
     setIsDone(isDone);
     //Load shipping details from local storage if exists,else set to empty string
     const details = localStorage.getItem("shippingDetails"),
-      shippingDetails =
-        details == null
-          ? {
-              name: "",
-              number: "",
-              address: "",
-              address2: "",
-              city: "",
-              postalCode: "",
-            }
-          : JSON.parse(details);
+      shippingDetails = JSON.parse(details) || {
+        name: "",
+        number: "",
+        address: "",
+        address2: "",
+        city: "",
+        postalCode: "",
+      };
     setShippingDetails(shippingDetails);
     //isDone actions
     const editClick = !isDone.customer
@@ -179,7 +176,7 @@ export default function Checkout(props) {
               item
               xs={12}
             >
-              {cartItems.length && <Billing cartItems={cartItems} />}
+              {cartItems.length > 0 && <Billing cartItems={cartItems} />}
             </Grid>
           </Grid>
           <Customer

@@ -130,12 +130,10 @@ export default function Product(props) {
           <Grid item xs={12} md>
             <div>
               <Typography variant="h4">{product.title}</Typography>
-
               {/* if description is present render description */}
               {product.description && (
                 <Typography variant="body2">{product.description}</Typography>
               )}
-
               <Typography>{product.price}</Typography>
 
               {/* if out of stock show out of stock else show available */}
