@@ -27,7 +27,7 @@ export default function Customer(props) {
   useEffect(() => {
     //if email is already saved get it,;
     const savedEmail = localStorage.getItem("email"),
-      email = savedEmail ? savedEmail : "";
+      email = savedEmail || "";
     setEmail(email);
   }, []);
 

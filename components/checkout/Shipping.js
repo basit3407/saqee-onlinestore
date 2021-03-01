@@ -147,7 +147,7 @@ export default function Shipping(props) {
               onClick={(event) => {
                 //check validation
                 const { errors, isValid } = validate(shippingDetails);
-                if (!isValid) return setErrors(errors); //show validation errors
+                if (!isValid) return setErrors(errors);
                 //if no errors save to localStorage for future and submit
                 localStorage.setItem(
                   "shippingDetails",

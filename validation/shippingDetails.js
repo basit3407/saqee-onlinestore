@@ -4,13 +4,12 @@ export default function validate(data) {
   const errors = {};
 
   for (const property in data) {
-    // exclude optional properties from validation
-    errors[property] =
-      !(property === "address2") && !data[property]
-        ? `${property} is required` //empty fields validation
-        : property === "number" &&
-          !/^[0-9-+]{10,15}$/.test(data[property]) && //phone number validation
-          "please enter valid phone number";
+    //empty fields validation,exclude optional property
+    if (property !== "address2" && !data[property])
+      errors[property] = `${property} is required`;
+    //phone number validation
+    else if (property === "number" && !/^[0-9-+]{10,15}$/.test(data[property]))
+      errors[property] = "please enter valid phone number";
   }
 
   return {

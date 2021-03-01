@@ -2,18 +2,23 @@ export default function validate(data) {
   const errors = {};
 
   for (const property in data) {
-    //exclude optional properties from validation
-    errors[property] =
+    //empty fields validation,exclude optional properties
+    if (
       !(
         property === "description" ||
         property === "auxillaryImages" ||
         property === "brand" ||
         property === "variations"
-      ) && isEmpty(data[property])
-        ? `${property} field is required` //empty fields validation
-        : (property === "countInStock" || property === "price") &&
-          !/^d+$/.test(data[property]) &&
-          `please type the the ${property} in numbers`; //numbers
+      ) &&
+      !data[property]
+    )
+      errors[property] = `${property} field is required`;
+    //Numbers validation
+    else if (
+      property === "countInStock" ||
+      (property === "price" && !/^d+$/.test(data[property]))
+    )
+      errors[property] = `please type the the ${property} in numbers`;
   }
 
   return {
