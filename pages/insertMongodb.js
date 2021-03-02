@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default function insertMongodb() {
-  const products = [
+  const Fabrics = [
     {
       title: "3 Piece Lawn",
       price: "2999",
@@ -229,7 +229,187 @@ export default function insertMongodb() {
         "EMBROIDERY DETAILS\nFront Embroidered\nGala EmbroideredDaman Lace Embroidered\nSleeves Embroidered",
       auxillaryImages: ["61"],
     },
+    {
+      title: "Luxury Lawn",
+      price: "6200",
+      image: "75",
+      category: "other",
+      countInStock: "10",
+      auxillaryImages: ["69", "70", "71", "72", "73", "74"],
+    },
   ];
+  const other = [
+    {
+      title: "Soft Rubber Wiper",
+      price: "350",
+      image: "1",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Under The Table Drawer Trash Bin",
+      price: "950",
+      image: "28",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Oil Spray Bottle 100ml",
+      price: "750",
+      image: "27",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Dish Drainer",
+      price: "950",
+      image: "2",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Cabinet Towel Holder",
+      price: "350",
+      image: "4",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Toothpaste Squeezer",
+      price: "350",
+      image: "26",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Mini Chopper",
+      price: "950",
+      image: "5",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Oil & Vinegar Bottle",
+      price: "550",
+      image: "25",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Nicer Dicer Plus",
+      price: "1350",
+      image: "6",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Dish Washing Brush",
+      price: "299",
+      image: "24",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Roll N Go,Cosmetics Bag",
+      price: "599",
+      image: "7",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Knife Sharpener",
+      price: "950",
+      image: "8",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "16 Packet Organizaer Hanging Bag",
+      price: "399",
+      image: "9",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Sink Cleaning Tool Hair Blockage Remover",
+      price: "399",
+      image: "23",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Plastic Jharu WaterProof Broom",
+      price: "499",
+      image: "10",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Rechargeable Water Pump",
+      price: "1250",
+      image: "22",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Spin Mop 360",
+      price: "1999",
+      image: "11",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Hot Oil Proof Aluminium Adhesive Sheet(Gold)",
+      price: "950",
+      image: "20",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "4 pcs chair leg covers",
+      price: "550",
+      image: "19",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "3 Tong Set",
+      price: "599",
+      image: "13",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Silicon Rolling Dough Mat",
+      price: "850",
+      image: "14",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Sink UnPlug Strainer",
+      price: "499",
+      image: "15",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Mop Holder",
+      price: "499",
+      image: "18",
+      caegory: "other",
+      countInStock: "10",
+    },
+    {
+      title: "Measuring Spoon Set",
+      price: "550",
+      image: "16",
+      caegory: "other",
+      countInStock: "10",
+    },
+  ];
+
+  const products = [...Fabrics, other];
 
   return (
     <button
