@@ -198,6 +198,37 @@ export default function insertMongodb() {
       description:
         "FABRIC DETAILS\nShirt chiffon\nDuppatta chiffon\nTrouser Silk\n\n\n\nEMBROIDERY DETAILS\nFront Heavy Embroidered with handwork\nfront daman embroidered with handwork and cut work\nBack Embroidered\nSleeves Embroidered with Cutwork Lace\ndupatta heavy embroidered with Hanging Tassels\nTrouser Heavy Embroidered",
     },
+    {
+      title: "FINE QUALITY EMBROIDERY WORK AND FABRIC",
+      price: "4999",
+      image: "52",
+      category: "garments",
+      countInStock: "10",
+      description:
+        "FABRIC DETAILS\nShirt Chiffon\nDuppatta Chiffon \nPlazo net\nTrouser Malai\n\n\nEMBROIDERY DETAILS\nFront Full Heavy Embroidered With Gliter Sequins Work\nBack Embroidered\nSleeves Embroidered\nNeck Pcs Embroidered With Cutwork\nDupatta Embroidered With Four Side Embroidered Borders\nTrouser Plaza Embroidered",
+      auxillaryImages: ["50", "51"],
+    },
+    {
+      title: "Fine Quality Embroidery and Fabric ",
+      brand: "Eastern Fashion",
+      price: "5999",
+      image: "53",
+      category: "garments",
+      countInStock: "10",
+      description:
+        "FABRIC DETAILS\nShirt Chiffon\nDuppatta Net\nTrouser Malai\n\n\n\nEMBROIDERY DETAILS\nFront Heavy Embroidered With Punched Beats\nFront Daman Embroidered\nBack Embroidered With Daman\nTrouser Lace Embroidered\nSleeves Heavy Embroidered ( Alternate Head ) and Punched Beatd\nDupatta Heavy Embroidery With Hanging Tassels",
+      auxillaryImages: ["54", "55", "56", "57", "58", "59"],
+    },
+    {
+      title: "1 piece Embroidered Shirt ",
+      price: "2200",
+      image: "60",
+      category: "garments",
+      countInStock: "10",
+      description:
+        "EMBROIDERY DETAILS\nFront Embroidered\nGala EmbroideredDaman Lace Embroidered\nSleeves Embroidered",
+      auxillaryImages: ["61"],
+    },
   ];
 
   return (
