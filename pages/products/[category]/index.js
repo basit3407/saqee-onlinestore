@@ -1,14 +1,13 @@
 import { useRouter } from "next/router";
 import {
   Grid,
-  Container,
   Typography,
   makeStyles,
   Button,
   Link,
+  Paper,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
-import Image from "next/image";
 import FadeIn from "../../../components/FadeIn";
 import axios from "axios";
 import ErrorPage from "next/error";
@@ -41,13 +40,53 @@ const useStyles = makeStyles((theme) => ({
   },
   array: {
     textAlign: "center",
+    "& :hover": {
+      "& $img": {
+        transform: `scale3d(1.1,1.1,1)`,
+      },
+    },
+  },
+  product: {
+    marginBottom: "5%",
+  },
+  productPaper: {
+    margin: "5% 5% 7%",
+    [theme.breakpoints.only("sm")]: {
+      margin: "5% 5% 15%",
+    },
+    overflow: "hidden",
+  },
+  productCaption: {
+    padding: "0 3% 3%",
   },
   img: {
-    margin: "5% 0",
+    marginBottom: "3%",
+    width: "100%",
+    height: "50vh",
     cursor: "pointer",
+    transition: "transform 4000ms",
+    WebkitTransition: "transform 4000ms",
+    MozTransition: "transform 4000ms",
+    msTransition: "transform 4000ms",
   },
-  item: {
-    cursor: "",
+  productButton: {
+    borderRadius: 0,
+    marginTop: "5%",
+    [theme.breakpoints.only("sm")]: {
+      marginTop: "5%",
+    },
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
+    background:
+      "linear-gradient(to right, rgb(140, 208, 227) 50%, rgb(240, 140, 205) 100%) left",
+    backgroundSize: "200%",
+    transition: "all 0.2s",
+    WebkitTransition: "all 0.2s",
+    MozTransition: "all 0.2s",
+    msTransition: "all 0.2s",
+    "&:hover": {
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
+      backgroundPosition: "right",
+    },
   },
 }));
 
@@ -89,11 +128,9 @@ export default function Products(props) {
             </Grid>
           </FadeIn>
         </Grid>
-        <Container>
-          <Grid container>
-            <MapArray array={array} />
-          </Grid>
-        </Container>
+        <Grid container>
+          <MapArray array={array} />
+        </Grid>
       </section>
     </>
   );
@@ -124,42 +161,55 @@ Products.propTypes = {
 
 const MapArray = (props) => {
   const { array } = props,
-    router = useRouter(),
-    { category } = router.query,
     // eslint-disable-next-line no-unused-vars
     [isAdmin, setIsAdmin] = useState(false),
     classes = useStyles();
   return array.map((item, index) => {
     return (
       <FadeIn key={index} timeout={2000}>
-        <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={3}>
-          <Image
-            className={classes.img}
-            src={item.image}
-            alt=""
-            width={250}
-            height={250}
-            onClick={() => router.push(`/products/${category}/${item._id}`)}
-          />
-          <Link
-            display="block"
-            href={`/`}
-            underline="none"
-            color="textPrimary"
-            variant="body1"
-          >
-            {item.title}
-          </Link>
-          <Typography variant="body1">
-            {/* place thousand separator coma */}
-            Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </Typography>
-          {/* if admin show count in stock */}
-          {isAdmin && (
-            <Typography display="block" variant="caption">
-              count in stock:{item.countInStock}
-            </Typography>
-          )}
+        <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={4}>
+          <Paper className={classes.productPaper} elevation={3}>
+            <img className={classes.img} src={item.image} alt="" />
+            <div className={classes.productCaption}>
+              <Link
+                display="block"
+                href={`/products/${item.category}/${item._id}`}
+                underline="none"
+                color="textPrimary"
+                variant="body1"
+              >
+                {item.title}
+              </Link>
+              <Typography variant="body2">
+                {/* place thousand separator coma */}
+                Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Typography>
+              {/* if admin show count in stock */}
+              {isAdmin && (
+                <Typography display="block" variant="caption">
+                  count in stock:{item.countInStock}
+                </Typography>
+              )}
+              <div>
+                <Button
+                  classes={{
+                    root: classes.productButton,
+                  }}
+                  size="large"
+                  variant="contained"
+                  href={`/products/${item.category}/${item._id}`}
+                >
+                  <Typography
+                    color="textSecondary"
+                    variant="button"
+                    underline="none"
+                  >
+                    view product
+                  </Typography>
+                </Button>
+              </div>
+            </div>
+          </Paper>
         </Grid>
       </FadeIn>
     );

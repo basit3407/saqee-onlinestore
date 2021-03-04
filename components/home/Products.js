@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
+import { Grid, makeStyles, Typography, Button, Link } from "@material-ui/core";
 import Image from "next/image";
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -60,7 +60,6 @@ const MapImages = () => {
       { img: "handbags", caption: "Handbags" },
     ],
     classes = useStyles();
-
   return images.map((item, index) => {
     return (
       <Grid className={classes.gridItem} item xs={12} md key={index}>
@@ -76,7 +75,6 @@ const MapImages = () => {
             <Typography display="block" color="textSecondary" variant="h4">
               {item.caption}
             </Typography>
-
             <Button
               classes={{
                 root: classes.button,
@@ -84,9 +82,14 @@ const MapImages = () => {
               size="large"
               variant="contained"
             >
-              <Typography color="textSecondary" variant="button">
+              <Link
+                href={`/products/${item.caption}`}
+                color="textSecondary"
+                variant="button"
+                underline="none"
+              >
                 view products
-              </Typography>
+              </Link>
             </Button>
           </div>
         </div>

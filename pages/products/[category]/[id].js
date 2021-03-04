@@ -26,9 +26,49 @@ const useStyles = makeStyles((theme) => ({
   },
   quantitySelector: {
     border: "1px solid #dbdada",
+    display: "inline-block",
+    //for removing spin arrows from input
+    "& input": {
+      /* Firefox */
+      "&[type=number]": {
+        "-moz-appearance": "textfield",
+      },
+      /* Chrome, Safari, Edge, Opera */
+      "&::-webkit-outer-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+      "&::-webkit-inner-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+    },
   },
   icons: {
     cursor: "pointer",
+  },
+  productDesc: {
+    marginTop: "5%",
+  },
+  title: {
+    margin: "3% 0",
+  },
+  subHeading: { marginBottom: "1%" },
+  description: {
+    marginBottom: "5%",
+  },
+  status: {
+    marginBottom: "5%",
+  },
+  qty: {
+    marginBottom: "5%",
+  },
+  quantity: {
+    marginBottom: "1%",
+    paddingBottom: "1%",
+  },
+  input: {
+    width: theme.spacing(7),
   },
 }));
 
@@ -108,14 +148,14 @@ export default function Product(props) {
               {/* if auxillary images are present render them */}
               {product.auxillaryImages && (
                 <div className={classes.auxillaryImages}>
-                  {/*hide the small image if it is set as main image */}
+                  {/*hide main image from aux section if it is set as main image */}
                   <Box
                     display={
                       mainImage === product.image ? "none" : "inline-block"
                     }
                   >
                     <Image
-                      // onClick set this image to main image
+                      // onClick set this image to main image (in aux section)
                       onClick={() => setMainImage(product.image)}
                       src={product.image}
                       width={100}
@@ -131,14 +171,27 @@ export default function Product(props) {
               )}
             </Grid>
             <Grid item xs={12} md>
-              <div>
-                <Typography variant="h4">{product.title}</Typography>
-                {/* if brand and description are present render description */}
-                {product.brand && (
-                  <Typography variant="body2">{product.brand}</Typography>
-                )}
+              <div className={classes.productDesc}>
+                <div className={classes.title}>
+                  <Typography
+                    classes={{ root: classes.subHeading }}
+                    variant="h4"
+                  >
+                    {product.title}
+                  </Typography>
+                  {/* if brand and description are present render description */}
+                  {product.brand && (
+                    <Typography variant="body2">{product.brand}</Typography>
+                  )}
+                </div>
+
                 {product.description && (
-                  <Typography variant="body2">{product.description}</Typography>
+                  <Typography
+                    classes={{ root: classes.description }}
+                    variant="body2"
+                  >
+                    {product.description}
+                  </Typography>
                 )}
                 <Typography>
                   Rs{" "}
@@ -148,11 +201,12 @@ export default function Product(props) {
                 </Typography>
                 {/* if out of stock show out of stock else show available */}
                 <div
+                  className={classes.status}
                   style={{ color: product.countInStock > 0 ? "green" : "red" }}
                 >
                   <Typography color="inherit">
-                    status:{" "}
-                    {product.countInStock > 0 ? "available" : "out of stock"}
+                    Status:{" "}
+                    {product.countInStock > 0 ? "In Stock" : "Out of stock"}
                   </Typography>
                 </div>
                 {/* if in stock and variations are present show variations */}
@@ -168,8 +222,13 @@ export default function Product(props) {
                 {/* if in stock show quantity and add to cart button */}
                 {product.countInStock > 0 && (
                   <>
-                    <div>
-                      <Typography display="block">Qty: </Typography>
+                    <div className={classes.qty}>
+                      <Typography
+                        classes={{ root: classes.quantity }}
+                        display="block"
+                      >
+                        Quantity:{" "}
+                      </Typography>
                       <QuantitySelector
                         value={orderDetails.qty}
                         handleChange={handleChange}
@@ -296,7 +355,13 @@ export const QuantitySelector = (props) => {
       >
         <RemoveIcon />
       </span>
-      <input name="qty" onChange={handleChange} type="number" value={value} />
+      <input
+        className={classes.input}
+        name="qty"
+        onChange={handleChange}
+        type="number"
+        value={value}
+      />
       <span
         className={classes.icons}
         name="add"

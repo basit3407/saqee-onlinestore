@@ -25,6 +25,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
+import Image from "next/image";
 import { SearchPopover, ShoppingMenu } from "./extended";
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
   bigMenu: {
     textAlign: "center",
   },
-  logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
     cursor: "pointer",
@@ -244,7 +244,12 @@ export default function NavBar(props) {
                 </Hidden>
               </Grid>
               <Grid className={classes.bigMenu} item xs={8}>
-                <img className={classes.logo} src="images/logo.png" alt="" />
+                <Image
+                  width={matches ? 125 : 150}
+                  height={matches ? 75 : 100}
+                  src="/images/logo.png"
+                  alt=""
+                />
               </Grid>
               <Grid style={{ textAlign: "right" }} item xs>
                 <Link href="/cart" underline="none">
