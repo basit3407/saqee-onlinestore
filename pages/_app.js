@@ -44,7 +44,7 @@ export default function MyApp(props) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <NavBar />
+        <NavBar {...passedProps} />
         <Component {...passedProps} />
         <Footer />
       </ThemeProvider>

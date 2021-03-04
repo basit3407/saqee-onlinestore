@@ -81,7 +81,8 @@ Payment.propTypes = {
     address: PropTypes.string.isRequired,
     address2: PropTypes.string,
     city: PropTypes.string.isRequired,
-    postalCode: PropTypes.string.isRequired,
+    postalCode: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
   }),
   matches: PropTypes.bool.isRequired,
   editClicked: PropTypes.bool.isRequired,

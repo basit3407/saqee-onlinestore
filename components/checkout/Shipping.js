@@ -131,6 +131,7 @@ export default function Shipping(props) {
               name="postalCode"
               placeholder="Postal Code"
               value={postalCode}
+              type="number"
             />
             {errors.postalCode && (
               <span className={classes.error}>{errors.postalCode}</span>

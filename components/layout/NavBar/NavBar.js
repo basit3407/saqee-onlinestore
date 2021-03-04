@@ -111,14 +111,14 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     "&.MuiAvatar-colorDefault": {
-      backgroundColor: theme.palette.secondary.dark,
+      backgroundColor: theme.palette.secondary.main,
     },
-    width: theme.spacing(3),
-    height: theme.spacing(3),
+    width: theme.spacing(2),
+    height: theme.spacing(2),
 
     [theme.breakpoints.down("sm")]: {
-      width: theme.spacing(2),
-      height: theme.spacing(2),
+      width: theme.spacing(1),
+      height: theme.spacing(1),
     },
     margin: "1% 0",
     fontSize: "1rem",
@@ -247,14 +247,14 @@ export default function NavBar(props) {
                 <img className={classes.logo} src="images/logo.png" alt="" />
               </Grid>
               <Grid style={{ textAlign: "right" }} item xs>
-                <Link href="#" underline="none">
+                <Link href="/cart" underline="none">
                   <div className={classes.sideGridItem}>
                     <Sides
                       matches={matches}
                       icon={ShoppingCartIcon}
                       text="cart"
                     />
-                    {cartItems && cartItems.length > 0 && (
+                    {cartItems.length > 0 && (
                       <Avatar classes={{ root: classes.avatar }}>
                         {cartItems.reduce((a, c) => a + c.qty, 0)}
                       </Avatar>
