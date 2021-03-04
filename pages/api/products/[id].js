@@ -9,16 +9,15 @@ export default async function productHandler(req, res) {
     } = req,
     { db } = await connectToDatabase(),
     searchQuery = { category: category, _id: ObjectID(id) };
-  //check if id is valid objectId
-  if (!/^[0-9a-fA-F]{24}$/.test(id))
-    return res.status(404).json({ error: "product donot exist" });
 
   switch (method) {
     case "GET":
-      // @route GET api/products/[category]/[id]
+      // @route GET api/products/[id]?category=[category]
       // @desc get product of [id] from products of [category] from data base
       // @access public
       {
+        if (!ObjectID.isValid(id))
+          return res.status(404).json({ error: "invalid id" });
         try {
           const product = await db.collection("products").findOne(searchQuery);
           // if no product give error
@@ -36,7 +35,7 @@ export default async function productHandler(req, res) {
       break;
 
     case "PUT":
-      // @route PUT api/products/[category]/[id]
+      // @route PUT api/products/[id]?category=[category]
       // @desc edit product of [id] in products of [category] in data base
       // @access Admin
       {
@@ -60,7 +59,7 @@ export default async function productHandler(req, res) {
       break;
 
     case "DELETE":
-      // @route DELETE api/products/[category]/[id]
+      // @route DELETE api/products/[id]?category=[category]
       // @desc delete product of [id] in products of [category] in data base
       // @access Admin
       try {

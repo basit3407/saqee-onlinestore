@@ -1,17 +1,18 @@
 import { isEmpty } from "./product";
-
 export default function validate(data) {
-  const errors = {};
-
+  let errors;
   for (const property in data) {
-    //empty fields validation,exclude optional property
-    if (property !== "address2" && !data[property])
-      errors[property] = `${property} is required`;
-    //phone number validation
-    else if (property === "number" && !/^[0-9-+]{10,15}$/.test(data[property]))
-      errors[property] = "please enter valid phone number";
+    errors =
+      property !== "address2" && !data[property] //empty fileds validation,excluding optional property
+        ? { ...errors, [property]: `${property} is required` }
+        : {
+            ...errors,
+            ...(property === "number" && //phone number validation
+              !/^[0-9-+]{10,15}$/.test(data[property]) && {
+                [property]: "Please enter valid phone number",
+              }),
+          };
   }
-
   return {
     errors,
     isValid: isEmpty(errors),

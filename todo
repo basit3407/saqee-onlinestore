@@ -11,6 +11,19 @@ see else from tasks
 1.styling
 2.uploading
 
+immediate:
+number types price and qty
+remove image from local storage at checkooout
+test remaining website
+set the house in order
+
+full immediate:
+add error on 0 items in cart and click to checkout
+reload data to database with number dataTypes
+change propTypes from numbers to string 
+add 1000 separators
+remove validation of numbers
+
 
 
 (1 day)

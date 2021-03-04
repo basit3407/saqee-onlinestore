@@ -13,6 +13,7 @@ import FadeIn from "../../../components/FadeIn";
 import axios from "axios";
 import ErrorPage from "next/error";
 import { useState } from "react";
+import Top from "../../../components/layout/Top";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -54,56 +55,47 @@ export default function Products(props) {
   const { error, array } = props,
     classes = useStyles(),
     router = useRouter(),
-    { category } = router.query,
-    //convert 1st letter of query to upperCase and remaining to lowercase for heading.
-    Category =
-      category.charAt[0].toUpperCase() + category.slice(1).toLowerCase();
+    { category } = router.query;
 
   if (error) {
     return <ErrorPage statusCode={error} />;
   }
   return (
-    <section className={classes.section}>
-      <Grid container>
-        <FadeIn timeout={1000}>
-          <Grid item xs={12}>
-            <Container>
-              <Typography
-                classes={{ root: classes.heading }}
-                align="center"
-                variant="h3"
-              >
-                {Category}
-              </Typography>
-            </Container>
-            <div className={classes.toolbar}>
-              <Grid container>
-                <Grid xs={false} sm={10} item></Grid>
-                <Grid classes={{ root: classes.gridButton }} item xs={6} sm>
-                  <Button classes={{ root: classes.button }}>
-                    <Typography align="center" variant="button">
-                      sort
-                    </Typography>
-                  </Button>
-                </Grid>
-                <Grid item classes={{ root: classes.gridButton }} xs={6} sm>
-                  <Button classes={{ root: classes.button }}>
-                    <Typography align="center" variant="button">
-                      filter
-                    </Typography>
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
-          </Grid>
-        </FadeIn>
-      </Grid>
-      <Container>
+    <>
+      <Top heading={category} />
+      <section className={classes.section}>
         <Grid container>
-          <MapArray array={array} />
+          <FadeIn timeout={1000}>
+            <Grid item xs={12}>
+              <div className={classes.toolbar}>
+                <Grid container>
+                  <Grid xs={false} sm={10} item></Grid>
+                  <Grid classes={{ root: classes.gridButton }} item xs={6} sm>
+                    <Button classes={{ root: classes.button }}>
+                      <Typography align="center" variant="button">
+                        sort
+                      </Typography>
+                    </Button>
+                  </Grid>
+                  <Grid item classes={{ root: classes.gridButton }} xs={6} sm>
+                    <Button classes={{ root: classes.button }}>
+                      <Typography align="center" variant="button">
+                        filter
+                      </Typography>
+                    </Button>
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+          </FadeIn>
         </Grid>
-      </Container>
-    </section>
+        <Container>
+          <Grid container>
+            <MapArray array={array} />
+          </Grid>
+        </Container>
+      </section>
+    </>
   );
 }
 
@@ -113,10 +105,10 @@ Products.propTypes = {
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       title: PropTypes.string,
-      price: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
       image: PropTypes.string.isRequired,
       category: PropTypes.string.isRequired,
-      countInStock: PropTypes.string.isRequired,
+      countInStock: PropTypes.number.isRequired,
       description: PropTypes.string,
       brand: PropTypes.string,
       auxillaryImages: PropTypes.arrayOf(PropTypes.string),
@@ -132,11 +124,11 @@ Products.propTypes = {
 
 const MapArray = (props) => {
   const { array } = props,
+    router = useRouter(),
+    { category } = router.query,
     // eslint-disable-next-line no-unused-vars
     [isAdmin, setIsAdmin] = useState(false),
-    classes = useStyles(),
-    router = useRouter();
-
+    classes = useStyles();
   return array.map((item, index) => {
     return (
       <FadeIn key={index} timeout={2000}>
@@ -147,7 +139,7 @@ const MapArray = (props) => {
             alt=""
             width={250}
             height={250}
-            onClick={() => router.push("/")}
+            onClick={() => router.push(`/products/${category}/${item._id}`)}
           />
           <Link
             display="block"
@@ -160,7 +152,7 @@ const MapArray = (props) => {
           </Link>
           <Typography variant="body1">
             {/* place thousand separator coma */}
-            Rs.{item.price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </Typography>
           {/* if admin show count in stock */}
           {isAdmin && (
@@ -174,11 +166,33 @@ const MapArray = (props) => {
   });
 };
 
+MapArray.propTypes = {
+  array: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      countInStock: PropTypes.number.isRequired,
+      description: PropTypes.string,
+      brand: PropTypes.string,
+      auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+      variations: PropTypes.arrayOf(
+        PropTypes.shape({
+          variationTitle: PropTypes.string,
+          variations: PropTypes.arrayOf(PropTypes.string),
+        })
+      ),
+    })
+  ).isRequired,
+};
+
 export async function getServerSideProps(context) {
   const { category } = context.params;
   try {
     const { data } = await axios.get(
-      `http://localhost:3000/api/products/${category}`
+      `http://localhost:3000/api/products/?category=${category}`
     );
     return {
       props: {

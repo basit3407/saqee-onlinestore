@@ -6,19 +6,20 @@ export default async function productsHandler(req, res) {
       query: { category, keyword, sort },
       method,
     } = req,
-    //convert the first letter of query to uppercase and remaining to lowercase.
-    Category =
-      category.charAt[0].toUpperCase() + category.slice(1).toLowerCase(),
     { db } = await connectToDatabase();
 
   switch (method) {
     case "GET":
-      // @route GET api/products/[name]
-      // @desc get products of [name] from data base
+      // @route GET api/products?category=[category]
+      // @desc get all the products from data base,
       // @access public
       {
         //Find by category
-        const category = Category ? { category: Category } : {},
+        const Category = category
+            ? {
+                category: category.slice(0).toLowerCase(),
+              }
+            : {},
           //if search keyword present,find by search keywrod using regex for smart search
           searchKeyword = keyword
             ? {
@@ -34,7 +35,7 @@ export default async function productsHandler(req, res) {
         try {
           const products = await db
             .collection("products")
-            .find({ ...category, ...searchKeyword })
+            .find({ ...Category, ...searchKeyword })
             .sort(sortWord)
             .toArray();
           //give error if no products
@@ -52,7 +53,7 @@ export default async function productsHandler(req, res) {
 
       break;
     case "POST":
-      // @route POST api/products/[name]
+      // @route POST api/products
       // @desc create product in products of [name] in data base
       // @access public
       {

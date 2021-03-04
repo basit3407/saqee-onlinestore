@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     margin: "5% 0",
     padding: "3% 0",
   },
+  heading: {
+    textTransform: "capitalize",
+  },
 }));
 
 export default function Top(props) {
@@ -32,7 +35,10 @@ export default function Top(props) {
                 justifyContent="center"
                 classes={{ root: classes.headingBox }}
               >
-                <Typography variant={matches ? "h6" : "h4"}>
+                <Typography
+                  classes={{ root: classes.heading }}
+                  variant={matches ? "h6" : "h4"}
+                >
                   {heading}
                 </Typography>
               </Box>

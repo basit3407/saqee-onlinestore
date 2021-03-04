@@ -1,11 +1,10 @@
 import PropTypes from "prop-types";
 import Image from "next/image";
 import { Typography, Grid, Avatar } from "@material-ui/core";
-import useStyles from "../../pages/checkout";
-
+import { useStyles } from "../../pages/checkout";
 export default function Billing(props) {
-  const { cartItems, city } = props,
-    classes = useStyles();
+  const classes = useStyles(),
+    { cartItems, city } = props;
 
   return (
     <div className={classes.billing}>
@@ -72,8 +71,8 @@ Billing.propTypes = {
     PropTypes.shape({
       title: PropTypes.string,
       variations: PropTypes.objectOf(PropTypes.object),
-      qty: PropTypes.string,
-      price: PropTypes.string,
+      qty: PropTypes.number,
+      price: PropTypes.number,
     })
   ),
   city: PropTypes.string,

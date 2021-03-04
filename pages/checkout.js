@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import Top from "../components/checkout/Top";
+import Top from "../components/layout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";
@@ -78,8 +78,8 @@ export const useStyles = makeStyles((theme) => ({
 export default function Checkout(props) {
   const theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
-    { cartItems } = props,
-    router = useRouter();
+    router = useRouter(),
+    { cartItems } = props;
 
   //For checking the state of edit button for opening dropdowns
   const [editClicked, setEditClicked] = useState({
@@ -104,10 +104,13 @@ export default function Checkout(props) {
     postalCode: "",
   });
 
+  //if cart is empty redirect to carts page
+  useEffect(() => {
+    !cartItems.length && router.push("/cart");
+  }, [cartItems, router]);
+
   //on Page Load do the following:
   useEffect(() => {
-    //if cart is empty redirect to carts page
-    !cartItems.length && router.push("/cart");
     //Load customer and shipping sections isDone state from local storage if exists,else set to false
     const customer = localStorage.getItem("customer"),
       shipping = localStorage.getItem("shipping"),
@@ -166,53 +169,55 @@ export default function Checkout(props) {
   return (
     <>
       <Top matches={matches} heading="checkout" />
-      <section>
-        <Container>
-          <Grid container>
+      {!cartItems.length ? (
+        <h1>Empty Cart</h1>
+      ) : (
+        <section>
+          <Container>
+            <Grid container>
+              <Grid
+                component={Box}
+                display={{ xs: "block", md: "none" }}
+                container
+                item
+                xs={12}
+              >
+                <Billing cartItems={cartItems} city={shippingDetails.city} />
+              </Grid>
+            </Grid>
+            <Customer
+              editClicked={editClicked.customer}
+              isDone={isDone.customer}
+              handleClick={handleClick}
+              handleSubmit={handleSubmit}
+              matches={matches}
+            />
+            <Shipping
+              editClicked={editClicked.shipping}
+              isDone={isDone.shipping}
+              handleClick={handleClick}
+              handleSubmit={handleSubmit}
+              matches={matches}
+              shippingDetails={shippingDetails}
+              handleChange={handleChange}
+            />
+            <Payment
+              matches={matches}
+              shippingDetails={shippingDetails}
+              cartItems={cartItems}
+              editClicked={editClicked.payment}
+            />
             <Grid
               component={Box}
-              display={{ xs: "block", md: "none" }}
+              display={{ xs: "none", md: "block" }}
               container
               item
               xs={12}
-            >
-              {cartItems.length > 0 && (
-                <Billing cartItems={cartItems} city={cartItems.city} />
-              )}
-            </Grid>
-          </Grid>
-          <Customer
-            editClicked={editClicked.customer}
-            isDone={isDone.customer}
-            handleClick={handleClick}
-            handleSubmit={handleSubmit}
-            matches={matches}
-          />
-          <Shipping
-            editClicked={editClicked.shipping}
-            isDone={isDone.shipping}
-            handleClick={handleClick}
-            handleSubmit={handleSubmit}
-            matches={matches}
-            shippingDetails={shippingDetails}
-            handleChange={handleChange}
-          />
-          <Payment
-            matches={matches}
-            shippingDetails={shippingDetails}
-            cartItems={cartItems}
-            editClicked={editClicked.payment}
-          />
-          <Grid
-            component={Box}
-            display={{ xs: "none", md: "block" }}
-            container
-            item
-            xs={12}
-            md={3}
-          ></Grid>
-        </Container>
-      </section>
+              md={3}
+            ></Grid>
+          </Container>
+        </section>
+      )}
     </>
   );
 }
