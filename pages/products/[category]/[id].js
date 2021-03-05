@@ -1,10 +1,10 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import {
   Box,
   Button,
   Container,
   Grid,
   makeStyles,
+  TextField,
   Typography,
 } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -19,7 +19,6 @@ import isEqual from "lodash.isequal";
 import Cookies from "js-cookie";
 import Top from "../../../components/layout/Top";
 
-// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   auxillaryImages: {
     textAlign: "center",
@@ -45,10 +44,22 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   icons: {
+    background: "none",
+    border: "none",
     cursor: "pointer",
+    padding: 0,
+    "&:focus": {
+      outline: "none",
+    },
+  },
+  icon: {
+    marginTop: theme.spacing(1),
   },
   productDesc: {
-    marginTop: "5%",
+    margin: "5% 0",
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
   },
   title: {
     margin: "3% 0",
@@ -63,12 +74,36 @@ const useStyles = makeStyles((theme) => ({
   qty: {
     marginBottom: "5%",
   },
-  quantity: {
-    marginBottom: "1%",
-    paddingBottom: "1%",
-  },
   input: {
+    textAlign: "center",
     width: theme.spacing(7),
+  },
+  addToCartBtn: {
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    borderRadius: 0,
+    background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+    transition: "all 0.2s ease",
+    WebkitTransition: "all 0.2s ease",
+    msTransition: "all 0.2s ease",
+    MozTransition: "all 0.2s ease",
+    backgroundSize: "200%",
+
+    "&.MuiButton-textSizeLarge": {
+      padding: theme.spacing(1, 7),
+    },
+
+    "&:hover": {
+      backgroundPosition: "left",
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    },
+  },
+  images: {
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
+  },
+  auxImage: {
+    margin: theme.spacing(1),
   },
 }));
 
@@ -102,7 +137,7 @@ export default function Product(props) {
     const name = event.currentTarget.getAttribute("name");
     const order =
       name === "add"
-        ? { ...orderDetails, qty: parseInt(orderDetails.qty) + 1 }
+        ? { ...orderDetails, qty: parseInt(orderDetails.qty) + 1 || 1 } //convert to integer if exist,if empty return 1
         : {
             ...orderDetails,
             qty: orderDetails.qty > 1 ? orderDetails.qty - 1 : 1,
@@ -142,33 +177,33 @@ export default function Product(props) {
         <Container>
           <Grid container>
             <Grid item xs={12} md={6}>
-              <div>
+              <div className={classes.images}>
                 <Image src={mainImage} width={500} height={500} />
-              </div>
-              {/* if auxillary images are present render them */}
-              {product.auxillaryImages && (
-                <div className={classes.auxillaryImages}>
-                  {/*hide main image from aux section if it is set as main image */}
-                  <Box
-                    display={
-                      mainImage === product.image ? "none" : "inline-block"
-                    }
-                  >
-                    <Image
-                      // onClick set this image to main image (in aux section)
-                      onClick={() => setMainImage(product.image)}
-                      src={product.image}
-                      width={100}
-                      height={100}
+                {/* if auxillary images are present render them */}
+                {product.auxillaryImages && (
+                  <div className={classes.auxillaryImages}>
+                    {/*hide main image from aux section if it is set as main image */}
+                    <Box
+                      display={
+                        mainImage === product.image ? "none" : "inline-block"
+                      }
+                    >
+                      <Image
+                        // onClick set this image to main image (in aux section)
+                        onClick={() => setMainImage(product.image)}
+                        src={product.image}
+                        width={50}
+                        height={50}
+                      />
+                    </Box>
+                    <MapAuxillaryImages
+                      mainImage={mainImage}
+                      setMainImage={setMainImage}
+                      images={product.auxillaryImages}
                     />
-                  </Box>
-                  <MapAuxillaryImages
-                    mainImage={mainImage}
-                    setMainImage={setMainImage}
-                    images={product.auxillaryImages}
-                  />
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </Grid>
             <Grid item xs={12} md>
               <div className={classes.productDesc}>
@@ -184,7 +219,6 @@ export default function Product(props) {
                     <Typography variant="body2">{product.brand}</Typography>
                   )}
                 </div>
-
                 {product.description && (
                   <Typography
                     classes={{ root: classes.description }}
@@ -236,7 +270,13 @@ export default function Product(props) {
                       />
                     </div>
                     <div>
-                      <Button onClick={handleAddToCart}>Add to cart</Button>
+                      <Button
+                        classes={{ root: classes.addToCartBtn }}
+                        onClick={handleAddToCart}
+                        size="large"
+                      >
+                        Add to cart
+                      </Button>
                     </div>
                   </>
                 )}
@@ -281,17 +321,23 @@ Product.propTypes = {
 
 // this function is for mapping auxillary images
 const MapAuxillaryImages = (props) => {
-  const { images, mainImage, setMainImage } = props;
+  const { images, mainImage, setMainImage } = props,
+    classes = useStyles();
+
   return images.map((item, index) => {
     return (
       //hide the auxillary image if it is set as main image
-      <Box key={index} display={item === mainImage ? "none" : "inline-block"}>
+      <Box
+        key={index}
+        className={classes.auxImage}
+        display={item === mainImage ? "none" : "inline-block"}
+      >
         <Image
           //onClick set this image to main image
           onClick={() => setMainImage(item)}
           src={item}
-          height={100}
-          width={100}
+          height={50}
+          width={50}
         />
       </Box>
     );
@@ -307,7 +353,6 @@ MapAuxillaryImages.propTypes = {
 // This function is for mapping variations of product
 const MapVariations = (props) => {
   const { variations, handleChange, orderDetails } = props;
-
   return variations.map((item) => {
     return (
       <>
@@ -346,31 +391,20 @@ export const QuantitySelector = (props) => {
     { handleChange, value, handleClick } = props;
   return (
     <div className={classes.quantitySelector}>
-      <span
-        className={classes.icons}
-        name="remove"
-        role="button"
-        tabIndex={0}
-        onClick={handleClick}
-      >
-        <RemoveIcon />
-      </span>
-      <input
-        className={classes.input}
+      <button className={classes.icons} name="remove" onClick={handleClick}>
+        <RemoveIcon fontSize="small" classes={{ root: classes.icon }} />
+      </button>
+      <TextField
         name="qty"
         onChange={handleChange}
         type="number"
         value={value}
+        InputProps={{ disableUnderline: true }}
+        inputProps={{ className: classes.input }}
       />
-      <span
-        className={classes.icons}
-        name="add"
-        role="button"
-        tabIndex={0}
-        onClick={handleClick}
-      >
-        <AddIcon />
-      </span>
+      <button className={classes.icons} name="add" onClick={handleClick}>
+        <AddIcon fontSize="small" classes={{ root: classes.icon }} />
+      </button>
     </div>
   );
 };
