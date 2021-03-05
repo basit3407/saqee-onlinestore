@@ -1,6 +1,3 @@
-// /* eslint-disable jsx-a11y/no-static-element-interactions */
-// /* eslint-disable jsx-a11y/click-events-have-key-events */
-
 import { useState, Fragment, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
@@ -51,13 +48,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   sideGridItem: {
-    display: "inline-block",
+    // display: "inline-block",
+    cursor: "pointer",
     "&:hover": {
       "& $item": {
         color: theme.palette.secondary.main,
       },
-      cursor: "pointer",
     },
+    border: "none",
+    background: "none",
     marginTop: theme.spacing(1),
     position: "relative",
   },
@@ -192,16 +191,13 @@ export default function NavBar(props) {
             <Grid className={classes.root} spacing={1} container>
               <Grid item xs>
                 <Hidden implementation="css" smDown>
-                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-                  <div
+                  <button
                     id="search"
                     onClick={handleMenu}
                     className={classes.sideGridItem}
-                    role="button"
-                    tabIndex={0}
                   >
                     <Sides matches={matches} icon={SearchIcon} text="search" />
-                  </div>
+                  </button>
                 </Hidden>
                 <Hidden implementation="css" mdUp>
                   <IconButton
@@ -253,7 +249,7 @@ export default function NavBar(props) {
               </Grid>
               <Grid style={{ textAlign: "right" }} item xs>
                 <Link href="/cart" underline="none">
-                  <div className={classes.sideGridItem}>
+                  <button className={classes.sideGridItem}>
                     <Sides
                       matches={matches}
                       icon={ShoppingCartIcon}
@@ -264,7 +260,7 @@ export default function NavBar(props) {
                         {cartItems.reduce((a, c) => a + c.qty, 0)}
                       </Avatar>
                     )}
-                  </div>
+                  </button>
                 </Link>
               </Grid>
               <Grid
@@ -310,7 +306,7 @@ NavBar.propTypes = {
     PropTypes.shape({
       title: PropTypes.string,
       variations: PropTypes.objectOf(PropTypes.object),
-      qty: PropTypes.number,
+      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       price: PropTypes.number,
     })
   ),
@@ -321,7 +317,6 @@ const Sides = (props) => {
   const classes = useStyles(),
     Icon = props.icon,
     { text, matches } = props;
-
   return (
     <>
       <Icon
@@ -341,7 +336,6 @@ const Sides = (props) => {
     </>
   );
 };
-
 Sides.propTypes = {
   icon: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
@@ -353,7 +347,6 @@ export const MapMenu = (props) => {
   const Element = props.element,
     { textColor, setAnchorShopping, divRef, menuItems } = props,
     classes = useStyles();
-
   return menuItems.map((item, index) => {
     return (
       <Element key={index}>
@@ -392,12 +385,10 @@ MapMenu.propTypes = {
 export const SearchBar = (props) => {
   const classes = useStyles(),
     { handleClose, id } = props;
-
   //Focus the input when loaded
   useEffect(() => {
     document.getElementById(id).focus();
   });
-
   return (
     <div className={classes.search}>
       <InputBase

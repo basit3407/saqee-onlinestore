@@ -3,24 +3,40 @@ import {
   Grid,
   Typography,
   makeStyles,
-  Box,
   TextField,
   Button,
 } from "@material-ui/core";
 import Image from "next/image";
 import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
-import { QuantitySelector } from "./products/[category]/[id]";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { QuantitySelector } from "./products/[category]/[id]";
 import { isEmpty } from "../validation/product";
 import Top from "../components/layout/Top";
 
-// eslint-disable-next-line no-unused-vars
 const useSTyles = makeStyles((theme) => ({
   heading: {},
-  remove: {},
+  remove: {
+    textTransform: "none",
+    fontSize: "0.75rem",
+    // "&:after": {
+    //   transition: theme.transitions.create(["transform"], {
+    //     duration: theme.transitions.duration.standard,
+    //   }),
+    //   transform: "scaleX(0)",
+    //   borderBottom: "1px solid #dbdada",
+    //   transformOrigin: "0% 50%",
+    // },
+    "&:hover": {
+      background: "none",
+      // "&:after": {
+      //   transform: "scaleX(1)",
+      // },
+    },
+  },
+
   error: { color: theme.palette.error.main },
   textField: {
     "& .MuiOutlinedInput-root": {
@@ -34,6 +50,69 @@ const useSTyles = makeStyles((theme) => ({
       border: "1px solid #dbdada",
     },
   },
+  titleGrid: {
+    marginBottom: theme.spacing(7),
+    paddingBottom: theme.spacing(1),
+    borderBottom: "1px solid #dbdada",
+  },
+
+  description: {
+    paddingLeft: theme.spacing(3),
+  },
+  qty: {
+    textAlign: "center",
+  },
+  gridCartItems: {
+    marginBottom: theme.spacing(3),
+  },
+  bottomGrid: {
+    borderTop: "1px solid #dbdada",
+    paddingTop: theme.spacing(7),
+    marginBottom: theme.spacing(7),
+  },
+  finalBill: {
+    textAlign: "right",
+  },
+  checkoutDiv: {
+    margin: theme.spacing(3, 0),
+  },
+  checkoutButton: {
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    borderRadius: 0,
+    background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+    transition: "all 0.2s ease",
+    WebkitTransition: "all 0.2s ease",
+    msTransition: "all 0.2s ease",
+    MozTransition: "all 0.2s ease",
+    backgroundSize: "200%",
+
+    "&.MuiButton-textSizeLarge": {
+      padding: theme.spacing(1, 7),
+    },
+    "&:hover": {
+      backgroundPosition: "left",
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    },
+  },
+
+  continueButton: {
+    borderRadius: 0,
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
+    background:
+      "linear-gradient(to right, rgb(140, 208, 227) 50%, rgb(240, 140, 205) 100%) left",
+    backgroundSize: "200%",
+    transition: "all 0.2s",
+    WebkitTransition: "all 0.2s",
+    MozTransition: "all 0.2s",
+    msTransition: "all 0.2s",
+    "&:hover": {
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
+      backgroundPosition: "right",
+    },
+    "&.MuiButton-textSizeLarge": {
+      padding: theme.spacing(1, 7),
+    },
+  },
 }));
 
 export default function Cart(props) {
@@ -43,7 +122,7 @@ export default function Cart(props) {
   const [errors, setErrors] = useState({});
 
   const handleCheckoutRequest = () => {
-    //check for 0 qty of items and give error if any
+    //check for 0 qty of items, give error if any
     let error;
     cartItems.forEach(
       (cartItem) =>
@@ -66,28 +145,31 @@ export default function Cart(props) {
           <Container>
             <Grid
               container
-              component={Box}
-              display={{ xs: "hidden", sm: "block" }}
+              display={{ xs: "none", sm: "block" }}
+              classes={{ root: classes.titleGrid }}
             >
-              <Grid item xs={4}>
+              <Grid classes={{ root: classes.titleGridItem }} item xs={1}>
                 <Typography>Product</Typography>
               </Grid>
-              <Grid item xs={4}></Grid>
-              <Grid item xs={2}>
-                <Typography>Quantity</Typography>
+              <Grid
+                classes={{ root: classes.titleGridItem }}
+                item
+                xs={5}
+              ></Grid>
+              <Grid classes={{ root: classes.titleGridItem }} item xs={4}>
+                <Typography align="center">Quantity</Typography>
               </Grid>
-              <Grid item xs={2}>
-                <Typography>Total</Typography>
+              <Grid classes={{ root: classes.titleGridItem }} item xs={2}>
+                <Typography align="right">Total</Typography>
               </Grid>
             </Grid>
-            <Grid container>
-              <MapCartItems
-                errors={errors}
-                cartItems={cartItems}
-                setCartItems={setCartItems}
-              />
-            </Grid>
-            <Grid container>
+
+            <MapCartItems
+              errors={errors}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+            />
+            <Grid container classes={{ root: classes.bottomGrid }}>
               <Grid item xs={12} sm={4}>
                 <Typography display="block">Add Order Note</Typography>
                 <TextField
@@ -97,12 +179,12 @@ export default function Cart(props) {
                   multiline
                   size="small"
                   classes={{ root: classes.textField }}
-                  rows="10"
+                  rows="7"
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm>
-                <div>
+                <div className={classes.finalBill}>
                   <Typography display="block">
                     {/* calculate the total amout of money and render */}
                     TOTAL:Rs{" "}
@@ -114,12 +196,22 @@ export default function Cart(props) {
                   <Typography display="block" variant="body2">
                     shipping calculated at checkout
                   </Typography>
-                  <div>
-                    <Button onClick={handleCheckoutRequest}>Checkout</Button>
+                  <div className={classes.checkoutDiv}>
+                    <Button
+                      classes={{ root: classes.checkoutButton }}
+                      onClick={handleCheckoutRequest}
+                      size="large"
+                    >
+                      Checkout
+                    </Button>
                   </div>
-                  <div>
-                    <Button>Continue Shopping</Button>
-                  </div>
+                  <Button
+                    size="large"
+                    href="/"
+                    classes={{ root: classes.continueButton }}
+                  >
+                    Continue Shopping
+                  </Button>
                 </div>
               </Grid>
             </Grid>
@@ -183,7 +275,6 @@ const MapCartItems = (props) => {
     const updatedCartItems = cartItems.map((cartItem) =>
       isEqual(cartItem, item) ? { ...cartItem, qty: qty } : cartItem
     );
-
     setCartItems(updatedCartItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   };
@@ -199,59 +290,67 @@ const MapCartItems = (props) => {
 
   return cartItems.map((item, index) => {
     return (
-      <div key={index}>
-        <Grid item key={index} xs={4}>
+      <Grid container classes={{ root: classes.gridCartItems }} key={index}>
+        <Grid key={index} item xs={1}>
           <Image
             src={Cookies.get(`${item.title}Image`)}
             width={100}
             height={100}
           />
         </Grid>
-        <Grid item xs={4}>
-          <Typography display="block" variant="h4">
-            {item.title}
-          </Typography>
-          {/* if variations exist map variations */}
-          {!isEmpty(item.variations) &&
-            Object.keys(item.variations).map((property, index) => {
-              return (
-                <Typography display="block" key={index} variant="body2">
-                  {property}:{item.variations[property]}
-                </Typography>
-              );
-            })}
-          <Typography display="block" variant="body2">
-            Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <div>
-            {/* Call the Quantity selector component from products page and pass it functions of handleChange and handleClick */}
-            <QuantitySelector
-              value={item.qty}
-              handleChange={(event) => handleChange(item, event)}
-              handleClick={(event) => handleClickIcons(item, event)}
-            />
+        <Grid item xs={5}>
+          <div className={classes.description}>
+            <Typography display="block">{item.title}</Typography>
+            {/* if variations exist map variations */}
+            {!isEmpty(item.variations) &&
+              Object.keys(item.variations).map((property, index) => {
+                return (
+                  <Typography display="block" key={index} variant="body2">
+                    {property}:{item.variations[property]}
+                  </Typography>
+                );
+              })}
+            <Typography display="block" variant="body2">
+              Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </Typography>
           </div>
-          <Button
-            className={classes.remove}
-            onClick={() => handleClickRemove(item)}
-          >
-            remove
-          </Button>
+        </Grid>
+        <Grid item xs={4}>
+          <div className={classes.qty}>
+            <div>
+              {/* Call the Quantity selector component from products page and pass it functions of handleChange and handleClick */}
+              <QuantitySelector
+                value={item.qty}
+                handleChange={(event) => handleChange(item, event)}
+                handleClick={(event) => handleClickIcons(item, event)}
+              />
+            </div>
+            <Button
+              classes={{ root: classes.remove }}
+              onClick={() => handleClickRemove(item)}
+            >
+              Remove
+            </Button>
+            {errors[item.title] && (
+              <Typography
+                display="block"
+                variant="caption"
+                className={classes.error}
+              >
+                {errors[item.title]}
+              </Typography>
+            )}
+          </div>
         </Grid>
         <Grid item xs={2}>
-          <Typography>
+          <Typography align="right">
             Rs{" "}
             {(item.price * item.qty)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </Typography>
         </Grid>
-        {errors[item.title] && (
-          <span className={classes.error}>{errors[item.title]}</span>
-        )}
-      </div>
+      </Grid>
     );
   });
 };
