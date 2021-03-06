@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Container,
   Grid,
@@ -20,6 +21,7 @@ export const useStyles = makeStyles((theme) => ({
     "&.MuiAvatar-colorDefault": {
       backgroundColor: theme.palette.secondary.dark,
     },
+
     width: theme.spacing(3),
     height: theme.spacing(3),
 
@@ -74,6 +76,54 @@ export const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
   },
+  customer: {
+    padding: theme.spacing(1, 0, 3, 7),
+  },
+  emailAddress: {
+    margin: theme.spacing(3, 0, 1),
+  },
+  emailAddressTextField: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 0,
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "2px solid #ccc",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.secondary.dark,
+    },
+
+    "&:hover": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "2px solid #ccc",
+      },
+      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.secondary.dark,
+      },
+    },
+  },
+  customerButton: {
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    borderRadius: 0,
+    background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+    transition: "all 0.2s ease",
+    WebkitTransition: "all 0.2s ease",
+    msTransition: "all 0.2s ease",
+    MozTransition: "all 0.2s ease",
+    backgroundSize: "200%",
+
+    "&.MuiButton-text": {
+      padding: theme.spacing(1, 2),
+    },
+
+    "&:hover": {
+      backgroundPosition: "left",
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    },
+  },
+  customerButtonDiv: {
+    margin: theme.spacing(3, 0),
+  },
 }));
 export default function Checkout(props) {
   const theme = useTheme(),
@@ -82,34 +132,19 @@ export default function Checkout(props) {
     { cartItems } = props;
 
   //For checking the state of edit button for opening dropdowns
-  const [editClicked, setEditClicked] = useState({
-    customer: false,
-    shipping: false,
-    payment: false,
-  });
+  const [editClicked, setEditClicked] = useState();
 
   //Done status of customer and shipping sections
-  const [isDone, setIsDone] = useState({
-    customer: false,
-    shipping: false,
-  });
+  const [isDone, setIsDone] = useState();
 
   //shipping details of order
-  const [shippingDetails, setShippingDetails] = useState({
-    name: "",
-    number: "",
-    address: "",
-    address2: "",
-    city: "",
-    postalCode: "",
-  });
-
-  //if cart is empty redirect to carts page
-  useEffect(() => {
-    !cartItems.length && router.push("/cart");
-  }, [cartItems, router]);
+  const [shippingDetails, setShippingDetails] = useState();
 
   //on Page Load do the following:
+  useEffect(() => {
+    //if cart is empty redirect to cart page
+    Array.isArray(cartItems) && cartItems.length === 0 && router.push("/cart");
+  }, [cartItems]);
   useEffect(() => {
     //Load customer and shipping sections isDone state from local storage if exists,else set to false
     const customer = localStorage.getItem("customer"),
@@ -137,7 +172,6 @@ export default function Checkout(props) {
       ? { ...editClicked, shipping: true } // if customer section is done but shipping is not done open shipping
       : { ...editClicked, payment: true }; //if both customer and shipping are done open payment
     setEditClicked(editClick);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //For handling change in shipping details
@@ -169,54 +203,57 @@ export default function Checkout(props) {
   return (
     <>
       <Top matches={matches} heading="checkout" />
-      {!cartItems.length ? (
+      {Array.isArray(cartItems) && cartItems.length === 0 ? (
         <h1>Empty Cart</h1>
       ) : (
-        <section>
-          <Container>
-            <Grid container>
+        shippingDetails &&
+        editClicked && (
+          <section>
+            <Container>
+              <Grid container>
+                <Grid
+                  component={Box}
+                  display={{ xs: "block", md: "none" }}
+                  container
+                  item
+                  xs={12}
+                >
+                  {/* <Billing cartItems={cartItems} city={shippingDetails.city} /> */}
+                </Grid>
+              </Grid>
+              <Customer
+                editClicked={editClicked.customer}
+                isDone={isDone.customer}
+                handleClick={handleClick}
+                handleSubmit={handleSubmit}
+                matches={matches}
+              />
+              <Shipping
+                editClicked={editClicked.shipping}
+                isDone={isDone.shipping}
+                handleClick={handleClick}
+                handleSubmit={handleSubmit}
+                matches={matches}
+                shippingDetails={shippingDetails}
+                handleChange={handleChange}
+              />
+              <Payment
+                matches={matches}
+                shippingDetails={shippingDetails}
+                cartItems={cartItems}
+                editClicked={editClicked.payment}
+              />
               <Grid
                 component={Box}
-                display={{ xs: "block", md: "none" }}
+                display={{ xs: "none", md: "block" }}
                 container
                 item
                 xs={12}
-              >
-                <Billing cartItems={cartItems} city={shippingDetails.city} />
-              </Grid>
-            </Grid>
-            <Customer
-              editClicked={editClicked.customer}
-              isDone={isDone.customer}
-              handleClick={handleClick}
-              handleSubmit={handleSubmit}
-              matches={matches}
-            />
-            <Shipping
-              editClicked={editClicked.shipping}
-              isDone={isDone.shipping}
-              handleClick={handleClick}
-              handleSubmit={handleSubmit}
-              matches={matches}
-              shippingDetails={shippingDetails}
-              handleChange={handleChange}
-            />
-            <Payment
-              matches={matches}
-              shippingDetails={shippingDetails}
-              cartItems={cartItems}
-              editClicked={editClicked.payment}
-            />
-            <Grid
-              component={Box}
-              display={{ xs: "none", md: "block" }}
-              container
-              item
-              xs={12}
-              md={3}
-            ></Grid>
-          </Container>
-        </section>
+                md={3}
+              ></Grid>
+            </Container>
+          </section>
+        )
       )}
     </>
   );

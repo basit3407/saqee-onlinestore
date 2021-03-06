@@ -10,7 +10,7 @@ import Footer from "../components/layout/Footer";
 export default function MyApp(props) {
   const { Component, pageProps } = props;
 
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState();
 
   //this prop will be passed to all the pages
   const passedProps = {

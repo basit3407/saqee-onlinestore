@@ -5,6 +5,7 @@ import {
   makeStyles,
   TextField,
   Button,
+  Box,
 } from "@material-ui/core";
 import Image from "next/image";
 import PropTypes from "prop-types";
@@ -21,19 +22,9 @@ const useSTyles = makeStyles((theme) => ({
   remove: {
     textTransform: "none",
     fontSize: "0.75rem",
-    // "&:after": {
-    //   transition: theme.transitions.create(["transform"], {
-    //     duration: theme.transitions.duration.standard,
-    //   }),
-    //   transform: "scaleX(0)",
-    //   borderBottom: "1px solid #dbdada",
-    //   transformOrigin: "0% 50%",
-    // },
+
     "&:hover": {
       background: "none",
-      // "&:after": {
-      //   transform: "scaleX(1)",
-      // },
     },
   },
 
@@ -113,6 +104,9 @@ const useSTyles = makeStyles((theme) => ({
       padding: theme.spacing(1, 7),
     },
   },
+  shopDiv: {
+    margin: "3% 0",
+  },
 }));
 
 export default function Cart(props) {
@@ -120,6 +114,7 @@ export default function Cart(props) {
     router = useRouter(),
     { cartItems, setCartItems } = props;
   const [errors, setErrors] = useState({});
+  const [orderNote, setOrderNote] = useState("");
 
   const handleCheckoutRequest = () => {
     //check for 0 qty of items, give error if any
@@ -134,13 +129,19 @@ export default function Cart(props) {
           }),
         })
     );
-    isEmpty(error) ? router.push("/checkout") : setErrors(error);
+    //if no error execute the following:
+    if (isEmpty(error)) {
+      orderNote && localStorage.setItem("orderNote", orderNote); //if note is present save note
+      return router.push("/checkout"); //direct to checkout
+    }
+    //if error is present show error
+    setErrors(error);
   };
 
   return (
     <>
       <Top heading="Cart" />
-      {cartItems.length ? (
+      {Array.isArray(cartItems) && cartItems.length > 0 ? (
         <section>
           <Container>
             <Grid
@@ -176,6 +177,8 @@ export default function Cart(props) {
                   variant="outlined"
                   margin="normal"
                   placeholder="How can we help you?"
+                  onChange={(event) => setOrderNote(event.target.value)}
+                  value={orderNote}
                   multiline
                   size="small"
                   classes={{ root: classes.textField }}
@@ -220,14 +223,20 @@ export default function Cart(props) {
       ) : (
         <Grid container>
           <Grid item xs={12}>
-            <div>
-              <Typography>Your cart is empty,do some shopping</Typography>
-              <div>
-                <Button href="/" variant="contained">
+            <Box flexDirection="column" display="flex" alignItems="center">
+              <Typography variant="h6">
+                Your cart is empty,do some shopping
+              </Typography>
+              <div className={classes.shopDiv}>
+                <Button
+                  size="large"
+                  href="/"
+                  classes={{ root: classes.checkoutButton }}
+                >
                   Shop
                 </Button>
               </div>
-            </div>
+            </Box>
           </Grid>
         </Grid>
       )}

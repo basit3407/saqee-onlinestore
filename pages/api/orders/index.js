@@ -2,7 +2,7 @@ import { connectToDatabase } from "../../../util/mongodb";
 
 export default async function ordersHandler(req, res) {
   const {
-      body: { cartItems, shippingDetails },
+      body: { cartItems, shippingDetails, orderNote },
       method,
     } = req,
     { db } = await connectToDatabase();
@@ -14,9 +14,11 @@ export default async function ordersHandler(req, res) {
       // @access public
 
       try {
-        await db
-          .collection("orders")
-          .insertOne({ Items: cartItems, shippingDetails: shippingDetails });
+        await db.collection("orders").insertOne({
+          Items: cartItems,
+          shippingDetails: shippingDetails,
+          ...(orderNote && { orderNote: orderNote }), //if orderNote is present,send orderNote
+        });
         res.status(200).json({ message: "order saved" });
       } catch (e) {
         e &&

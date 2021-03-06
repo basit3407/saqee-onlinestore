@@ -17,9 +17,7 @@ export default function Customer(props) {
   const classes = useStyles(),
     { editClicked, handleClick, isDone, matches, handleSubmit } = props;
 
-  //undefined because nextjs gives error of localstorage due to its server side
-  const [email, setEmail] = useState("");
-
+  const [email, setEmail] = useState();
   //validation of email
   const [inValidEmail, setinValidEmail] = useState(false);
 
@@ -76,33 +74,36 @@ export default function Customer(props) {
         }}
         xs={12}
       >
-        <div>
+        <div className={classes.customer}>
           <Typography display="block">
-            Checking out as a <strong>Guest</strong>?You&apos;ll be able to save
-            your details to create an account with us later.
+            Checking out as a <strong>Guest</strong>? You&apos;ll be able to
+            save your details to create an account with us later.
           </Typography>
-          <Typography display="block">Email Address</Typography>
+          <Typography classes={{ root: classes.emailAddress }} display="block">
+            Email Address:
+          </Typography>
           <TextField
             fullWidth
             placeholder="Email"
+            variant="outlined"
             type="email"
+            classes={{ root: classes.emailAddressTextField }}
             value={email ? email : ""}
             onChange={(e) => setEmail(e.target.value)}
           />
           {/* if invalid email show error */}
           {inValidEmail && (
             <span className={classes.error}>
-              please enter valid email address
+              Please enter valid email address
             </span>
           )}
-          <div>
+          <div className={classes.customerButtonDiv}>
             <Button
-              variant="contained"
               name="customer"
+              classes={{ root: classes.customerButton }}
               onClick={(e) => {
                 //email validation
                 if (!validateEmail(email)) return setinValidEmail(true);
-
                 localStorage.setItem("email", email);
                 handleSubmit(e);
                 //remove error of email validation if present
@@ -112,9 +113,9 @@ export default function Customer(props) {
               Continue as Guest
             </Button>
           </div>
-          <Typography>
+          {/* <Typography>
             Already have an account ? <Link href="#">Sign in now</Link>
-          </Typography>
+          </Typography> */}
         </div>
       </Grid>
     </Grid>
@@ -122,7 +123,7 @@ export default function Customer(props) {
 }
 
 Customer.propTypes = {
-  editClicked: PropTypes.bool.isRequired,
+  editClicked: PropTypes.bool,
   isDone: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,

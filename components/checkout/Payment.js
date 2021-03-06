@@ -13,20 +13,24 @@ export default function Payment(props) {
   const [error, setError] = useState("");
 
   // For dispatching order to server
-  const handleSubmit = () =>
+  const handleSubmit = () => {
+    const orderNote = localStorage.getItem("orderNote"); //get orderNote
     axios
       .post("http://localhost:3000/order", {
         cartItems: cartItems,
         shippingDetails: shippingDetails,
+        ...(orderNote && { orderNote: orderNote }), //if orderNote is present,send to server
       })
       .then((response) => {
         if (response.status === 200) {
+          orderNote && localStorage.removeItem("orderNote"); //if orderNote was present,remove from localstorage
           localStorage.removeItem("cartItems");
           error && setError(""); //remove error if present
           router.push("/thankyou");
         }
       })
       .catch((err) => err && setError("There was some issue please try again"));
+  };
 
   return (
     <Grid container item xs={12} md={9}>

@@ -114,7 +114,6 @@ const useStyles = makeStyles((theme) => ({
     },
     width: theme.spacing(2),
     height: theme.spacing(2),
-
     [theme.breakpoints.down("sm")]: {
       width: theme.spacing(1),
       height: theme.spacing(1),
@@ -124,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 0,
     right: 0,
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -255,7 +255,7 @@ export default function NavBar(props) {
                       icon={ShoppingCartIcon}
                       text="cart"
                     />
-                    {cartItems.length > 0 && (
+                    {Array.isArray(cartItems) && cartItems.length > 0 && (
                       <Avatar classes={{ root: classes.avatar }}>
                         {cartItems.reduce((a, c) => a + c.qty, 0)}
                       </Avatar>

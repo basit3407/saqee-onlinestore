@@ -170,7 +170,7 @@ export default function Shipping(props) {
 }
 
 Shipping.propTypes = {
-  editClicked: PropTypes.bool.isRequired,
+  editClicked: PropTypes.bool,
   isDone: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
