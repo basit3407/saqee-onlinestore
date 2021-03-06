@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
   TextField,
+  // eslint-disable-next-line no-unused-vars
   Link,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -74,7 +75,7 @@ export default function Customer(props) {
         }}
         xs={12}
       >
-        <div className={classes.customer}>
+        <div className={classes.subHeading}>
           <Typography display="block">
             Checking out as a <strong>Guest</strong>? You&apos;ll be able to
             save your details to create an account with us later.
@@ -87,7 +88,7 @@ export default function Customer(props) {
             placeholder="Email"
             variant="outlined"
             type="email"
-            classes={{ root: classes.emailAddressTextField }}
+            classes={{ root: classes.textField }}
             value={email ? email : ""}
             onChange={(e) => setEmail(e.target.value)}
           />

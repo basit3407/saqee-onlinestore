@@ -89,5 +89,5 @@ Payment.propTypes = {
       .isRequired,
   }),
   matches: PropTypes.bool.isRequired,
-  editClicked: PropTypes.bool.isRequired,
+  editClicked: PropTypes.bool,
 };

@@ -13,6 +13,7 @@ import Top from "../components/layout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";
+// eslint-disable-next-line no-unused-vars
 import Billing from "../components/checkout/Billing";
 import { useRouter } from "next/router";
 
@@ -48,9 +49,6 @@ export const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "inherit",
   },
-  shipping: {
-    margin: "0 5%",
-  },
 
   collapse: {
     maxHeight: 0,
@@ -76,13 +74,13 @@ export const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
   },
-  customer: {
+  subHeading: {
     padding: theme.spacing(1, 0, 3, 7),
   },
   emailAddress: {
     margin: theme.spacing(3, 0, 1),
   },
-  emailAddressTextField: {
+  textField: {
     "& .MuiOutlinedInput-root": {
       borderRadius: 0,
     },
@@ -91,6 +89,9 @@ export const useStyles = makeStyles((theme) => ({
     },
     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
       borderColor: theme.palette.secondary.dark,
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: theme.palette.secondary.dark,
     },
 
     "&:hover": {
@@ -123,6 +124,18 @@ export const useStyles = makeStyles((theme) => ({
   },
   customerButtonDiv: {
     margin: theme.spacing(3, 0),
+  },
+  form: {
+    margin: theme.spacing(3, 0),
+  },
+  shipping: {
+    borderBottom: "1px solid #999",
+    "&.MuiTypography-body1": {
+      fontWeight: 600,
+    },
+  },
+  textFieldDiv: {
+    margin: theme.spacing(1, 0),
   },
 }));
 export default function Checkout(props) {

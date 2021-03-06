@@ -75,26 +75,32 @@ export default function Shipping(props) {
         item
         xs={12}
       >
-        <div className={classes.shipping}>
-          <Typography display="block" variant="h6">
+        <div className={classes.subHeading}>
+          <Typography classes={{ root: classes.shipping }} display="block">
             Shipping Address
           </Typography>
-          <form>
-            <TextField
-              onChange={handleChange}
-              name="name"
-              fullWidth
-              placeholder="Name"
-              value={name}
-            />
-            {errors.name && (
-              <span className={classes.error}>{errors.name}</span>
-            )}
+          <form className={classes.form}>
+            <div className={classes.textFieldDiv}>
+              <TextField
+                onChange={handleChange}
+                name="name"
+                fullWidth
+                variant="outlined"
+                label="Name"
+                classes={{ root: classes.textField }}
+                value={name}
+              />
+              {errors.name && (
+                <span className={classes.error}>{errors.name}</span>
+              )}
+            </div>
             <TextField
               onChange={handleChange}
               name="number"
               fullWidth
-              placeholder="Number"
+              label="Phone Number"
+              variant="outlined"
+              classes={{ root: classes.textField }}
               value={number}
             />
             {errors.number && (
