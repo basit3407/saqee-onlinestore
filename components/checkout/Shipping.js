@@ -10,6 +10,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useStyles } from "../../pages/checkout";
+import { isEmpty } from "../../validation/product";
 import validate from "../../validation/shippingDetails";
 
 export default function Shipping(props) {
@@ -26,9 +27,9 @@ export default function Shipping(props) {
     { name, number, address, address2, city, postalCode } = shippingDetails,
     [errors, setErrors] = useState({});
 
-  //reset errors when shipping section is closed
+  //reset errors if present when shipping section is closed
   useEffect(() => {
-    !editClicked.shipping && setErrors({});
+    !editClicked.shipping && !isEmpty(errors) && setErrors({});
   }, [editClicked.shipping]);
 
   return (
@@ -197,7 +198,6 @@ export default function Shipping(props) {
                     JSON.stringify(shippingDetails)
                   );
                   handleSubmit(event);
-                  errors && setErrors({}); //remove errors on success
                 }}
                 name="shipping"
                 classes={{ root: classes.button }}

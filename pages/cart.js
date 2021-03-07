@@ -131,10 +131,8 @@ export default function Cart(props) {
     //if no error execute the following:
     if (isEmpty(error)) {
       orderNote && localStorage.setItem("orderNote", orderNote); //if note is present save note
-      return router.push("/checkout"); //direct to checkout
-    }
-    //if error is present show error
-    setErrors(error);
+      router.push("/checkout"); //direct to checkout
+    } else setErrors(error); //if error is present show error
   };
 
   return (
