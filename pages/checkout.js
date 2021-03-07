@@ -74,7 +74,7 @@ export const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
   },
-  subHeading: {
+  body: {
     padding: theme.spacing(1, 0, 3, 7),
   },
   emailAddress: {
@@ -217,9 +217,14 @@ export default function Checkout(props) {
   };
 
   //For handling click of edit button on sections
-  const handleClick = (event) => {
+  const handleEditClick = (event) => {
     const name = event.currentTarget.getAttribute("name");
-    setEditClicked({ ...editClicked, [name]: true });
+    const editClicked =
+      name === "customer"
+        ? { shipping: false, payment: false, customer: true } //on edit click of customer, close other sections
+        : { shipping: true, payment: false, customer: false }; // on edit click of shipping,close other sections
+
+    setEditClicked(editClicked);
   };
 
   // For handling submitting of customer and shipping sections
@@ -260,14 +265,17 @@ export default function Checkout(props) {
               <Customer
                 editClicked={editClicked.customer}
                 isDone={isDone.customer}
-                handleClick={handleClick}
+                handleClick={handleEditClick}
                 handleSubmit={handleSubmit}
                 matches={matches}
               />
               <Shipping
-                editClicked={editClicked.shipping}
+                editClicked={{
+                  customer: editClicked.customer,
+                  shipping: editClicked.shipping,
+                }}
                 isDone={isDone.shipping}
-                handleClick={handleClick}
+                handleClick={handleEditClick}
                 handleSubmit={handleSubmit}
                 matches={matches}
                 shippingDetails={shippingDetails}

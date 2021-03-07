@@ -23,6 +23,9 @@ export default function Payment(props) {
       })
       .then((response) => {
         if (response.status === 200) {
+          cartItems.forEach(
+            (item) => localStorage.removeItem(`${item.title}/${item.id}`) //remove image from localStorage of each item
+          );
           orderNote && localStorage.removeItem("orderNote"); //if orderNote was present,remove from localstorage
           localStorage.removeItem("cartItems");
           error && setError(""); //remove error if present
@@ -50,7 +53,7 @@ export default function Payment(props) {
         xs={12}
         classes={{ root: editClicked ? classes.show : classes.collapse }}
       >
-        <div>
+        <div className={classes.body}>
           <Typography variant="h6">Shipping Details</Typography>
           <Typography>Address</Typography>
           <Typography>{shippingDetails.address}</Typography>

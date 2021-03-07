@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStyles } from "../../pages/checkout";
 import validate from "../../validation/shippingDetails";
 
@@ -25,6 +25,11 @@ export default function Shipping(props) {
     } = props,
     { name, number, address, address2, city, postalCode } = shippingDetails,
     [errors, setErrors] = useState({});
+
+  //reset errors when shipping section is closed
+  useEffect(() => {
+    !editClicked.shipping && setErrors({});
+  }, [editClicked.shipping]);
 
   return (
     <Grid container item xs={12} md={9}>
@@ -46,7 +51,7 @@ export default function Shipping(props) {
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box display={editClicked ? "none" : "block"}>
+        {!editClicked.shipping && (
           <Typography
             variant={matches ? "body2" : "body1"}
             classes={{ root: classes.email }}
@@ -54,11 +59,11 @@ export default function Shipping(props) {
           >
             {address},{city}
           </Typography>
-        </Box>
+        )}
       </Grid>
       <Grid item xs={2}>
-        {isDone && ( //only show edit button of if done
-          <Box display={editClicked ? "none" : "block"}>
+        {!editClicked.customer && //dont show edit button of shipping when customer is open
+          !editClicked.shipping && (
             <Button
               name="shipping"
               onClick={handleClick}
@@ -66,16 +71,17 @@ export default function Shipping(props) {
             >
               <Typography variant="caption">Edit</Typography>
             </Button>
-          </Box>
-        )}
+          )}
       </Grid>
 
       <Grid
-        classes={{ root: editClicked ? classes.show : classes.collapse }}
+        classes={{
+          root: editClicked.shipping ? classes.show : classes.collapse,
+        }}
         item
         xs={12}
       >
-        <div className={classes.subHeading}>
+        <div className={classes.body}>
           <Typography classes={{ root: classes.shipping }} display="block">
             Shipping Address
           </Typography>
@@ -207,11 +213,15 @@ export default function Shipping(props) {
 }
 
 Shipping.propTypes = {
-  editClicked: PropTypes.bool,
   isDone: PropTypes.bool.isRequired,
+  matches: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  matches: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  editClicked: PropTypes.shape({
+    customer: PropTypes.bool,
+    shipping: PropTypes.bool,
+  }),
   shippingDetails: PropTypes.shape({
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,
@@ -220,5 +230,4 @@ Shipping.propTypes = {
     city: PropTypes.string.isRequired,
     postalCode: PropTypes.string.isRequired,
   }),
-  handleChange: PropTypes.func.isRequired,
 };

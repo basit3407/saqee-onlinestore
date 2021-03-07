@@ -46,7 +46,7 @@ export default function Customer(props) {
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box display={editClicked ? "none" : "block"}>
+        {!editClicked && (
           <Typography
             variant={matches ? "body2" : "body1"}
             classes={{ root: classes.email }}
@@ -54,10 +54,10 @@ export default function Customer(props) {
           >
             {email}
           </Typography>
-        </Box>
+        )}
       </Grid>
       <Grid item xs={2}>
-        <Box display={editClicked ? "none" : "block"}>
+        {!editClicked && (
           <Button
             onClick={handleClick}
             name="customer"
@@ -65,7 +65,7 @@ export default function Customer(props) {
           >
             <Typography variant="caption">Edit</Typography>
           </Button>
-        </Box>
+        )}
       </Grid>
 
       <Grid
@@ -75,7 +75,7 @@ export default function Customer(props) {
         }}
         xs={12}
       >
-        <div className={classes.subHeading}>
+        <div className={classes.body}>
           <Typography display="block">
             Checking out as a <strong>Guest</strong>? You&apos;ll be able to
             save your details to create an account with us later.
@@ -88,7 +88,7 @@ export default function Customer(props) {
             placeholder="Email"
             variant="outlined"
             type="email"
-            classes={{ root: classes.textFieldCustomer }}
+            classes={{ root: classes.textField }}
             value={email ? email : ""}
             onChange={(e) => setEmail(e.target.value)}
           />
