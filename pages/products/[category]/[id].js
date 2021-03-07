@@ -16,7 +16,6 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import isEqual from "lodash.isequal";
-import Cookies from "js-cookie";
 import Top from "../../../components/layout/Top";
 
 const useStyles = makeStyles((theme) => ({
@@ -152,8 +151,18 @@ export default function Product(props) {
       qty: orderDetails.qty < 1 ? 1 : orderDetails.qty, //if qty is less than 1,set it to 1
       variations: orderDetails.variations,
       price: product.price,
+      id: product._id,
     };
-    const updatedCartItems = checkDuplicate(cartItems, orderedItem) //check if ordered item is already present
+    //check if items with this id are already present in cart
+    const duplicateId = cartItems.filter((item) => item.id === orderedItem.id);
+    // if new Id set imageUrl to localStorage to be used in other pages.
+    !duplicateId.length &&
+      localStorage.setItem(
+        `${orderedItem.title}/${orderedItem.id}`,
+        product.image
+      );
+    //update the cartItems
+    const updatedCartItems = duplicateId.length
       ? cartItems.map((item) =>
           isEqual(item.variations, orderedItem.variations) //duplicate item
             ? { ...item, qty: item.qty + orderedItem.qty } //increase the qty of duplicate item
@@ -161,8 +170,8 @@ export default function Product(props) {
         )
       : [...cartItems, orderedItem]; // if no duplicate item,add the ordered item
     setCartItems(updatedCartItems);
-    Cookies.set(`${product.title}Image`, product.image, { expires: 1 }); //set imageUrl in cookie to be used in other pages.will expire after 1 day
-    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems)); //update localStorage
+    //update cartItems in localStorage
+    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
     router.push("/cart");
   };
 
@@ -413,21 +422,6 @@ QuantitySelector.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-};
-
-//This funtions checks if the duplicate of ordered item is present or not.
-const checkDuplicate = (cartItems, orderedItem) => {
-  //   check if items with this title are already present in cart
-  const duplicateTitles = cartItems.filter(
-    (item) => item.title === orderedItem.title
-  );
-  //if duplicate titles are present check if any have exact same variations
-  return (
-    duplicateTitles.length &&
-    duplicateTitles.find((item) =>
-      isEqual(item.variations, orderedItem.variations)
-    )
-  );
 };
 
 export async function getServerSideProps(context) {

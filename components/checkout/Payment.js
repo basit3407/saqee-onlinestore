@@ -50,21 +50,23 @@ export default function Payment(props) {
         xs={12}
         classes={{ root: editClicked ? classes.show : classes.collapse }}
       >
-        <Typography variant="h6">Shipping Details</Typography>
-        <Typography>Address</Typography>
-        <Typography>{shippingDetails.address}</Typography>
-        <Typography>City</Typography>
-        <Typography>{shippingDetails.city}</Typography>
-        <Typography>Phone Number</Typography>
-        <Typography>{shippingDetails.number}</Typography>
-        <Typography>Payment Method</Typography>
-        <select>
-          <option>cash on delivery</option>
-        </select>
-        <Button variant="contained" onClick={handleSubmit}>
-          Place Order
-        </Button>
-        {error && <span className={classes.error}>{error}</span>}
+        <div>
+          <Typography variant="h6">Shipping Details</Typography>
+          <Typography>Address</Typography>
+          <Typography>{shippingDetails.address}</Typography>
+          <Typography>City</Typography>
+          <Typography>{shippingDetails.city}</Typography>
+          <Typography>Phone Number</Typography>
+          <Typography>{shippingDetails.number}</Typography>
+          <Typography>Payment Method</Typography>
+          <select>
+            <option>cash on delivery</option>
+          </select>
+          <Button variant="contained" onClick={handleSubmit}>
+            Place Order
+          </Button>
+          {error && <span className={classes.error}>{error}</span>}
+        </div>
       </Grid>
     </Grid>
   );

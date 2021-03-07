@@ -12,7 +12,6 @@ import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Cookies from "js-cookie";
 import { QuantitySelector } from "./products/[category]/[id]";
 import { isEmpty } from "../validation/product";
 import Top from "../components/layout/Top";
@@ -293,8 +292,9 @@ const MapCartItems = (props) => {
     const remainingItems = cartItems.filter(
       (cartItem) => !isEqual(cartItem, item)
     );
+    localStorage.removeItem(`${item.title}/${item.id}`); //remove image
     setCartItems(remainingItems);
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    localStorage.setItem("cartItems", JSON.stringify(remainingItems));
   };
 
   return cartItems.map((item, index) => {
@@ -302,7 +302,7 @@ const MapCartItems = (props) => {
       <Grid container classes={{ root: classes.gridCartItems }} key={index}>
         <Grid key={index} item xs={1}>
           <Image
-            src={Cookies.get(`${item.title}Image`)}
+            src={localStorage.getItem(`${item.title}/${item.id}`)}
             width={100}
             height={100}
           />
