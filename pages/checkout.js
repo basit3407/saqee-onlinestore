@@ -93,6 +93,22 @@ export const useStyles = makeStyles((theme) => ({
     "& .MuiFormLabel-root.Mui-focused": {
       color: theme.palette.secondary.dark,
     },
+    //for removing spin arrows from input
+    "& input": {
+      /* Firefox */
+      "&[type=number]": {
+        "-moz-appearance": "textfield",
+      },
+      /* Chrome, Safari, Edge, Opera */
+      "&::-webkit-outer-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+      "&::-webkit-inner-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+    },
 
     "&:hover": {
       "& .MuiOutlinedInput-notchedOutline": {
@@ -103,7 +119,7 @@ export const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  customerButton: {
+  button: {
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     borderRadius: 0,
     background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
@@ -114,7 +130,7 @@ export const useStyles = makeStyles((theme) => ({
     backgroundSize: "200%",
 
     "&.MuiButton-text": {
-      padding: theme.spacing(1, 2),
+      padding: theme.spacing(1, 7),
     },
 
     "&:hover": {
@@ -122,7 +138,7 @@ export const useStyles = makeStyles((theme) => ({
       boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     },
   },
-  customerButtonDiv: {
+  buttonDiv: {
     margin: theme.spacing(3, 0),
   },
   form: {
@@ -137,6 +153,13 @@ export const useStyles = makeStyles((theme) => ({
   textFieldDiv: {
     margin: theme.spacing(1, 0),
   },
+  city: {
+    margin: theme.spacing(1, 0),
+  },
+  cityDiv: {
+    paddingRight: theme.spacing(3),
+  },
+  country: {},
 }));
 export default function Checkout(props) {
   const theme = useTheme(),

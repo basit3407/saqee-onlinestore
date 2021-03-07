@@ -94,80 +94,111 @@ export default function Shipping(props) {
                 <span className={classes.error}>{errors.name}</span>
               )}
             </div>
-            <TextField
-              onChange={handleChange}
-              name="number"
-              fullWidth
-              label="Phone Number"
-              variant="outlined"
-              classes={{ root: classes.textField }}
-              value={number}
-            />
-            {errors.number && (
-              <span className={classes.error}>{errors.number}</span>
-            )}
-            <TextField
-              onChange={handleChange}
-              name="address"
-              fullWidth
-              placeholder="Addres Line1"
-              value={address}
-            />
-            {errors.address && (
-              <span className={classes.error}>{errors.address}</span>
-            )}
-            <TextField
-              onChange={handleChange}
-              name="address2"
-              fullWidth
-              placeholder="Addres Line2(optional)"
-              value={address2}
-            />
-            <TextField
-              onChange={handleChange}
-              value={city}
-              name="city"
-              placeholder="City"
-            />
-            {errors.city && (
-              <span className={classes.error}>{errors.city}</span>
-            )}
-            <TextField
-              onChange={handleChange}
-              name="postalCode"
-              placeholder="Postal Code"
-              value={postalCode}
-              type="number"
-            />
-            {errors.postalCode && (
-              <span className={classes.error}>{errors.postalCode}</span>
-            )}
-            <div>
-              <Typography>Country:</Typography>
-              {/* eslint-disable-next-line jsx-a11y/no-onchange */}
-              <select name="country">
-                <option>Pakistan</option>
-              </select>
+            <div className={classes.textFieldDiv}>
+              <TextField
+                onChange={handleChange}
+                name="number"
+                fullWidth
+                label="Phone Number"
+                variant="outlined"
+                classes={{ root: classes.textField }}
+                value={number}
+              />
+              {errors.number && (
+                <span className={classes.error}>{errors.number}</span>
+              )}
             </div>
-
-            <Button
-              onClick={(event) => {
-                //check validation
-                const { errors, isValid } = validate(shippingDetails);
-                if (!isValid) return setErrors(errors);
-                //if no errors save to localStorage for future and submit
-                localStorage.setItem(
-                  "shippingDetails",
-                  JSON.stringify(shippingDetails)
-                );
-                handleSubmit(event);
-                errors && setErrors({}); //remove errors on success
-              }}
-              variant="contained"
-              name="shipping"
+            <div className={classes.textFieldDiv}>
+              <TextField
+                onChange={handleChange}
+                name="address"
+                variant="outlined"
+                classes={{ root: classes.textField }}
+                fullWidth
+                label="Address"
+                value={address}
+              />
+              {errors.address && (
+                <span className={classes.error}>{errors.address}</span>
+              )}
+            </div>
+            <div className={classes.textField}>
+              <TextField
+                onChange={handleChange}
+                variant="outlined"
+                label="Address Line 2 (optional)"
+                name="address2"
+                fullWidth
+                value={address2}
+              />
+            </div>
+            <Grid container classes={{ root: classes.city }}>
+              <Grid item xs={12} sm={6}>
+                <div className={classes.cityDiv}>
+                  <TextField
+                    onChange={handleChange}
+                    classes={{ root: classes.textField }}
+                    fullWidth
+                    variant="outlined"
+                    label="City"
+                    value={city}
+                    name="city"
+                    placeholder="City"
+                  />
+                </div>
+                {errors.city && (
+                  <div className={classes.error}>{errors.city}</div>
+                )}
+              </Grid>
+              <Grid item xs={12} sm>
+                <TextField
+                  onChange={handleChange}
+                  classes={{ root: classes.textField }}
+                  fullWidth
+                  variant="outlined"
+                  name="postalCode"
+                  label="Postal Code"
+                  value={postalCode}
+                  type="number"
+                />
+                <div>
+                  {errors.postalCode && (
+                    <div className={classes.error}>{errors.postalCode}</div>
+                  )}
+                </div>
+              </Grid>
+            </Grid>
+            <TextField
+              select
+              variant="outlined"
+              fullWidth
+              SelectProps={{ native: true }}
+              className={classes.textField}
+              label="Country"
+              name="country"
             >
-              Continue
-            </Button>
+              <option>Pakistan</option>
+            </TextField>
+            <div className={classes.buttonDiv}>
+              <Button
+                onClick={(event) => {
+                  //check validation
+                  const { errors, isValid } = validate(shippingDetails);
+                  if (!isValid) return setErrors(errors);
+                  //if no errors save to localStorage for future and submit
+                  localStorage.setItem(
+                    "shippingDetails",
+                    JSON.stringify(shippingDetails)
+                  );
+                  handleSubmit(event);
+                  errors && setErrors({}); //remove errors on success
+                }}
+                name="shipping"
+                classes={{ root: classes.button }}
+              >
+                Continue
+              </Button>
+            </div>
           </form>
         </div>
       </Grid>

@@ -88,7 +88,7 @@ export default function Customer(props) {
             placeholder="Email"
             variant="outlined"
             type="email"
-            classes={{ root: classes.textField }}
+            classes={{ root: classes.textFieldCustomer }}
             value={email ? email : ""}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -98,10 +98,10 @@ export default function Customer(props) {
               Please enter valid email address
             </span>
           )}
-          <div className={classes.customerButtonDiv}>
+          <div className={classes.buttonDiv}>
             <Button
               name="customer"
-              classes={{ root: classes.customerButton }}
+              classes={{ root: classes.button }}
               onClick={(e) => {
                 //email validation
                 if (!validateEmail(email)) return setinValidEmail(true);

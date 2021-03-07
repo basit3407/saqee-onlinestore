@@ -9,7 +9,12 @@ export default function validate(data) {
         property === "brand" ||
         property === "variations"
       ) && !data[property] //empty fields validation
-        ? { ...errors, [property]: `${property} is required` }
+        ? {
+            ...errors,
+            [property]: `${property.charAt(0).toUpperCase()}${property.slice(
+              1
+            )} is required`,
+          }
         : {
             ...errors,
             ...((property === "countInStock" || property === "price") && //numbers validation

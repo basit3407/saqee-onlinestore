@@ -4,7 +4,12 @@ export default function validate(data) {
   for (const property in data) {
     errors =
       property !== "address2" && !data[property] //empty fileds validation,excluding optional property
-        ? { ...errors, [property]: `${property} is required` }
+        ? {
+            ...errors,
+            [property]: `${property.charAt(0).toUpperCase()}${
+              property.slice(1).replace(/([A-Z])/g, " $1") //Add spaces between capital letters
+            } is required`,
+          }
         : {
             ...errors,
             ...(property === "number" && //phone number validation
