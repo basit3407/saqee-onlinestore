@@ -157,8 +157,14 @@ export const useStyles = makeStyles((theme) => ({
   },
   cityDiv: {
     paddingRight: theme.spacing(3),
+    [theme.breakpoints.down("sm")]: {
+      padding: 0,
+      marginBottom: theme.spacing(1),
+    },
   },
-  country: {},
+  payment: {
+    margin: theme.spacing(1, 0),
+  },
 }));
 export default function Checkout(props) {
   const theme = useTheme(),

@@ -1,7 +1,14 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { Button, Grid, Typography, Box, Avatar } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Typography,
+  Box,
+  Avatar,
+  TextField,
+} from "@material-ui/core";
 import { useStyles } from "../../pages/checkout";
 import { useRouter } from "next/router";
 export default function Payment(props) {
@@ -55,20 +62,31 @@ export default function Payment(props) {
       >
         <div className={classes.body}>
           <Typography variant="h6">Shipping Details</Typography>
-          <Typography>Address</Typography>
-          <Typography>{shippingDetails.address}</Typography>
-          <Typography>City</Typography>
-          <Typography>{shippingDetails.city}</Typography>
-          <Typography>Phone Number</Typography>
-          <Typography>{shippingDetails.number}</Typography>
-          <Typography>Payment Method</Typography>
-          <select>
-            <option>cash on delivery</option>
-          </select>
-          <Button variant="contained" onClick={handleSubmit}>
-            Place Order
-          </Button>
-          {error && <span className={classes.error}>{error}</span>}
+          <div className={classes.payment}>
+            <Typography>Address:</Typography>
+            <Typography variant="body2">{shippingDetails.address}</Typography>
+          </div>
+          <div className={classes.payment}>
+            <Typography>City:</Typography>
+            <Typography variant="body2">{shippingDetails.city}</Typography>
+          </div>
+          <div className={classes.payment}>
+            <Typography>Phone Number:</Typography>
+            <Typography variant="body2">{shippingDetails.number}</Typography>
+          </div>
+
+          <div className={classes.payment}>
+            <Typography>Payment Method:</Typography>
+            <TextField select variant="outlined" SelectProps={{ native: true }}>
+              <option>Cash on Delivery</option>
+            </TextField>
+          </div>
+          <div className={classes.buttonDiv}>
+            <Button classes={{ root: classes.button }} onClick={handleSubmit}>
+              Place Order
+            </Button>
+            {error && <span className={classes.error}>{error}</span>}
+          </div>
         </div>
       </Grid>
     </Grid>
