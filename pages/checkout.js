@@ -165,9 +165,13 @@ export const useStyles = makeStyles((theme) => ({
   payment: {
     margin: theme.spacing(1, 0),
   },
+  grid: {
+    marginBottom: theme.spacing(3),
+  },
 }));
 export default function Checkout(props) {
   const theme = useTheme(),
+    classes = useStyles(),
     matches = useMediaQuery(theme.breakpoints.down("sm")),
     router = useRouter(),
     { cartItems } = props;
@@ -256,7 +260,7 @@ export default function Checkout(props) {
         editClicked && (
           <section>
             <Container>
-              <Grid container>
+              <Grid container classes={{ root: classes.grid }}>
                 <Grid
                   component={Box}
                   display={{ xs: "block", md: "none" }}
@@ -266,40 +270,41 @@ export default function Checkout(props) {
                 >
                   {/* <Billing cartItems={cartItems} city={shippingDetails.city} /> */}
                 </Grid>
+
+                <Customer
+                  editClicked={editClicked.customer}
+                  isDone={isDone.customer}
+                  handleClick={handleEditClick}
+                  handleSubmit={handleSubmit}
+                  matches={matches}
+                />
+                <Shipping
+                  editClicked={{
+                    customer: editClicked.customer,
+                    shipping: editClicked.shipping,
+                  }}
+                  isDone={isDone.shipping}
+                  handleClick={handleEditClick}
+                  handleSubmit={handleSubmit}
+                  matches={matches}
+                  shippingDetails={shippingDetails}
+                  handleChange={handleChange}
+                />
+                <Payment
+                  matches={matches}
+                  shippingDetails={shippingDetails}
+                  cartItems={cartItems}
+                  editClicked={editClicked.payment}
+                />
+                <Grid
+                  component={Box}
+                  display={{ xs: "none", md: "block" }}
+                  container
+                  item
+                  xs={12}
+                  md={3}
+                ></Grid>
               </Grid>
-              <Customer
-                editClicked={editClicked.customer}
-                isDone={isDone.customer}
-                handleClick={handleEditClick}
-                handleSubmit={handleSubmit}
-                matches={matches}
-              />
-              <Shipping
-                editClicked={{
-                  customer: editClicked.customer,
-                  shipping: editClicked.shipping,
-                }}
-                isDone={isDone.shipping}
-                handleClick={handleEditClick}
-                handleSubmit={handleSubmit}
-                matches={matches}
-                shippingDetails={shippingDetails}
-                handleChange={handleChange}
-              />
-              <Payment
-                matches={matches}
-                shippingDetails={shippingDetails}
-                cartItems={cartItems}
-                editClicked={editClicked.payment}
-              />
-              <Grid
-                component={Box}
-                display={{ xs: "none", md: "block" }}
-                container
-                item
-                xs={12}
-                md={3}
-              ></Grid>
             </Container>
           </section>
         )
