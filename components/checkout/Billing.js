@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Typography, Grid } from "@material-ui/core";
 import { totalAmount, useStyles } from "../../pages/checkout";
 import { isEmpty } from "../../validation/product";
+
 export default function Billing(props) {
   const classes = useStyles(),
     { cartItems, city } = props;
@@ -13,9 +14,7 @@ export default function Billing(props) {
         return (
           <Grid
             container
-            classes={{ root: classes.billingGrid }}
-            item
-            xs={12}
+            classes={{ root: classes.billingGridContainer }}
             key={index}
           >
             <Grid item xs={3}>
@@ -96,7 +95,7 @@ export default function Billing(props) {
         </Grid>
         <Grid item xs={6}></Grid>
         <Grid item xs={3}>
-          <Typography variant="h6">
+          <Typography classes={{ root: classes.totalAmount }} variant="h6">
             Rs {totalAmount(cartItems, city)}
           </Typography>
         </Grid>

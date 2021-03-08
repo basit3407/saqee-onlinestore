@@ -74,6 +74,11 @@ export const useStyles = makeStyles((theme) => ({
     transition: "max-height 0.2s ease",
     transitionDuration: "0.4s",
   },
+  billingGridContainer: {
+    "& .MuiGrid-item": {
+      marginBottom: theme.spacing(3),
+    },
+  },
   error: {
     color: theme.palette.error.main,
   },
@@ -186,11 +191,6 @@ export const useStyles = makeStyles((theme) => ({
       fontWeight: 500,
     },
   },
-  billingGrid: {
-    "& .MuiGrid-item": {
-      marginBottom: theme.spacing(3),
-    },
-  },
   subtotal: {
     borderTop: "1px solid rgba(175,175,175,0.34)",
     paddingTop: theme.spacing(3),
@@ -229,6 +229,19 @@ export const useStyles = makeStyles((theme) => ({
   },
   cartIcon: {
     color: theme.palette.secondary.dark,
+  },
+  containerGridBilling: {
+    marginBottom: theme.spacing(7),
+    [theme.breakpoints.down("sm")]: {
+      marginTop: theme.spacing(3),
+    },
+  },
+  totalAmount: {
+    [theme.breakpoints.down("sm")]: {
+      "&.MuiTypography-h6": {
+        fontSize: "1rem",
+      },
+    },
   },
 }));
 export default function Checkout(props) {
@@ -318,61 +331,49 @@ export default function Checkout(props) {
         editClicked && (
           <section>
             <Container>
-              <Grid container classes={{ root: classes.grid }}>
-                <Hidden mdUp>
-                  <Grid container item xs={12}>
-                    <Grid
-                      classes={{ root: classes.billingToggleContainer }}
-                      item
-                      container
-                      xs={12}
-                    >
-                      <Grid classes={{ root: classes.cart }} item xs={1}>
-                        <ShoppingCartIcon
-                          classes={{ root: classes.cartIcon }}
-                        />
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography
-                          classes={{ root: classes.billingToggleTypo }}
-                          display="inline"
-                        >
-                          {showBilling
-                            ? "Hide Order Summary"
-                            : "Show Order Summary"}
-                        </Typography>
-                        <button
-                          className={classes.billingButton}
-                          onClick={() => setShowBilling(!showBilling)}
-                        >
-                          {showBilling ? (
-                            <ExpandLessIcon />
-                          ) : (
-                            <ExpandMoreIcon />
-                          )}
-                        </button>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Typography variant="h6">
-                          Rs {totalAmount(cartItems, shippingDetails.city)}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid
-                      container
-                      item
-                      xs={12}
-                      classes={{
-                        root: showBilling ? classes.billing : classes.collapse,
-                      }}
-                    >
-                      <Billing
-                        cartItems={cartItems}
-                        city={shippingDetails.city}
-                      />
-                    </Grid>
+              <Hidden mdUp>
+                <Grid
+                  classes={{ root: classes.billingToggleContainer }}
+                  container
+                >
+                  <Grid classes={{ root: classes.cart }} item xs={1}>
+                    <ShoppingCartIcon classes={{ root: classes.cartIcon }} />
                   </Grid>
-                </Hidden>
+                  <Grid item xs={8}>
+                    <Typography
+                      classes={{ root: classes.billingToggleTypo }}
+                      display="inline"
+                    >
+                      {showBilling
+                        ? "Hide Order Summary"
+                        : "Show Order Summary"}
+                    </Typography>
+                    <button
+                      className={classes.billingButton}
+                      onClick={() => setShowBilling(!showBilling)}
+                    >
+                      {showBilling ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Typography
+                      classes={{ root: classes.totalAmount }}
+                      variant="h6"
+                    >
+                      Rs {totalAmount(cartItems, shippingDetails.city)}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Grid
+                  container
+                  classes={{
+                    root: showBilling ? classes.billing : classes.collapse,
+                  }}
+                >
+                  <Billing cartItems={cartItems} city={shippingDetails.city} />
+                </Grid>
+              </Hidden>
+              <Grid container classes={{ root: classes.containerGridBilling }}>
                 <Grid container item xs={12} md={8}>
                   <Customer
                     editClicked={editClicked.customer}
