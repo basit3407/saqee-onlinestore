@@ -101,8 +101,12 @@ const useStyles = makeStyles((theme) => ({
       textAlign: "center",
     },
   },
+  image: {
+    borderRadius: theme.spacing(1),
+  },
   auxImage: {
     margin: theme.spacing(1),
+    borderRadius: theme.spacing(1),
   },
 }));
 
@@ -187,7 +191,12 @@ export default function Product(props) {
           <Grid container>
             <Grid item xs={12} md={6}>
               <div className={classes.images}>
-                <Image src={mainImage} width={500} height={500} />
+                <Image
+                  className={classes.image}
+                  src={mainImage}
+                  width={500}
+                  height={500}
+                />
                 {/* if auxillary images are present render them */}
                 {product.auxillaryImages && (
                   <div className={classes.auxillaryImages}>
@@ -344,6 +353,7 @@ const MapAuxillaryImages = (props) => {
         <Image
           //onClick set this image to main image
           onClick={() => setMainImage(item)}
+          className={classes.image}
           src={item}
           height={50}
           width={50}

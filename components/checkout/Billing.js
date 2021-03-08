@@ -1,74 +1,107 @@
-import { Fragment } from "react";
 import PropTypes from "prop-types";
 import Image from "next/image";
-import { Typography, Grid, Avatar } from "@material-ui/core";
-import { useStyles } from "../../pages/checkout";
-
+import { Typography, Grid } from "@material-ui/core";
+import { totalAmount, useStyles } from "../../pages/checkout";
+import { isEmpty } from "../../validation/product";
 export default function Billing(props) {
   const classes = useStyles(),
     { cartItems, city } = props;
 
   return (
-    <div className={classes.billing}>
-      <Typography display="block" variant="h6">
-        Billing
-      </Typography>
-      {Array.isArray(cartItems) &&
-        cartItems.length > 0 &&
-        cartItems.map((item, index) => {
-          <Fragment key={index}>
+    <>
+      {cartItems.map((item, index) => {
+        return (
+          <Grid
+            container
+            classes={{ root: classes.billingGrid }}
+            item
+            xs={12}
+            key={index}
+          >
             <Grid item xs={3}>
-              <div className={classes.wrapperDiv}>
-                <Image width={100} height={100} />
-                <Avatar classes={{ root: classes.overlap }}>{item.qty}</Avatar>
-              </div>
+              <Image
+                className={classes.image}
+                src={localStorage.getItem(`${item.title}/${item.id}`)}
+                width={75}
+                height={75}
+              />
             </Grid>
             <Grid item xs={6}>
-              <Typography display="block">{item.title}</Typography>
-              {Object.keys(item.variations).map((variation, index) => {
-                <Typography key={index}>
-                  {variation}:{item.variations[variation]}
-                </Typography>;
-              })}
+              <div className={classes.billingTitle}>
+                <Typography
+                  classes={{ root: classes.billingTypo }}
+                  display="inline"
+                  variant="body1"
+                >
+                  {item.qty} x{" "}
+                </Typography>
+                <Typography
+                  classes={{ root: classes.billingTypo }}
+                  display="inline"
+                  variant="body1"
+                >
+                  {item.title}
+                </Typography>
+                {!isEmpty(item.variations) && //if variations are present render them
+                  Object.keys(item.variations).map((variation, index) => {
+                    <Typography key={index}>
+                      {variation}:{item.variations[variation]}
+                    </Typography>;
+                  })}
+              </div>
             </Grid>
             <Grid item xs={3}>
-              <Typography>Rs.{item.qty * item.price}</Typography>
+              <Typography
+                classes={{ root: classes.billingTypo }}
+                variant="body1"
+              >
+                Rs{" "}
+                {(item.qty * item.price)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Typography>
             </Grid>
-          </Fragment>;
-        })}
-      <Grid item xs={3}>
-        <Typography>Subtotal</Typography>
+          </Grid>
+        );
+      })}
+      <Grid classes={{ root: classes.subtotal }} container item xs={12}>
+        <Grid item xs={3}>
+          <Typography>Subtotal</Typography>
+        </Grid>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={3}>
+          <Typography variant="body1" classes={{ root: classes.billingTypo }}>
+            Rs{" "}
+            {cartItems
+              .reduce((a, c) => a + c.price * c.qty, 0)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={6}></Grid>
-      <Grid item xs={3}>
-        <Typography display="block">
-          {/* calculate the total amout of money and render */}
-          TOTAL:Rs.
-          {Array.isArray(cartItems) &&
-            cartItems.length > 0 &&
-            cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
-        </Typography>
+      <Grid classes={{ root: classes.shippingAmount }} container item xs={12}>
+        <Grid item xs={3}>
+          <Typography>Shipping</Typography>
+        </Grid>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={3}>
+          <Typography classes={{ root: classes.billingTypo }}>
+            Rs {city === "Karachi" || city === "karachi" ? 200 : 250}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={3}>
-        <Typography>Shipping</Typography>
+      <Grid classes={{ root: classes.total }} container item xs={12}>
+        <Grid item xs={3}>
+          <Typography>Total (PKR)</Typography>
+        </Grid>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={3}>
+          <Typography variant="h6">
+            Rs {totalAmount(cartItems, city)}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={6}></Grid>
-      <Grid item xs={3}>
-        <Typography display="block">
-          Rs.
-          {city === "Karachi" || city === "karachi" ? 200 : 250}
-        </Typography>
-      </Grid>
-      <Grid item xs={3}>
-        <Typography>Total</Typography>
-      </Grid>
-      <Grid item xs={6}></Grid>
-      <Grid item xs={3}>
-        <Typography display="block" variant="h6">
-          Rs: Total Price
-        </Typography>
-      </Grid>
-    </div>
+    </>
   );
 }
 

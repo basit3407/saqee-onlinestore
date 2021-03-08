@@ -33,7 +33,7 @@ export default function Shipping(props) {
   }, [editClicked.shipping]);
 
   return (
-    <Grid container item xs={12} md={9}>
+    <>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
@@ -208,7 +208,7 @@ export default function Shipping(props) {
           </form>
         </div>
       </Grid>
-    </Grid>
+    </>
   );
 }
 

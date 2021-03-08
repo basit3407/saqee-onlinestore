@@ -1,20 +1,23 @@
 import {
   Container,
   Grid,
-  Box,
   useTheme,
   useMediaQuery,
   makeStyles,
+  Hidden,
+  Typography,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Top from "../components/layout/Top";
 import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";
-// eslint-disable-next-line no-unused-vars
 import Billing from "../components/checkout/Billing";
-import { useRouter } from "next/router";
 
 export const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -34,6 +37,9 @@ export const useStyles = makeStyles((theme) => ({
   },
   stepHeader: {
     marginLeft: "5%",
+    "&.MuiTypography-h6": {
+      fontSize: "1rem",
+    },
   },
   editButton: {
     "&.MuiButtonBase-root": {
@@ -57,24 +63,22 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   show: {
-    maxHeight: "1000px",
+    maxHeight: "10,000px",
     transition: "max-height 0.2s ease",
     transitionDuration: "0.4s",
   },
-  billing: {},
+  billing: {
+    background: "#fafafa",
+    padding: theme.spacing(3),
+    maxHeight: "10,000px",
+    transition: "max-height 0.2s ease",
+    transitionDuration: "0.4s",
+  },
   error: {
     color: theme.palette.error.main,
   },
-  wrapperDiv: {
-    position: "relative",
-  },
-  overlap: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-  },
   body: {
-    padding: theme.spacing(1, 0, 3, 7),
+    padding: theme.spacing(1, 7),
   },
   emailAddress: {
     margin: theme.spacing(3, 0, 1),
@@ -165,8 +169,66 @@ export const useStyles = makeStyles((theme) => ({
   payment: {
     margin: theme.spacing(1, 0),
   },
+  paymentMethod: {
+    marginBottom: theme.spacing(1),
+  },
   grid: {
     marginBottom: theme.spacing(3),
+  },
+  image: {
+    borderRadius: theme.spacing(1),
+  },
+  billingTitle: {
+    paddingLeft: theme.spacing(1),
+  },
+  billingTypo: {
+    "&.MuiTypography-body1": {
+      fontWeight: 500,
+    },
+  },
+  billingGrid: {
+    "& .MuiGrid-item": {
+      marginBottom: theme.spacing(3),
+    },
+  },
+  subtotal: {
+    borderTop: "1px solid rgba(175,175,175,0.34)",
+    paddingTop: theme.spacing(3),
+  },
+  shippingAmount: {
+    borderBottom: "1px solid rgba(175,175,175,0.34)",
+    paddingBottom: theme.spacing(3),
+  },
+  total: {
+    paddingTop: theme.spacing(3),
+  },
+  billingButton: {
+    cursor: "pointer",
+    border: "none",
+    background: "none",
+    "&:focus": {
+      outline: "none",
+    },
+    "& .MuiSvgIcon-root": {
+      verticalAlign: "middle",
+      color: theme.palette.secondary.dark,
+    },
+  },
+  billingToggleTypo: {
+    verticalAlign: "middle",
+    color: theme.palette.secondary.dark,
+  },
+  cart: {
+    textAlign: "center",
+  },
+  billingToggleContainer: {
+    background: "#fafafa",
+    borderTop: "1px solid rgba(175,175,175,0.34)",
+    borderBottom: "1px solid rgba(175,175,175,0.34)",
+    padding: theme.spacing(1, 3, 1, 0),
+  },
+  cartIcon: {
+    color: theme.palette.secondary.dark,
   },
 }));
 export default function Checkout(props) {
@@ -175,15 +237,11 @@ export default function Checkout(props) {
     matches = useMediaQuery(theme.breakpoints.down("sm")),
     router = useRouter(),
     { cartItems } = props;
-
-  //For checking the state of edit button for opening dropdowns
-  const [editClicked, setEditClicked] = useState();
-
-  //Done status of customer and shipping sections
-  const [isDone, setIsDone] = useState();
-
-  //shipping details of order
-  const [shippingDetails, setShippingDetails] = useState();
+  //states
+  const [editClicked, setEditClicked] = useState(), //For checking the state of edit button for opening dropdowns
+    [isDone, setIsDone] = useState(), //Done status of customer and shipping sections
+    [shippingDetails, setShippingDetails] = useState(), //shipping details of order
+    [showBilling, setShowBilling] = useState(false); //billing section in small screen
 
   //on Page Load do the following:
   useEffect(() => {
@@ -261,49 +319,95 @@ export default function Checkout(props) {
           <section>
             <Container>
               <Grid container classes={{ root: classes.grid }}>
-                <Grid
-                  component={Box}
-                  display={{ xs: "block", md: "none" }}
-                  container
-                  item
-                  xs={12}
-                >
-                  {/* <Billing cartItems={cartItems} city={shippingDetails.city} /> */}
+                <Hidden mdUp>
+                  <Grid container item xs={12}>
+                    <Grid
+                      classes={{ root: classes.billingToggleContainer }}
+                      item
+                      container
+                      xs={12}
+                    >
+                      <Grid classes={{ root: classes.cart }} item xs={1}>
+                        <ShoppingCartIcon
+                          classes={{ root: classes.cartIcon }}
+                        />
+                      </Grid>
+                      <Grid item xs={8}>
+                        <Typography
+                          classes={{ root: classes.billingToggleTypo }}
+                          display="inline"
+                        >
+                          {showBilling
+                            ? "Hide Order Summary"
+                            : "Show Order Summary"}
+                        </Typography>
+                        <button
+                          className={classes.billingButton}
+                          onClick={() => setShowBilling(!showBilling)}
+                        >
+                          {showBilling ? (
+                            <ExpandLessIcon />
+                          ) : (
+                            <ExpandMoreIcon />
+                          )}
+                        </button>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Rs {totalAmount(cartItems, shippingDetails.city)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      item
+                      xs={12}
+                      classes={{
+                        root: showBilling ? classes.billing : classes.collapse,
+                      }}
+                    >
+                      <Billing
+                        cartItems={cartItems}
+                        city={shippingDetails.city}
+                      />
+                    </Grid>
+                  </Grid>
+                </Hidden>
+                <Grid container item xs={12} md={8}>
+                  <Customer
+                    editClicked={editClicked.customer}
+                    isDone={isDone.customer}
+                    handleClick={handleEditClick}
+                    handleSubmit={handleSubmit}
+                    matches={matches}
+                  />
+                  <Shipping
+                    editClicked={{
+                      customer: editClicked.customer,
+                      shipping: editClicked.shipping,
+                    }}
+                    isDone={isDone.shipping}
+                    handleClick={handleEditClick}
+                    handleSubmit={handleSubmit}
+                    matches={matches}
+                    shippingDetails={shippingDetails}
+                    handleChange={handleChange}
+                  />
+                  <Payment
+                    matches={matches}
+                    shippingDetails={shippingDetails}
+                    cartItems={cartItems}
+                    editClicked={editClicked.payment}
+                  />
                 </Grid>
-
-                <Customer
-                  editClicked={editClicked.customer}
-                  isDone={isDone.customer}
-                  handleClick={handleEditClick}
-                  handleSubmit={handleSubmit}
-                  matches={matches}
-                />
-                <Shipping
-                  editClicked={{
-                    customer: editClicked.customer,
-                    shipping: editClicked.shipping,
-                  }}
-                  isDone={isDone.shipping}
-                  handleClick={handleEditClick}
-                  handleSubmit={handleSubmit}
-                  matches={matches}
-                  shippingDetails={shippingDetails}
-                  handleChange={handleChange}
-                />
-                <Payment
-                  matches={matches}
-                  shippingDetails={shippingDetails}
-                  cartItems={cartItems}
-                  editClicked={editClicked.payment}
-                />
-                <Grid
-                  component={Box}
-                  display={{ xs: "none", md: "block" }}
-                  container
-                  item
-                  xs={12}
-                  md={3}
-                ></Grid>
+                <Hidden smDown>
+                  <Grid classes={{ root: classes.billing }} container item md>
+                    <Billing
+                      cartItems={cartItems}
+                      city={shippingDetails.city}
+                    />
+                  </Grid>
+                </Hidden>
               </Grid>
             </Container>
           </section>
@@ -323,3 +427,13 @@ Checkout.propTypes = {
     })
   ),
 };
+
+//this functions returns the total cost of order
+export const totalAmount = (cartItems, city) =>
+  city === "Karachi"
+    ? (cartItems.reduce((a, c) => a + c.price * c.qty, 0) + 200)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    : (cartItems.reduce((a, c) => a + c.price * c.qty, 0) + 250)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");

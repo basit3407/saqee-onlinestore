@@ -106,6 +106,9 @@ const useSTyles = makeStyles((theme) => ({
   shopDiv: {
     margin: "3% 0",
   },
+  image: {
+    borderRadius: theme.spacing(1),
+  },
 }));
 
 export default function Cart(props) {
@@ -300,6 +303,7 @@ const MapCartItems = (props) => {
       <Grid container classes={{ root: classes.gridCartItems }} key={index}>
         <Grid key={index} item xs={1}>
           <Image
+            className={classes.image}
             src={localStorage.getItem(`${item.title}/${item.id}`)}
             width={100}
             height={100}

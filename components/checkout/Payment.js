@@ -43,7 +43,7 @@ export default function Payment(props) {
   };
 
   return (
-    <Grid container item xs={12} md={9}>
+    <>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>3</Avatar>
@@ -61,22 +61,10 @@ export default function Payment(props) {
         classes={{ root: editClicked ? classes.show : classes.collapse }}
       >
         <div className={classes.body}>
-          <Typography variant="h6">Shipping Details</Typography>
           <div className={classes.payment}>
-            <Typography>Address:</Typography>
-            <Typography variant="body2">{shippingDetails.address}</Typography>
-          </div>
-          <div className={classes.payment}>
-            <Typography>City:</Typography>
-            <Typography variant="body2">{shippingDetails.city}</Typography>
-          </div>
-          <div className={classes.payment}>
-            <Typography>Phone Number:</Typography>
-            <Typography variant="body2">{shippingDetails.number}</Typography>
-          </div>
-
-          <div className={classes.payment}>
-            <Typography>Payment Method:</Typography>
+            <Typography classes={{ root: classes.paymentMethod }}>
+              Payment Method:
+            </Typography>
             <TextField select variant="outlined" SelectProps={{ native: true }}>
               <option>Cash on Delivery</option>
             </TextField>
@@ -89,7 +77,7 @@ export default function Payment(props) {
           </div>
         </div>
       </Grid>
-    </Grid>
+    </>
   );
 }
 
