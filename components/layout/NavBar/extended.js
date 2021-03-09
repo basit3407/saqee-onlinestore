@@ -66,6 +66,7 @@ export const ShoppingMenu = (props) => {
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
       open={openShopping}
+      id="shoppingMenu"
       onClose={handleClose}
       classes={{ paper: classes.shoppingPaper }}
       PaperProps={{ elevation: 0 }}

@@ -10,7 +10,7 @@ export default async function productsHandler(req, res) {
 
   switch (method) {
     case "GET":
-      // @route GET api/products?category=[category]
+      // @route GET api/products?category=[category]&keyword=${keyword}&sort=${sort}
       // @desc get all the products from data base,
       // @access public
       {
@@ -32,6 +32,7 @@ export default async function productsHandler(req, res) {
           //if sort selected then sort also.
           sortWord = sort ? { [sort]: 1 } : {};
         //combine above 3 quiries and fetch data from database.
+
         try {
           const products = await db
             .collection("products")

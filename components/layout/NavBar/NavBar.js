@@ -23,6 +23,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
 import Image from "next/image";
+import axios from "axios";
 import { SearchPopover, ShoppingMenu } from "./extended";
 
 const useStyles = makeStyles((theme) => ({
@@ -146,28 +147,29 @@ export default function NavBar(props) {
     ],
     { cartItems } = props,
     classes = useStyles(),
-    //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
-    divRef = useRef(),
-    //anchor for search popover
-    [anchorSearch, setAnchorSearch] = useState(null),
-    //anchor for main menu in small screens
-    [anchorMenu, setAnchorMenu] = useState(null),
-    //anchor for shopping menu
-    [anchorShopping, setAnchorShopping] = useState(null),
-    //for opening search bar popever
-    openSearch = Boolean(anchorSearch),
-    //for opening main menu in small screens
-    openMenu = Boolean(anchorMenu),
-    //for opening shopping menu
-    openShopping = Boolean(anchorShopping),
+    divRef = useRef(), //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
     theme = useTheme(),
-    matches = useMediaQuery(theme.breakpoints.down("sm")),
-    handleMenu = (event) => {
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
+
+  //states
+  const [anchorSearch, setAnchorSearch] = useState(), //anchor for search popover
+    [anchorMenu, setAnchorMenu] = useState(), //anchor for main menu in small screens
+    [anchorShopping, setAnchorShopping] = useState(), //anchor for shopping menu
+    openSearch = Boolean(anchorSearch), //for opening search bar popever
+    openMenu = Boolean(anchorMenu), //for opening main menu in small screens
+    openShopping = Boolean(anchorShopping); //for opening shopping menu
+
+  // Functions for handling opening and closing of menu and popovers
+  const handleMenu = (event) => {
       const { id } = event.currentTarget;
       if (id === "menu") return setAnchorMenu(divRef.current);
       setAnchorSearch(divRef.current);
     },
-    handleClose = () => {
+    handleClose = (event) => {
+      const { id } = event.target;
+
+      if (id === "shoppingMenu") return setAnchorShopping();
+
       setAnchorMenu(null);
       setAnchorSearch(null);
       setAnchorShopping(null);
@@ -385,6 +387,14 @@ MapMenu.propTypes = {
 export const SearchBar = (props) => {
   const classes = useStyles(),
     { handleClose, id } = props;
+
+  //saving search results
+  const [searchResults, setSearchResults] = useState();
+  const handleSearchQuery = (event) =>
+    sendSearchQuery(event.target.value).then((results) =>
+      setSearchResults(results)
+    );
+
   //Focus the input when loaded
   useEffect(() => {
     document.getElementById(id).focus();
@@ -393,6 +403,7 @@ export const SearchBar = (props) => {
     <div className={classes.search}>
       <InputBase
         placeholder="What are you looking for ?"
+        onChange={handleSearchQuery}
         id={id}
         name="input"
         onKeyDown={(e) => {
@@ -406,6 +417,21 @@ export const SearchBar = (props) => {
           input: classes.inputInput,
         }}
       />
+      {Array.isArray(searchResults) && searchResults.length > 0 ? (
+        searchResults.map((item, index) => {
+          return (
+            <ul key={index}>
+              <li>
+                <Link href={`/products/${item.category}/${item._id}`}>
+                  {item.title}
+                </Link>
+              </li>
+            </ul>
+          );
+        })
+      ) : (
+        <span>no product found for this search </span>
+      )}
     </div>
   );
 };
@@ -413,4 +439,16 @@ export const SearchBar = (props) => {
 SearchBar.propTypes = {
   handleClose: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+};
+
+const sendSearchQuery = async (query) => {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:3000/api/products?keyword=${query}`
+    );
+
+    return data.products;
+  } catch (e) {
+    if (e.response.status === 404) return [];
+  }
 };
