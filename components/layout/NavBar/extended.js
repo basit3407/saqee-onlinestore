@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   shoppingPaper: {
     backgroundColor: theme.palette.secondary.light,
   },
+  popover: {
+    pointerEvents: "none",
+  },
 }));
 
 export const SearchPopover = (props) => {
