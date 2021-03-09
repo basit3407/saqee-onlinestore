@@ -5,27 +5,33 @@ import {
   Typography,
   Button,
   TextField,
+  // eslint-disable-next-line no-unused-vars
   Link,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
-import validator from "validator";
-import isEmpty from "is-empty";
 import { useStyles } from "../../pages/checkout";
 import { useState, useEffect } from "react";
+import { validateEmail } from "../../validation/user";
 
 export default function Customer(props) {
   const classes = useStyles(),
-    { editClicked, handleClick, isDone, matches, handleSubmit } = props,
-    [email, setEmail] = useState(null),
-    [inValidEmail, setinValidEmail] = useState(false);
+    { editClicked, handleClick, isDone, matches, handleSubmit } = props;
 
+  const [email, setEmail] = useState();
+  //validation of email
+  const [inValidEmail, setinValidEmail] = useState(false);
+
+  //on page load
   useEffect(() => {
-    setEmail(localStorage.getItem("email"));
+    //if email is already saved get it,;
+    const savedEmail = localStorage.getItem("email"),
+      email = savedEmail || "";
+    setEmail(email);
   }, []);
 
   return (
-    <Grid container item xs={12} md={9}>
+    <>
       <Grid item xs={4}>
         <Box display="flex" alignItems="center">
           <Avatar classes={{ root: classes.avatar }}>
@@ -40,7 +46,7 @@ export default function Customer(props) {
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box display={editClicked ? "none" : "block"}>
+        {!editClicked && (
           <Typography
             variant={matches ? "body2" : "body1"}
             classes={{ root: classes.email }}
@@ -48,10 +54,10 @@ export default function Customer(props) {
           >
             {email}
           </Typography>
-        </Box>
+        )}
       </Grid>
       <Grid item xs={2}>
-        <Box display={editClicked ? "none" : "block"}>
+        {!editClicked && (
           <Button
             onClick={handleClick}
             name="customer"
@@ -59,9 +65,8 @@ export default function Customer(props) {
           >
             <Typography variant="caption">Edit</Typography>
           </Button>
-        </Box>
+        )}
       </Grid>
-
       <Grid
         item
         classes={{
@@ -69,53 +74,56 @@ export default function Customer(props) {
         }}
         xs={12}
       >
-        <div>
+        <div className={classes.body}>
           <Typography display="block">
-            Checking out as a <strong>Guest</strong>?You&apos;ll be able to save
-            your details to create an account with us later.
+            Checking out as a <strong>Guest</strong>? You&apos;ll be able to
+            save your details to create an account with us later.
           </Typography>
-          <Typography display="block">Email Address</Typography>
+          <Typography classes={{ root: classes.emailAddress }} display="block">
+            Email Address:
+          </Typography>
           <TextField
             fullWidth
             placeholder="Email"
+            variant="outlined"
             type="email"
+            classes={{ root: classes.textField }}
             value={email ? email : ""}
             onChange={(e) => setEmail(e.target.value)}
           />
           {/* if invalid email show error */}
           {inValidEmail && (
             <span className={classes.error}>
-              please enter valid email address
+              Please enter valid email address
             </span>
           )}
-          <div>
+          <div className={classes.buttonDiv}>
             <Button
-              variant="contained"
               name="customer"
+              classes={{ root: classes.button }}
               onClick={(e) => {
-                // check that email is not empty.
-                if (isEmpty(email)) return setinValidEmail(true);
-                //check if email format is valid.
-                if (!validator.isEmail(email)) return setinValidEmail(true);
-                //if valid then save the email in local storage.
+                //email validation
+                if (!validateEmail(email)) return setinValidEmail(true);
                 localStorage.setItem("email", email);
                 handleSubmit(e);
+                //remove error of email validation if present
+                inValidEmail && setinValidEmail(false);
               }}
             >
               Continue as Guest
             </Button>
           </div>
-          <Typography>
+          {/* <Typography>
             Already have an account ? <Link href="#">Sign in now</Link>
-          </Typography>
+          </Typography> */}
         </div>
       </Grid>
-    </Grid>
+    </>
   );
 }
 
 Customer.propTypes = {
-  editClicked: PropTypes.bool.isRequired,
+  editClicked: PropTypes.bool,
   isDone: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,

@@ -1,6 +1,3 @@
-// /* eslint-disable jsx-a11y/no-static-element-interactions */
-// /* eslint-disable jsx-a11y/click-events-have-key-events */
-
 import { useState, Fragment, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
@@ -20,10 +17,13 @@ import {
   useTheme,
   useMediaQuery,
   InputBase,
+  Avatar,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
+import Image from "next/image";
+import axios from "axios";
 import { SearchPopover, ShoppingMenu } from "./extended";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,21 +49,23 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   sideGridItem: {
-    display: "inline-block",
+    // display: "inline-block",
+    cursor: "pointer",
     "&:hover": {
       "& $item": {
         color: theme.palette.secondary.main,
       },
-      cursor: "pointer",
     },
+    border: "none",
+    background: "none",
     marginTop: theme.spacing(1),
+    position: "relative",
   },
   //For nested hover to work we need to create empty class of child item
   item: {},
   bigMenu: {
     textAlign: "center",
   },
-  logo: { width: "150px" },
   menuLink: {
     margin: theme.spacing(1),
     cursor: "pointer",
@@ -107,9 +109,29 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(1),
     },
   },
+  avatar: {
+    "&.MuiAvatar-colorDefault": {
+      backgroundColor: theme.palette.secondary.main,
+    },
+    width: theme.spacing(2),
+    height: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      width: theme.spacing(1),
+      height: theme.spacing(1),
+    },
+    margin: "1% 0",
+    fontSize: "1rem",
+    position: "absolute",
+    top: 0,
+    right: 0,
+    color: theme.palette.text.secondary,
+  },
+  searchList: {
+    listStyleType: "none",
+  },
 }));
 
-export default function NavBar() {
+export default function NavBar(props) {
   const mainMenuBigScreenItems = [
       { title: "Home", href: "/" },
       { title: "SHOP", href: "#" },
@@ -126,33 +148,51 @@ export default function NavBar() {
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },
     ],
+    { cartItems } = props,
     classes = useStyles(),
-    //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
-    divRef = useRef(),
-    //anchor for search popover
-    [anchorSearch, setAnchorSearch] = useState(null),
-    //anchor for main menu in small screens
-    [anchorMenu, setAnchorMenu] = useState(null),
-    //anchor for shopping menu
-    [anchorShopping, setAnchorShopping] = useState(null),
-    //for opening search bar popever
-    openSearch = Boolean(anchorSearch),
-    //for opening main menu in small screens
-    openMenu = Boolean(anchorMenu),
-    //for opening shopping menu
-    openShopping = Boolean(anchorShopping),
+    divRef = useRef(), //for using toolbar as anchor point for search popover,shopping menu and small screen main menu
     theme = useTheme(),
-    matches = useMediaQuery(theme.breakpoints.down("sm")),
-    handleMenu = (event) => {
-      const { id } = event.currentTarget;
-      if (id === "menu") return setAnchorMenu(divRef.current);
-      setAnchorSearch(divRef.current);
-    },
-    handleClose = () => {
-      setAnchorMenu(null);
-      setAnchorSearch(null);
-      setAnchorShopping(null);
-    };
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
+
+  //states
+  const [anchorSearch, setAnchorSearch] = useState(), //anchor for search popover
+    [anchorMenu, setAnchorMenu] = useState(), //anchor for main menu in small screens
+    [anchorShopping, setAnchorShopping] = useState(), //anchor for shopping menu
+    [searchQuery, setSearchQuery] = useState(""), //saving search Query
+    [searchResults, setSearchResults] = useState(); //saving search result
+
+  //Booleans for opening menus and popovers
+  const openSearch = Boolean(anchorSearch), //for opening search bar popever
+    openMenu = Boolean(anchorMenu), //for opening main menu in small screens
+    openShopping = Boolean(anchorShopping); //for opening shopping menu
+
+  //Funcion for handling change in search Query
+  const handleSearchQuery = (event) => setSearchQuery(event.target.value);
+
+  //send Search Query to database and get results
+  useEffect(
+    () =>
+      searchQuery
+        ? sendSearchQuery(searchQuery).then((results) =>
+            setSearchResults(results)
+          )
+        : setSearchResults(),
+    [searchQuery]
+  );
+
+  //Function for closing search Bar
+  const handleSearchClose = () => {
+    setAnchorSearch();
+    setSearchResults();
+    setSearchQuery("");
+  };
+
+  //Function for opening Menu in small screen and SearchBar in Big Screen
+  const handleMenu = (event) => {
+    const { id } = event.currentTarget;
+    if (id === "menu") return setAnchorMenu(divRef.current);
+    setAnchorSearch(divRef.current);
+  };
 
   return (
     <>
@@ -172,16 +212,13 @@ export default function NavBar() {
             <Grid className={classes.root} spacing={1} container>
               <Grid item xs>
                 <Hidden implementation="css" smDown>
-                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-                  <div
+                  <button
                     id="search"
                     onClick={handleMenu}
                     className={classes.sideGridItem}
-                    role="button"
-                    tabIndex={0}
                   >
                     <Sides matches={matches} icon={SearchIcon} text="search" />
-                  </div>
+                  </button>
                 </Hidden>
                 <Hidden implementation="css" mdUp>
                   <IconButton
@@ -205,17 +242,23 @@ export default function NavBar() {
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                     keepMounted
                     open={openMenu}
-                    onClose={handleClose}
+                    id="mainMenu"
+                    onClose={() => setAnchorMenu()}
                     classes={{ paper: classes.menuPaper }}
                     //important for keeping menu to full left
                     marginThreshold={0}
                   >
                     <MenuItem>
                       {/* searchbar in small screen */}
-                      <SearchBar handleClose={handleClose} id="small" />
+                      <SearchBar
+                        id="small"
+                        onClose={handleSearchClose}
+                        searchResults={searchResults}
+                        handleSearchQuery={handleSearchQuery}
+                        searchQuery={searchQuery}
+                      />
                     </MenuItem>
                     <MapMenu
-                      handleClose={handleClose}
                       textColor="textSecondary"
                       element={MenuItem}
                       menuItems={mainMenuSmallScreenItems}
@@ -224,17 +267,27 @@ export default function NavBar() {
                 </Hidden>
               </Grid>
               <Grid className={classes.bigMenu} item xs={8}>
-                <img className={classes.logo} src="images/logo.png" alt="" />
+                <Image
+                  width={matches ? 125 : 150}
+                  height={matches ? 75 : 100}
+                  src="/images/logo.png"
+                  alt=""
+                />
               </Grid>
               <Grid style={{ textAlign: "right" }} item xs>
-                <Link href="#" underline="none">
-                  <div className={classes.sideGridItem}>
+                <Link href="/cart" underline="none">
+                  <button className={classes.sideGridItem}>
                     <Sides
                       matches={matches}
                       icon={ShoppingCartIcon}
                       text="cart"
                     />
-                  </div>
+                    {Array.isArray(cartItems) && cartItems.length > 0 && (
+                      <Avatar classes={{ root: classes.avatar }}>
+                        {cartItems.reduce((a, c) => a + c.qty, 0)}
+                      </Avatar>
+                    )}
+                  </button>
                 </Link>
               </Grid>
               <Grid
@@ -263,24 +316,37 @@ export default function NavBar() {
       <SearchPopover
         anchorSearch={anchorSearch}
         openSearch={openSearch}
-        handleClose={handleClose}
+        handleSearchClose={handleSearchClose}
+        searchResults={searchResults}
+        handleSearchQuery={handleSearchQuery}
+        searchQuery={searchQuery}
       />
       {/* shopping Menu */}
       <ShoppingMenu
         anchorShopping={anchorShopping}
+        setAnchorShopping={setAnchorShopping}
         openShopping={openShopping}
-        handleClose={handleClose}
       />
     </>
   );
 }
 
-//this function is for side icons of cart and search.
+NavBar.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.object),
+      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      price: PropTypes.number,
+    })
+  ),
+};
+
+//This function is for side icons of cart and search.
 const Sides = (props) => {
   const classes = useStyles(),
     Icon = props.icon,
     { text, matches } = props;
-
   return (
     <>
       <Icon
@@ -300,7 +366,6 @@ const Sides = (props) => {
     </>
   );
 };
-
 Sides.propTypes = {
   icon: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
@@ -312,7 +377,6 @@ export const MapMenu = (props) => {
   const Element = props.element,
     { textColor, setAnchorShopping, divRef, menuItems } = props,
     classes = useStyles();
-
   return menuItems.map((item, index) => {
     return (
       <Element key={index}>
@@ -350,35 +414,84 @@ MapMenu.propTypes = {
 //This function is for search bar
 export const SearchBar = (props) => {
   const classes = useStyles(),
-    { handleClose, id } = props;
+    { onClose, id, handleSearchQuery, searchResults, searchQuery } = props;
 
   //Focus the input when loaded
   useEffect(() => {
     document.getElementById(id).focus();
   });
-
   return (
     <div className={classes.search}>
       <InputBase
         placeholder="What are you looking for ?"
+        onChange={handleSearchQuery}
+        value={searchQuery}
         id={id}
         name="input"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleClose();
-            e.target.value = "";
-          }
-        }}
+        onKeyDown={(event) => event.key === "Enter" && onClose()}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
       />
+      {Array.isArray(searchResults) &&
+        (searchResults.length > 0 ? (
+          searchResults.map((item, index) => {
+            return (
+              <ul className={classes.searchList} key={index}>
+                <li>
+                  <Link
+                    color="textSecondary"
+                    href={`/products/${item.category}/${item._id}`}
+                    underline="none"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              </ul>
+            );
+          })
+        ) : (
+          <span>0 product results for {`'${searchQuery}'`} </span>
+        ))}
     </div>
   );
 };
 
 SearchBar.propTypes = {
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  searchQuery: PropTypes.string,
+  handleSearchQuery: PropTypes.func.isRequired,
+  searchResults: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      countInStock: PropTypes.number.isRequired,
+      description: PropTypes.string,
+      brand: PropTypes.string,
+      auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+      variations: PropTypes.arrayOf(
+        PropTypes.shape({
+          variationTitle: PropTypes.string,
+          variations: PropTypes.arrayOf(PropTypes.string),
+        })
+      ),
+    })
+  ),
+};
+
+//This function sends query to database
+const sendSearchQuery = async (query) => {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:3000/api/search?keyword=${query}`
+    );
+    return data.products;
+  } catch (e) {
+    if (e.response.status === 404) return [];
+  }
 };

@@ -1,29 +1,35 @@
-import isEmpty from "is-empty";
-
 export default function validate(data) {
-  const errors = {};
-
+  let errors;
   for (const property in data) {
-    // exclude optional properties from validation
-    if (
+    //exclude optional properties
+    errors =
       !(
         property === "description" ||
         property === "auxillaryImages" ||
         property === "brand" ||
         property === "variations"
-      )
-    )
-      if (isEmpty(data[property]))
-        //return error if any of the compulsory fields is empty
-        errors[property] = `${property} field is required`;
-      // if countInStock or price is not a number return error
-      else if (property === "countInStock" || property === "price")
-        if (!data[property].match("/^d+$/"))
-          errors[property] = `please type the the ${property} in numbers`;
+      ) && !data[property] //empty fields validation
+        ? {
+            ...errors,
+            [property]: `${property.charAt(0).toUpperCase()}${property.slice(
+              1
+            )} is required`,
+          }
+        : {
+            ...errors,
+            ...((property === "countInStock" || property === "price") && //numbers validation
+              !/^d+$/.test(data[property]) && {
+                [property]: "Please enter number in numeric format",
+              }),
+          };
   }
-
   return {
     errors,
     isValid: isEmpty(errors),
   };
 }
+//This function checks for empty objects
+export const isEmpty = (obj) => {
+  for (const prop in obj) return false;
+  return true;
+};

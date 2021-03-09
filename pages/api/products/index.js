@@ -3,50 +3,49 @@ import { connectToDatabase } from "../../../util/mongodb";
 
 export default async function productsHandler(req, res) {
   const {
-      query: { category, keyword, sort },
+      query: { category, sort },
       method,
     } = req,
-    //convert the first letter of query to uppercase and remaining to lowercase.
-    Category =
-      category.charAt[0].toUpperCase() + category.slice(1).toLowerCase(),
     { db } = await connectToDatabase();
 
   switch (method) {
     case "GET":
-      // @route GET api/products/[name]
-      // @desc get products of [name] from data base
+      // @route GET api/products?category=[category]&sort=${sort}
+      // @desc get all the products from data base,
       // @access public
       {
         //Find by category
-        const category = Category ? { category: Category } : {},
-          //if search keyword present,find by search keywrod using regex for smart search
-          searchKeyword = keyword
+        const Category = category
             ? {
-                title: {
-                  $regex: keyword,
-                  $options: "i",
-                },
+                category: category.slice(0).toLowerCase(),
               }
             : {},
           //if sort selected then sort also.
-          sortWord = sort ? { [sort]: 1 } : {},
-          //combine above 3 quiries and fetch data from database.
-          products = await db
+          sortWord = sort ? { [sort]: 1 } : {};
+        //combine above 3 quiries and fetch data from database.
+
+        try {
+          const products = await db
             .collection("products")
-            .find({ ...category, ...searchKeyword })
+            .find(Category)
             .sort(sortWord)
             .toArray();
-
-        //give error if no products
-        if (!products.length)
-          return res.status(404).json({ error: "no such category" });
-
-        res.status(200).json({ products: products });
+          //give error if no products
+          if (!products.length)
+            return res.status(404).json({ error: "no such category" });
+          //if no errors send success response
+          res.status(200).json({ products: products });
+        } catch (e) {
+          e &&
+            res
+              .status(500)
+              .json({ error: "there was some problem,please try again" });
+        }
       }
 
       break;
     case "POST":
-      // @route POST api/products/[name]
+      // @route POST api/products
       // @desc create product in products of [name] in data base
       // @access public
       {
@@ -55,10 +54,16 @@ export default async function productsHandler(req, res) {
         // //if not valid retrun error
         // if (!isValid) return res.status(400).json(errors);
 
-        //if no errors save product
-        await db.collection("products").insertMany(req.body);
-
-        res.status(200).json({ message: "product saved" });
+        //if no errors save
+        try {
+          await db.collection("products").insertMany(req.body);
+          res.status(200).json({ message: "product saved" });
+        } catch (e) {
+          e &&
+            res
+              .status(500)
+              .json({ error: "there was some problem,please try again" });
+        }
       }
 
       break;

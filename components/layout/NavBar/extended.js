@@ -12,11 +12,21 @@ const useStyles = makeStyles((theme) => ({
   shoppingPaper: {
     backgroundColor: theme.palette.secondary.light,
   },
+  popover: {
+    pointerEvents: "none",
+  },
 }));
 
 export const SearchPopover = (props) => {
   const classes = useStyles(),
-    { handleClose, anchorSearch, openSearch } = props;
+    {
+      anchorSearch,
+      handleSearchClose,
+      openSearch,
+      searchResults,
+      handleSearchQuery,
+      searchQuery,
+    } = props;
 
   return (
     <Popover
@@ -28,26 +38,53 @@ export const SearchPopover = (props) => {
       transformOrigin={{ vertical: "top", horizontal: "left" }}
       keepMounted
       open={openSearch}
-      onClose={handleClose}
+      onClose={handleSearchClose}
       classes={{ paper: classes.searchPaper }}
       PaperProps={{ elevation: 0 }}
       //important for keeping popover to full left
       marginThreshold={0}
     >
-      <SearchBar id="big" handleClose={handleClose} />
+      <SearchBar
+        id="big"
+        handleSearchQuery={handleSearchQuery}
+        searchResults={searchResults}
+        onClose={handleSearchClose}
+        searchQuery={searchQuery}
+      />
     </Popover>
   );
 };
 
 SearchPopover.propTypes = {
-  handleClose: PropTypes.func.isRequired,
+  handleSearchClose: PropTypes.func.isRequired,
   anchorSearch: PropTypes.object,
   openSearch: PropTypes.bool.isRequired,
+  handleSearchQuery: PropTypes.func.isRequired,
+  searchQuery: PropTypes.string,
+  searchResults: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      countInStock: PropTypes.number.isRequired,
+      description: PropTypes.string,
+      brand: PropTypes.string,
+      auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+      variations: PropTypes.arrayOf(
+        PropTypes.shape({
+          variationTitle: PropTypes.string,
+          variations: PropTypes.arrayOf(PropTypes.string),
+        })
+      ),
+    })
+  ),
 };
 
 export const ShoppingMenu = (props) => {
   const classes = useStyles(),
-    { anchorShopping, openShopping, handleClose } = props,
+    { anchorShopping, setAnchorShopping, openShopping } = props,
     shoppingMenuItems = [
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
@@ -66,9 +103,9 @@ export const ShoppingMenu = (props) => {
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
       open={openShopping}
-      onClose={handleClose}
+      onClose={() => setAnchorShopping()}
       classes={{ paper: classes.shoppingPaper }}
-      PaperProps={{ elevation: 0 }}
+      PaperProps={{ elevation: 0, id: "shopping" }}
       marginThreshold={0}
       getContentAnchorEl={null}
     >
@@ -85,7 +122,7 @@ export const ShoppingMenu = (props) => {
 };
 
 ShoppingMenu.propTypes = {
-  handleClose: PropTypes.func.isRequired,
+  setAnchorShopping: PropTypes.func.isRequired,
   anchorShopping: PropTypes.object,
   openShopping: PropTypes.bool.isRequired,
 };
