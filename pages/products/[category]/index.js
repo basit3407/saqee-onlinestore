@@ -108,18 +108,11 @@ export default function Products(props) {
             <Grid item xs={12}>
               <div className={classes.toolbar}>
                 <Grid container>
-                  <Grid xs={false} sm={10} item></Grid>
-                  <Grid classes={{ root: classes.gridButton }} item xs={6} sm>
+                  <Grid xs={false} sm={11} item></Grid>
+                  <Grid classes={{ root: classes.gridButton }} item xs={12} sm>
                     <Button classes={{ root: classes.button }}>
                       <Typography align="center" variant="button">
                         sort
-                      </Typography>
-                    </Button>
-                  </Grid>
-                  <Grid item classes={{ root: classes.gridButton }} xs={6} sm>
-                    <Button classes={{ root: classes.button }}>
-                      <Typography align="center" variant="button">
-                        filter
                       </Typography>
                     </Button>
                   </Grid>
