@@ -116,6 +116,13 @@ export default function Products(props) {
                       </Typography>
                     </Button>
                   </Grid>
+                  {/* <Grid item classes={{ root: classes.gridButton }} xs={6} sm>
+                    <Button classes={{ root: classes.button }}>
+                      <Typography align="center" variant="button">
+                        filter
+                      </Typography>
+                    </Button>
+                  </Grid> */}
                 </Grid>
               </div>
             </Grid>

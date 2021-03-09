@@ -73,8 +73,8 @@ export default function Payment(props) {
             <Button classes={{ root: classes.button }} onClick={handleSubmit}>
               Place Order
             </Button>
-            {error && <span className={classes.error}>{error}</span>}
           </div>
+          {error && <div className={classes.error}>{error}</div>}
         </div>
       </Grid>
     </>
