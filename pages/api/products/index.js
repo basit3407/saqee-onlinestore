@@ -3,14 +3,14 @@ import { connectToDatabase } from "../../../util/mongodb";
 
 export default async function productsHandler(req, res) {
   const {
-      query: { category, keyword, sort },
+      query: { category, sort },
       method,
     } = req,
     { db } = await connectToDatabase();
 
   switch (method) {
     case "GET":
-      // @route GET api/products?category=[category]&keyword=${keyword}&sort=${sort}
+      // @route GET api/products?category=[category]&sort=${sort}
       // @desc get all the products from data base,
       // @access public
       {
@@ -20,15 +20,6 @@ export default async function productsHandler(req, res) {
                 category: category.slice(0).toLowerCase(),
               }
             : {},
-          //if search keyword present,find by search keywrod using regex for smart search
-          searchKeyword = keyword
-            ? {
-                title: {
-                  $regex: keyword,
-                  $options: "i",
-                },
-              }
-            : {},
           //if sort selected then sort also.
           sortWord = sort ? { [sort]: 1 } : {};
         //combine above 3 quiries and fetch data from database.
@@ -36,7 +27,7 @@ export default async function productsHandler(req, res) {
         try {
           const products = await db
             .collection("products")
-            .find({ ...Category, ...searchKeyword })
+            .find(Category)
             .sort(sortWord)
             .toArray();
           //give error if no products

@@ -126,6 +126,9 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     color: theme.palette.text.secondary,
   },
+  searchList: {
+    listStyleType: "none",
+  },
 }));
 
 export default function NavBar(props) {
@@ -155,25 +158,41 @@ export default function NavBar(props) {
   const [anchorSearch, setAnchorSearch] = useState(), //anchor for search popover
     [anchorMenu, setAnchorMenu] = useState(), //anchor for main menu in small screens
     [anchorShopping, setAnchorShopping] = useState(), //anchor for shopping menu
-    openSearch = Boolean(anchorSearch), //for opening search bar popever
+    [searchQuery, setSearchQuery] = useState(""), //saving search Query
+    [searchResults, setSearchResults] = useState(); //saving search result
+
+  //Booleans for opening menus and popovers
+  const openSearch = Boolean(anchorSearch), //for opening search bar popever
     openMenu = Boolean(anchorMenu), //for opening main menu in small screens
     openShopping = Boolean(anchorShopping); //for opening shopping menu
 
-  // Functions for handling opening and closing of menu and popovers
+  //Funcion for handling change in search Query
+  const handleSearchQuery = (event) => setSearchQuery(event.target.value);
+
+  //send Search Query to database and get results
+  useEffect(
+    () =>
+      searchQuery
+        ? sendSearchQuery(searchQuery).then((results) =>
+            setSearchResults(results)
+          )
+        : setSearchResults(),
+    [searchQuery]
+  );
+
+  //Function for closing search Bar
+  const handleSearchClose = () => {
+    setAnchorSearch();
+    setSearchResults();
+    setSearchQuery("");
+  };
+
+  //Function for opening Menu in small screen and SearchBar in Big Screen
   const handleMenu = (event) => {
-      const { id } = event.currentTarget;
-      if (id === "menu") return setAnchorMenu(divRef.current);
-      setAnchorSearch(divRef.current);
-    },
-    handleClose = (event) => {
-      const { id } = event.target;
-
-      if (id === "shoppingMenu") return setAnchorShopping();
-
-      setAnchorMenu(null);
-      setAnchorSearch(null);
-      setAnchorShopping(null);
-    };
+    const { id } = event.currentTarget;
+    if (id === "menu") return setAnchorMenu(divRef.current);
+    setAnchorSearch(divRef.current);
+  };
 
   return (
     <>
@@ -223,17 +242,23 @@ export default function NavBar(props) {
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                     keepMounted
                     open={openMenu}
-                    onClose={handleClose}
+                    id="mainMenu"
+                    onClose={() => setAnchorMenu()}
                     classes={{ paper: classes.menuPaper }}
                     //important for keeping menu to full left
                     marginThreshold={0}
                   >
                     <MenuItem>
                       {/* searchbar in small screen */}
-                      <SearchBar handleClose={handleClose} id="small" />
+                      <SearchBar
+                        id="small"
+                        onClose={handleSearchClose}
+                        searchResults={searchResults}
+                        handleSearchQuery={handleSearchQuery}
+                        searchQuery={searchQuery}
+                      />
                     </MenuItem>
                     <MapMenu
-                      handleClose={handleClose}
                       textColor="textSecondary"
                       element={MenuItem}
                       menuItems={mainMenuSmallScreenItems}
@@ -291,13 +316,16 @@ export default function NavBar(props) {
       <SearchPopover
         anchorSearch={anchorSearch}
         openSearch={openSearch}
-        handleClose={handleClose}
+        handleSearchClose={handleSearchClose}
+        searchResults={searchResults}
+        handleSearchQuery={handleSearchQuery}
+        searchQuery={searchQuery}
       />
       {/* shopping Menu */}
       <ShoppingMenu
         anchorShopping={anchorShopping}
+        setAnchorShopping={setAnchorShopping}
         openShopping={openShopping}
-        handleClose={handleClose}
       />
     </>
   );
@@ -386,14 +414,7 @@ MapMenu.propTypes = {
 //This function is for search bar
 export const SearchBar = (props) => {
   const classes = useStyles(),
-    { handleClose, id } = props;
-
-  //saving search results
-  const [searchResults, setSearchResults] = useState();
-  const handleSearchQuery = (event) =>
-    sendSearchQuery(event.target.value).then((results) =>
-      setSearchResults(results)
-    );
+    { onClose, id, handleSearchQuery, searchResults, searchQuery } = props;
 
   //Focus the input when loaded
   useEffect(() => {
@@ -404,49 +425,71 @@ export const SearchBar = (props) => {
       <InputBase
         placeholder="What are you looking for ?"
         onChange={handleSearchQuery}
+        value={searchQuery}
         id={id}
         name="input"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleClose();
-            e.target.value = "";
-          }
-        }}
+        onKeyDown={(event) => event.key === "Enter" && onClose()}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
       />
-      {Array.isArray(searchResults) && searchResults.length > 0 ? (
-        searchResults.map((item, index) => {
-          return (
-            <ul key={index}>
-              <li>
-                <Link href={`/products/${item.category}/${item._id}`}>
-                  {item.title}
-                </Link>
-              </li>
-            </ul>
-          );
-        })
-      ) : (
-        <span>no product found for this search </span>
-      )}
+      {Array.isArray(searchResults) &&
+        (searchResults.length > 0 ? (
+          searchResults.map((item, index) => {
+            return (
+              <ul className={classes.searchList} key={index}>
+                <li>
+                  <Link
+                    color="textSecondary"
+                    href={`/products/${item.category}/${item._id}`}
+                    underline="none"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              </ul>
+            );
+          })
+        ) : (
+          <span>0 product results for {`'${searchQuery}'`} </span>
+        ))}
     </div>
   );
 };
 
 SearchBar.propTypes = {
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  searchQuery: PropTypes.string,
+  handleSearchQuery: PropTypes.func.isRequired,
+  searchResults: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      countInStock: PropTypes.number.isRequired,
+      description: PropTypes.string,
+      brand: PropTypes.string,
+      auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+      variations: PropTypes.arrayOf(
+        PropTypes.shape({
+          variationTitle: PropTypes.string,
+          variations: PropTypes.arrayOf(PropTypes.string),
+        })
+      ),
+    })
+  ),
 };
 
+//This function sends query to database
 const sendSearchQuery = async (query) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:3000/api/products?keyword=${query}`
+      `http://localhost:3000/api/search?keyword=${query}`
     );
-
     return data.products;
   } catch (e) {
     if (e.response.status === 404) return [];

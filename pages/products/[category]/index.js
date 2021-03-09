@@ -235,7 +235,7 @@ MapArray.propTypes = {
         })
       ),
     })
-  ).isRequired,
+  ),
 };
 
 export async function getServerSideProps(context) {
