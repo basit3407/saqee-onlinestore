@@ -244,9 +244,11 @@ export async function getServerSideProps(context) {
   const { category } = context.params;
   const query = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
+  console.log(db);
 
   try {
     const products = await db.collection("products").find(query).toArray();
+    console.log(products);
 
     return {
       props:
