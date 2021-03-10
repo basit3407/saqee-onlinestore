@@ -240,8 +240,6 @@ MapArray.propTypes = {
 
 export async function getServerSideProps(context) {
   const { category } = context.params;
-  const { MONGODB_URI, MONGODB_DB } = process.env;
-  console.log(MONGODB_DB, MONGODB_URI);
   try {
     const { data } = await axios.get(
       `http://localhost:3000/api/products/?category=${category}`

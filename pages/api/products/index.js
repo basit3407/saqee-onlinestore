@@ -8,6 +8,8 @@ export default async function productsHandler(req, res) {
     } = req,
     { db } = await connectToDatabase();
 
+  console.log("i got called");
+
   switch (method) {
     case "GET":
       // @route GET api/products?category=[category]&sort=${sort}
