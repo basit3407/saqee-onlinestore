@@ -244,12 +244,14 @@ export async function getServerSideProps(context) {
     const { data } = await axios.get(
       `http://localhost:3000/api/products/?category=${category}`
     );
+    console.log(data);
     return {
       props: {
         array: data.products,
       },
     };
   } catch (e) {
+    console.log(e);
     return {
       props: {
         error: e.response.status,
