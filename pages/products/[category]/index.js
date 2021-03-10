@@ -9,7 +9,9 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import FadeIn from "../../../components/FadeIn";
+// eslint-disable-next-line no-unused-vars
 import axios from "axios";
+import { connectToDatabase } from "../../../util/mongodb";
 import ErrorPage from "next/error";
 import { useState } from "react";
 import Top from "../../../components/layout/Top";
@@ -240,21 +242,38 @@ MapArray.propTypes = {
 
 export async function getServerSideProps(context) {
   const { category } = context.params;
+  const query = { category: category.slice(0).toLowerCase() };
+  const { db } = await connectToDatabase();
+
   try {
-    const { data } = await axios.get(
-      `https://saqee-onlinestore.vercel.app/api/products/?category=${category}`
-    );
+    const products = await db.collection("products").find(query).toArray();
+
     return {
-      props: {
-        array: data.products,
-      },
+      props: products.length > 0 ? { array: products } : { error: 404 },
     };
   } catch (e) {
-    console.log(e);
     return {
       props: {
-        error: e.response.status,
+        error: 500,
       },
     };
   }
+
+  // try {
+  //   const { data } = await axios.get(
+  //     `https://saqee-onlinestore.vercel.app/api/products/?category=${category}`
+  //   );
+  //   return {
+  //     props: {
+  //       array: data.products,
+  //     },
+  //   };
+  // } catch (e) {
+  //   console.log(e);
+  //   return {
+  //     props: {
+  //       error: e.response.status,
+  //     },
+  //   };
+  // }
 }
