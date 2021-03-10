@@ -24,7 +24,7 @@ export default async function productsHandler(req, res) {
             : {},
           //if sort selected then sort also.
           sortWord = sort ? { [sort]: 1 } : {};
-        //combine above 3 quiries and fetch data from database.
+        //combine above 2 quiries and fetch data from database.
 
         try {
           const products = await db

@@ -249,7 +249,10 @@ export async function getServerSideProps(context) {
     const products = await db.collection("products").find(query).toArray();
 
     return {
-      props: products.length > 0 ? { array: products } : { error: 404 },
+      props:
+        products.length > 0
+          ? { array: JSON.parse(JSON.stringify(products)) }
+          : { error: 404 },
     };
   } catch (e) {
     return {
