@@ -12,7 +12,7 @@ export default async function productsHandler(req, res) {
 
   switch (method) {
     case "GET":
-      // @route GET api/products?category=[category]&sort=${sort}
+      // @route GET /api/products?category=[category]&sort=${sort}
       // @desc get all the products from data base,
       // @access public
       {
@@ -47,7 +47,7 @@ export default async function productsHandler(req, res) {
 
       break;
     case "POST":
-      // @route POST api/products
+      // @route POST /api/products
       // @desc create product in products of [name] in data base
       // @access public
       {

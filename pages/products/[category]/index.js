@@ -241,13 +241,15 @@ MapArray.propTypes = {
 export async function getServerSideProps(context) {
   const { category } = context.params;
   try {
-    const { data } = await axios.get(`/api/products/?category=${category}`);
+    const { data } = await axios.get(`https://saqee-onlinestore.vercel.app
+/api/products/?category=${category}`);
     return {
       props: {
         array: data.products,
       },
     };
   } catch (e) {
+    console.log(e);
     return {
       props: {
         error: e.response.status,

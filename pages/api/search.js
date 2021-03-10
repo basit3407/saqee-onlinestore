@@ -6,7 +6,7 @@ export default async function searchHandler(req, res) {
     } = req,
     { db } = await connectToDatabase();
 
-  // @route GET api/search?keyword=${keyword}
+  // @route GET /api/search?keyword=${keyword}
   // @desc get all the products from data base,
   // @access public
 

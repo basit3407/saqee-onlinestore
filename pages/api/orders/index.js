@@ -13,7 +13,7 @@ export default async function ordersHandler(req, res) {
 
   switch (method) {
     case "POST":
-      // @route POST api/orders
+      // @route POST /api/orders
       // @desc save order in database
       // @access public
       {

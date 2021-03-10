@@ -12,7 +12,7 @@ export default async function productHandler(req, res) {
 
   switch (method) {
     case "GET":
-      // @route GET api/products/[id]?category=[category]
+      // @route GET /api/products/[id]?category=[category]
       // @desc get product of [id] from products of [category] from data base
       // @access public
       {
@@ -35,7 +35,7 @@ export default async function productHandler(req, res) {
       break;
 
     case "PUT":
-      // @route PUT api/products/[id]?category=[category]
+      // @route PUT /api/products/[id]?category=[category]
       // @desc edit product of [id] in products of [category] in data base
       // @access Admin
       {
@@ -59,7 +59,7 @@ export default async function productHandler(req, res) {
       break;
 
     case "DELETE":
-      // @route DELETE api/products/[id]?category=[category]
+      // @route DELETE /api/products/[id]?category=[category]
       // @desc delete product of [id] in products of [category] in data base
       // @access Admin
       try {
