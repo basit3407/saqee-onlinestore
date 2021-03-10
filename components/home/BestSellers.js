@@ -77,22 +77,25 @@ export default function BestSellers() {
 const MapProducts = () => {
   const products1 = [
       {
-        category: "fabrics",
+        category: "garments",
+        id: "60403b8c69c3fa2e3c01670e",
         title: "Shirt & Trousers (2 piece)",
         brand: "Aiman Zaman",
         price: 2250,
         image: 4,
       },
       {
-        category: "fabrics",
+        category: "garments",
         title: "Shirt, Duppatta & Lehenga (3 piece)",
+        id: "60403b8c69c3fa2e3c016710",
         brand: "Aisha Imran",
         price: 3450,
         image: 5,
       },
       {
-        category: "fabrics",
+        category: "garments",
         title: "Shirt, Duppatta & Trousers (3 piece)",
+        id: "60403b8c69c3fa2e3c016711",
         brand: "Gul Warin",
         price: 3550,
         image: 2,
@@ -100,35 +103,41 @@ const MapProducts = () => {
     ],
     products2 = [
       {
-        category: "kitchen items",
+        category: "other",
         price: 350,
+        id: "60403b8c69c3fa2e3c01671d",
         image: 9,
       },
       {
-        category: "kitchen items",
+        category: "other",
         price: 950,
+        id: "60403b8c69c3fa2e3c01671e",
         image: 10,
       },
       {
-        category: "kitchen items",
+        category: "other",
         price: 750,
+        id: "60403b8c69c3fa2e3c01671f",
         image: 11,
       },
     ],
     products3 = [
       {
-        category: "kitchen items",
+        category: "other",
         price: 1350,
+        id: "60403b8c69c3fa2e3c016725",
         image: 12,
       },
       {
-        category: "kitchen items",
+        category: "other",
         price: 1250,
+        id: "60403b8c69c3fa2e3c01672c",
         image: 13,
       },
       {
-        category: "kitchen items",
+        category: "other",
         price: 950,
+        id: "60403b8c69c3fa2e3c01672e",
         image: 14,
       },
     ],
@@ -182,6 +191,7 @@ const Item = (props) => {
             }}
             size="large"
             variant="contained"
+            href={`/products/${item.category}/${item.id}`}
           >
             <Typography color="textSecondary" variant="button">
               View Product

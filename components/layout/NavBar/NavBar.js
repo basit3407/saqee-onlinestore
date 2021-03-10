@@ -113,18 +113,19 @@ const useStyles = makeStyles((theme) => ({
     "&.MuiAvatar-colorDefault": {
       backgroundColor: theme.palette.secondary.main,
     },
-    width: theme.spacing(2),
-    height: theme.spacing(2),
-    [theme.breakpoints.down("sm")]: {
-      width: theme.spacing(1),
-      height: theme.spacing(1),
-    },
+    width: "20px",
+    height: "20px",
     margin: "1% 0",
     fontSize: "1rem",
     position: "absolute",
     top: 0,
     right: 0,
     color: theme.palette.text.secondary,
+    [theme.breakpoints.down("sm")]: {
+      width: theme.spacing(2),
+      height: theme.spacing(2),
+      fontSize: "12px",
+    },
   },
   searchList: {
     listStyleType: "none",
@@ -203,7 +204,7 @@ export default function NavBar(props) {
           color="primary"
           variant="subtitle2"
         >
-          Free delivery over order of PKR 2500
+          Free delivery over order of PKR 10,000
         </Typography>
       </div>
       <AppBar position="sticky">

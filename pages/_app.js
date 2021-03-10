@@ -36,7 +36,8 @@ export default function MyApp(props) {
   return (
     <>
       <Head>
-        <title>My page</title>
+        <title>Saqee&apos;s Online Store</title>
+        <link rel="icon" href="favicon.ico" />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
