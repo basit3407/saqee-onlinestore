@@ -491,9 +491,7 @@ SearchBar.propTypes = {
 //This function sends query to database
 const sendSearchQuery = async (query) => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:3000/api/search?keyword=${query}`
-    );
+    const { data } = await axios.get(`/api/search?keyword=${query}`);
     return data.products;
   } catch (e) {
     if (e.response.status === 404) return [];

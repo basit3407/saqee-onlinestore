@@ -23,7 +23,7 @@ export default function Payment(props) {
   const handleSubmit = () => {
     const orderNote = localStorage.getItem("orderNote"); //get orderNote
     axios
-      .post("http://localhost:3000/api/orders", {
+      .post("/api/orders", {
         cartItems: cartItems,
         shippingDetails: shippingDetails,
         ...(orderNote && { orderNote: orderNote }), //if orderNote is present,send to server
