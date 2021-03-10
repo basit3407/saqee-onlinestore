@@ -56,7 +56,7 @@ export default function Thankyou() {
       >
         Your order will be delivered in 2 to 3 days
       </Typography>
-      <Button classes={{ root: classes.button }}>
+      <Button href="/" classes={{ root: classes.button }}>
         <Typography>Explore</Typography>
       </Button>
     </Box>

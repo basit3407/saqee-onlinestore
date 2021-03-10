@@ -109,14 +109,8 @@ export default function Footer() {
               variant="caption"
               display="block"
             >
-              Copyright:{new Date().getFullYear()} Design and Developed by{" "}
-              <Link
-                underline="none"
-                variant="caption"
-                href="http://www.basitminhas.com"
-              >
-                Basit Minhas
-              </Link>
+              Copyright:{new Date().getFullYear()} Saqee&apos;s Online Store.All
+              Rights Reserved
             </Typography>
           </Grid>
         </Grid>

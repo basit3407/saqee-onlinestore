@@ -60,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
     background: "none",
     marginTop: theme.spacing(1),
     position: "relative",
+    "&:focus": {
+      outline: "none",
+    },
   },
   //For nested hover to work we need to create empty class of child item
   item: {},
