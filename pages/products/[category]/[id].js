@@ -458,7 +458,6 @@ export async function getServerSideProps(context) {
         : { error: 404, product: {} },
     };
   } catch (e) {
-    console.log(e);
     return {
       props: {
         product: {},
