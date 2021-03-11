@@ -244,6 +244,7 @@ export async function getServerSideProps(context) {
   //query db by category
   const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
+  console.log(db);
   try {
     const products = await db.collection("products").find(dbQuery).toArray();
     console.log(products);
