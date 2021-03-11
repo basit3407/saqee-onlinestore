@@ -253,6 +253,7 @@ export async function getServerSideProps(context) {
         : { error: 404 },
     };
   } catch (e) {
+    console.log(e);
     return {
       props: {
         error: 500,
