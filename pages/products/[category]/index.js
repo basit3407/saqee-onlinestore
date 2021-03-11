@@ -9,8 +9,6 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import FadeIn from "../../../components/FadeIn";
-// eslint-disable-next-line no-unused-vars
-import axios from "axios";
 import { connectToDatabase } from "../../../util/mongodb";
 import ErrorPage from "next/error";
 import { useState } from "react";
@@ -243,7 +241,6 @@ MapArray.propTypes = {
 //get products from database on page load.
 export async function getServerSideProps(context) {
   const { category } = context.params;
-  console.log(context.params);
   //query db by category
   const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
