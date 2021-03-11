@@ -1,7 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-has-content */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
-import Link from "next/link";
+import { Grid, makeStyles, Typography, Button, Link } from "@material-ui/core";
 import Image from "next/image";
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -85,17 +82,14 @@ const MapImages = () => {
               size="large"
               variant="contained"
             >
-              <Link href={`/products/${item.caption}`}>
-                <a>view products</a>
-              </Link>
-              {/* <Link
+              <Link
                 href={`/products/${item.caption}`}
                 color="textSecondary"
                 variant="button"
                 underline="none"
-              > */}
-              view products
-              {/* </Link> */}
+              >
+                view products
+              </Link>
             </Button>
           </div>
         </div>
