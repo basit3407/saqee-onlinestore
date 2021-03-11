@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import isEqual from "lodash.isequal";
+import { ObjectID } from "mongodb";
 import { connectToDatabase } from "../../../util/mongodb";
 import Top from "../../../components/layout/Top";
 
@@ -448,12 +449,13 @@ export async function getServerSideProps(context) {
 
   //query db by category and product id.
   const { db } = await connectToDatabase(),
-    dbQuery = { category: category.slice(0).toLowerCase(), _id: id };
+    dbQuery = { category: category.slice(0).toLowerCase(), _id: ObjectID(id) };
   try {
     const product = await db.collection("products").findOne(dbQuery);
-    console.log(product);
     return {
-      props: product ? { product: product } : { error: 404 },
+      props: product
+        ? { product: JSON.parse(JSON.stringify(product)) }
+        : { error: 404, product: {} },
     };
   } catch (e) {
     console.log(e);
