@@ -240,21 +240,19 @@ MapArray.propTypes = {
   ),
 };
 
+//get products from database on page load.
 export async function getServerSideProps(context) {
   const { category } = context.params;
-  const query = { category: category.slice(0).toLowerCase() };
+  console.log(context.params);
+  //query db by category
+  const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
-  console.log(db);
-
   try {
-    const products = await db.collection("products").find(query).toArray();
-    console.log(products);
-
+    const products = await db.collection("products").find(dbQuery).toArray();
     return {
-      props:
-        products.length > 0
-          ? { array: JSON.parse(JSON.stringify(products)) }
-          : { error: 404 },
+      props: products.length
+        ? { array: JSON.parse(JSON.stringify(products)) }
+        : { error: 404 },
     };
   } catch (e) {
     return {
@@ -263,22 +261,4 @@ export async function getServerSideProps(context) {
       },
     };
   }
-
-  // try {
-  //   const { data } = await axios.get(
-  //     `https://saqee-onlinestore.vercel.app/api/products/?category=${category}`
-  //   );
-  //   return {
-  //     props: {
-  //       array: data.products,
-  //     },
-  //   };
-  // } catch (e) {
-  //   console.log(e);
-  //   return {
-  //     props: {
-  //       error: e.response.status,
-  //     },
-  //   };
-  // }
 }
