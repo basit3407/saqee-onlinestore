@@ -175,11 +175,11 @@ export default function NavBar(props) {
   const handleSearchQuery = (event) => setSearchQuery(event.target.value);
 
   //send Search Query to database and get results
-  const { data } = useSWR(
+  const { data, error } = useSWR(
     searchQuery ? `/api/search?keyword=${searchQuery}` : null,
     fetcher
   );
-  useEffect(() => setSearchResults(data), [data]);
+  useEffect(() => setSearchResults(error ? [] : data), [data, error]);
 
   //Function for closing search Bar
   const handleSearchClose = () => {
