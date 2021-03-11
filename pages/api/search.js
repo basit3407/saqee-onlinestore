@@ -26,7 +26,7 @@ export default async function searchHandler(req, res) {
       if (!products.length)
         return res.status(404).json({ error: "no such category" });
       //if no errors send success response
-      res.status(200).json({ products: products });
+      res.status(200).json(products);
     } catch (e) {
       res
         .status(500)

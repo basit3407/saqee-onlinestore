@@ -24,7 +24,7 @@ export default async function productHandler(req, res) {
           if (!product)
             return res.status(404).json({ error: "no product found" });
           //if no error send success response
-          res.status(200).json({ product: product });
+          res.status(200).json(product);
         } catch (e) {
           res
             .status(500)
