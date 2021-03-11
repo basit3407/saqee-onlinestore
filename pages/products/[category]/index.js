@@ -243,7 +243,7 @@ MapArray.propTypes = {
 //get products from database on page load.
 export async function getServerSideProps(context) {
   const { category } = context.params;
-  console.log(context.params);
+  console.log(category);
   //query db by category
   const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
