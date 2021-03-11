@@ -246,6 +246,7 @@ export async function getServerSideProps(context) {
   const { db } = await connectToDatabase();
   try {
     const products = await db.collection("products").find(dbQuery).toArray();
+    console.log(products);
     return {
       props: products.length
         ? { array: JSON.parse(JSON.stringify(products)) }
