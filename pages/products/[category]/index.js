@@ -244,17 +244,14 @@ export async function getServerSideProps(context) {
   //query db by category
   const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
-  console.log(db);
   try {
     const products = await db.collection("products").find(dbQuery).toArray();
-    console.log(products);
     return {
       props: products.length
         ? { array: JSON.parse(JSON.stringify(products)) }
         : { error: 404 },
     };
   } catch (e) {
-    console.log(e);
     return {
       props: {
         error: 500,

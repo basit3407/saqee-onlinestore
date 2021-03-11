@@ -12,10 +12,10 @@ import AddIcon from "@material-ui/icons/Add";
 import ErrorPage from "next/error";
 import Image from "next/image";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import isEqual from "lodash.isequal";
+import { connectToDatabase } from "../../../util/mongodb";
 import Top from "../../../components/layout/Top";
 
 const useStyles = makeStyles((theme) => ({
@@ -434,9 +434,9 @@ QuantitySelector.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
+//on page load get the product from db
 export async function getServerSideProps(context) {
   const { category, id } = context.params;
-
   // check if id is valid objectId
   if (!/^[0-9a-fA-F]{24}$/.test(id))
     return {
@@ -445,21 +445,20 @@ export async function getServerSideProps(context) {
         product: {},
       },
     };
-  try {
-    const { data } = await axios.get(
-      `/api/products/${id}?category=${category}`
-    );
 
+  //query db by category and product id.
+  const { db } = await connectToDatabase(),
+    dbQuery = { category: category.slice(0).toLowerCase(), _id: id };
+  try {
+    const product = await db.collection("products").findOne(dbQuery);
     return {
-      props: {
-        product: data.product,
-      },
+      props: product ? { product: product } : { error: 404 },
     };
   } catch (e) {
     return {
       props: {
-        error: e.response.status,
         product: {},
+        error: 500,
       },
     };
   }

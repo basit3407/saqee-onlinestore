@@ -91,10 +91,9 @@ export default async function ordersHandler(req, res) {
           transporter.sendMail(mailOptions);
           res.status(200).json({ message: "order saved" });
         } catch (e) {
-          e &&
-            res
-              .status(500)
-              .json({ error: "there was some problem,please try again" });
+          res
+            .status(500)
+            .json({ error: "there was some problem,please try again" });
         }
       }
       break;

@@ -28,10 +28,9 @@ export default async function searchHandler(req, res) {
       //if no errors send success response
       res.status(200).json({ products: products });
     } catch (e) {
-      e &&
-        res
-          .status(500)
-          .json({ error: "there was some problem,please try again" });
+      res
+        .status(500)
+        .json({ error: "there was some problem,please try again" });
     }
   }
 }

@@ -16,7 +16,7 @@ export default async function productHandler(req, res) {
       // @desc get product of [id] from products of [category] from data base
       // @access public
       {
-        if (!ObjectID.isValid(id))
+        if (!/^[0-9a-fA-F]{24}$/.test(id))
           return res.status(404).json({ error: "invalid id" });
         try {
           const product = await db.collection("products").findOne(searchQuery);
@@ -26,10 +26,9 @@ export default async function productHandler(req, res) {
           //if no error send success response
           res.status(200).json({ product: product });
         } catch (e) {
-          e &&
-            res
-              .status(500)
-              .json({ error: "there was some problem,please try again" });
+          res
+            .status(500)
+            .json({ error: "there was some problem,please try again" });
         }
       }
       break;
@@ -50,10 +49,9 @@ export default async function productHandler(req, res) {
             .updateOne(searchQuery, { $set: req.body });
           res.status(200).json({ message: " updated product saved" });
         } catch (e) {
-          e &&
-            res
-              .status(500)
-              .json({ error: "there was some problem,please try again" });
+          res
+            .status(500)
+            .json({ error: "there was some problem,please try again" });
         }
       }
       break;
@@ -66,10 +64,9 @@ export default async function productHandler(req, res) {
         await db.collection("products").deleteOne(searchQuery);
         res.status(200).json({ message: "product deleted" });
       } catch (e) {
-        e &&
-          res
-            .status(500)
-            .json({ error: "there was some problem,please try again" });
+        res
+          .status(500)
+          .json({ error: "there was some problem,please try again" });
       }
 
       break;
