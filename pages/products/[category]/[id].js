@@ -451,10 +451,12 @@ export async function getServerSideProps(context) {
     dbQuery = { category: category.slice(0).toLowerCase(), _id: id };
   try {
     const product = await db.collection("products").findOne(dbQuery);
+    console.log(product);
     return {
       props: product ? { product: product } : { error: 404 },
     };
   } catch (e) {
+    console.log(e);
     return {
       props: {
         product: {},
