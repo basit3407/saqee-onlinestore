@@ -68,8 +68,8 @@ export default function Footer() {
                 color="inherit"
                 variant="body2"
               >
-                Saqee Online Store deals in glamorous, high-quality and
-                cruelty-free makeup poducts along with
+                Saqee&apos;s Online Store deals in glamorous, high-quality and
+                cruelty-free makeup porducts along with
                 clothing,handbags,kitchenware and babies collection for ladies.
                 Female-founded with a mission to empower women.
               </Typography>

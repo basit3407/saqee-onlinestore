@@ -1,4 +1,11 @@
-import { makeStyles, Popover, Menu, MenuItem } from "@material-ui/core";
+import {
+  makeStyles,
+  Popover,
+  Menu,
+  MenuItem,
+  ClickAwayListener,
+  Popper,
+} from "@material-ui/core";
 import PropTypes from "prop-types";
 import { MapMenu, SearchBar } from "./NavBar";
 
@@ -29,6 +36,7 @@ export const SearchPopover = (props) => {
     } = props;
 
   return (
+    // <ClickAwayListener onClickAway={handleSearchClose}>
     <Popover
       anchorEl={anchorSearch}
       anchorOrigin={{
@@ -41,6 +49,7 @@ export const SearchPopover = (props) => {
       onClose={handleSearchClose}
       classes={{ paper: classes.searchPaper }}
       PaperProps={{ elevation: 0 }}
+      elevation={0}
       //important for keeping popover to full left
       marginThreshold={0}
     >
@@ -52,6 +61,7 @@ export const SearchPopover = (props) => {
         searchQuery={searchQuery}
       />
     </Popover>
+    // </ClickAwayListener>
   );
 };
 
