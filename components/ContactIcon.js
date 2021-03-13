@@ -20,6 +20,17 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "2.1875rem",
     },
   },
+  whatsApp: {
+    margin: theme.spacing(1, 0),
+    "&.MuiAvatar-colorDefault": {
+      backgroundColor: "#4FCE5D",
+    },
+  },
+  call: {
+    "&.MuiAvatar-colorDefault": {
+      backgroundColor: "#61ce70",
+    },
+  },
   contact: {
     "&:focus": {
       outline: "none",
@@ -39,18 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   rotateBack: {
     transform: "rotate(0deg)",
-  },
-
-  whatsApp: {
-    margin: theme.spacing(1, 0),
-    "&.MuiAvatar-colorDefault": {
-      backgroundColor: "#4FCE5D",
-    },
-  },
-  call: {
-    "&.MuiAvatar-colorDefault": {
-      backgroundColor: "#61ce70",
-    },
   },
 }));
 
@@ -73,7 +72,7 @@ export default function ContactIcon() {
       {isClicked && (
         <>
           <Avatar
-            href="tel:+923002631368"
+            href="tel:+923352126988"
             component="a"
             classes={{
               root: classNames({ [classes.call]: true, [classes.size]: true }),
@@ -82,7 +81,7 @@ export default function ContactIcon() {
             <CallIcon fontSize="inherit" />
           </Avatar>
           <Avatar
-            href="https://wa.me/923002631368"
+            href="https://wa.me/923352126988"
             component="a"
             classes={{
               root: classNames({
@@ -100,7 +99,7 @@ export default function ContactIcon() {
         onClick={() => setIsClicked(!isClicked)}
         component="button"
       >
-        {/* if clikced show cross icon else show chat icon */}
+        {/* if clicked show cross icon else show chat icon */}
         {isClicked ? (
           <CloseIcon fontSize="inherit" />
         ) : (
