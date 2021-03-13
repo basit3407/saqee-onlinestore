@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Container,
   Grid,
@@ -107,7 +106,8 @@ const useStyles = makeStyles((theme) => ({
   },
   auxImage: {
     margin: theme.spacing(1),
-    borderRadius: theme.spacing(1),
+    cursor: "pointer",
+    display: "inline-block",
   },
 }));
 
@@ -202,19 +202,18 @@ export default function Product(props) {
                 {product.auxillaryImages && (
                   <div className={classes.auxillaryImages}>
                     {/*hide main image from aux section if it is set as main image */}
-                    <Box
-                      display={
-                        mainImage === product.image ? "none" : "inline-block"
-                      }
-                    >
-                      <Image
-                        // onClick set this image to main image (in aux section)
-                        onClick={() => setMainImage(product.image)}
-                        src={product.image}
-                        width={50}
-                        height={50}
-                      />
-                    </Box>
+                    {mainImage !== product.image && (
+                      <div className={classes.auxImage}>
+                        <Image
+                          onClick={() => setMainImage(product.image)} // onClick set this image to main image (in aux section)
+                          className={classes.image}
+                          src={product.image}
+                          width={50}
+                          height={50}
+                        />
+                      </div>
+                    )}
+
                     <MapAuxillaryImages
                       mainImage={mainImage}
                       setMainImage={setMainImage}
@@ -346,20 +345,17 @@ const MapAuxillaryImages = (props) => {
   return images.map((item, index) => {
     return (
       //hide the auxillary image if it is set as main image
-      <Box
-        key={index}
-        className={classes.auxImage}
-        display={item === mainImage ? "none" : "inline-block"}
-      >
-        <Image
-          //onClick set this image to main image
-          onClick={() => setMainImage(item)}
-          className={classes.image}
-          src={item}
-          height={50}
-          width={50}
-        />
-      </Box>
+      item !== mainImage && (
+        <div key={index} className={classes.auxImage}>
+          <Image
+            onClick={() => setMainImage(item)} //onClick set this image to main image
+            className={classes.image}
+            src={item}
+            height={50}
+            width={50}
+          />
+        </div>
+      )
     );
   });
 };

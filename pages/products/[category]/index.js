@@ -10,10 +10,11 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
-import FadeIn from "../../../components/FadeIn";
-import { connectToDatabase } from "../../../util/mongodb";
 import ErrorPage from "next/error";
 import { useState } from "react";
+import Image from "next/image";
+import { connectToDatabase } from "../../../util/mongodb";
+import FadeIn from "../../../components/FadeIn";
 import Top from "../../../components/layout/Top";
 
 const useStyles = makeStyles((theme) => ({
@@ -63,8 +64,6 @@ const useStyles = makeStyles((theme) => ({
   },
   img: {
     marginBottom: "3%",
-    width: "100%",
-    height: "50vh",
     cursor: "pointer",
     transition: "transform 4000ms",
     WebkitTransition: "transform 4000ms",
@@ -219,7 +218,12 @@ const MapProducts = (props) => {
       <FadeIn key={index} timeout={2000}>
         <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={4}>
           <Paper className={classes.productPaper} elevation={3}>
-            <img className={classes.img} src={item.image} alt="" />
+            <Image
+              width={425}
+              height={425}
+              className={classes.img}
+              src={item.image}
+            />
             <div className={classes.productCaption}>
               <Link
                 display="block"

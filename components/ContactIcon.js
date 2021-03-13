@@ -4,7 +4,6 @@ import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 import CallIcon from "@material-ui/icons/Call";
 import CloseIcon from "@material-ui/icons/Close";
 import { useState } from "react";
-import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cursor: "pointer",
     border: "none",
+    transform: "rotate(0deg)",
     transition: "transform 1s",
     MozTransition: "transform 1s",
     WebkitTransition: "transform 1s",
@@ -48,23 +48,12 @@ const useStyles = makeStyles((theme) => ({
   rotate: {
     transform: "rotate(180deg)",
   },
-  rotateBack: {
-    transform: "rotate(0deg)",
-  },
 }));
 
 export default function ContactIcon() {
   const classes = useStyles();
 
-  const [isClicked, setIsClicked] = useState(); //Click state of contact icon
-
-  //For rotating animation of contact icon
-  const contactClasses = classNames({
-    [classes.size]: true,
-    [classes.contact]: true,
-    [classes.rotate]: isClicked === true,
-    [classes.rotateBack]: isClicked === false,
-  });
+  const [isClicked, setIsClicked] = useState(false); //Click state of contact icon
 
   return (
     <div className={classes.root}>
@@ -75,7 +64,7 @@ export default function ContactIcon() {
             href="tel:+923352126988"
             component="a"
             classes={{
-              root: classNames({ [classes.call]: true, [classes.size]: true }),
+              root: `${classes.size} ${classes.call}`,
             }}
           >
             <CallIcon fontSize="inherit" />
@@ -84,10 +73,7 @@ export default function ContactIcon() {
             href="https://wa.me/923352126988"
             component="a"
             classes={{
-              root: classNames({
-                [classes.whatsApp]: true,
-                [classes.size]: true,
-              }),
+              root: `${classes.size} ${classes.whatsApp}`,
             }}
           >
             <WhatsAppIcon fontSize="inherit" />
@@ -95,7 +81,11 @@ export default function ContactIcon() {
         </>
       )}
       <Avatar
-        classes={{ root: contactClasses }}
+        classes={{
+          root: `${classes.size} ${classes.contact} ${
+            isClicked ? classes.rotate : "" //rotate on click
+          }`,
+        }}
         onClick={() => setIsClicked(!isClicked)}
         component="button"
       >
