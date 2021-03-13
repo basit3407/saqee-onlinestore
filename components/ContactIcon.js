@@ -14,8 +14,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   size: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+    [theme.breakpoints.up("md")]: {
+      width: theme.spacing(7),
+      height: theme.spacing(7),
+      fontSize: "2.1875rem",
+    },
   },
   contact: {
     "&:focus": {
@@ -76,7 +79,7 @@ export default function ContactIcon() {
               root: classNames({ [classes.call]: true, [classes.size]: true }),
             }}
           >
-            <CallIcon fontSize="large" />
+            <CallIcon fontSize="inherit" />
           </Avatar>
           <Avatar
             href="https://wa.me/923002631368"
@@ -88,7 +91,7 @@ export default function ContactIcon() {
               }),
             }}
           >
-            <WhatsAppIcon fontSize="large" />
+            <WhatsAppIcon fontSize="inherit" />
           </Avatar>
         </>
       )}
@@ -99,9 +102,9 @@ export default function ContactIcon() {
       >
         {/* if clikced show cross icon else show chat icon */}
         {isClicked ? (
-          <CloseIcon fontSize="large" />
+          <CloseIcon fontSize="inherit" />
         ) : (
-          <ChatBubbleOutlineIcon fontSize="large" />
+          <ChatBubbleOutlineIcon fontSize="inherit" />
         )}
       </Avatar>
     </div>
