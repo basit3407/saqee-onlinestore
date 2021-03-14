@@ -148,7 +148,7 @@ export default function NavBar(props) {
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
-      { title: "Kitchenware", href: "/products/kitchenware" },
+      { title: "Other", href: "/products/other" },
       { title: "Little Ones", href: "/products/babies" },
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },

@@ -1,11 +1,4 @@
-import {
-  makeStyles,
-  Popover,
-  Menu,
-  MenuItem,
-  ClickAwayListener,
-  Popper,
-} from "@material-ui/core";
+import { makeStyles, Popover, Menu, MenuItem } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { MapMenu, SearchBar } from "./NavBar";
 
@@ -36,7 +29,6 @@ export const SearchPopover = (props) => {
     } = props;
 
   return (
-    // <ClickAwayListener onClickAway={handleSearchClose}>
     <Popover
       anchorEl={anchorSearch}
       anchorOrigin={{
@@ -61,7 +53,6 @@ export const SearchPopover = (props) => {
         searchQuery={searchQuery}
       />
     </Popover>
-    // </ClickAwayListener>
   );
 };
 
@@ -99,7 +90,7 @@ export const ShoppingMenu = (props) => {
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
-      { title: "Kitchenware", href: "/products/kitchenware" },
+      { title: "Other", href: "/products/other" },
       { title: "Little Ones", href: "/products/babies" },
     ];
 
