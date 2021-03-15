@@ -1,157 +1,236 @@
-import { Fragment, useState } from "react";
-import { Button, makeStyles, TextField } from "@material-ui/core";
+import { useState, useEffect } from "react";
+import { Button, makeStyles, TextField, Typography } from "@material-ui/core";
+
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
 
 // eslint-disable-next-line no-unused-vars
 const useStylyes = makeStyles((theme) => ({
   root: {},
-  quantity: {},
-  products: {},
+  addProduct: {},
+
   product: {},
-  values: {},
 }));
 
 export default function AddProducts() {
   const classes = useStylyes();
   //states
-  const [qty, setQty] = useState(1), //qty of products to be added
-    [products, setProducts] = useState([]), //products after details are entered
+  const [isClicked, setisClicked] = useState(false), //click state of add product button
+    [product, setProduct] = useState({
+      title: "",
+      brand: "",
+      description: "",
+      category: "",
+      price: "",
+      countInstock: "",
+      auxImagesQty: 0,
+      variationsQty: 0,
+    }), //product after details are entered
     // eslint-disable-next-line no-unused-vars
     [error, setError] = useState(false); //error on submission if any
 
-  const productDetails = [
-    "title",
-    "price",
-    "category",
-    "countInStock",
-    "description",
-    "brand",
-    "image",
-    "auxImagesQty",
-    "auxImages",
-    "variationsQty",
-    "variations",
+  const categories = [
+    "Garments",
+    "Cosmetics",
+    "Handbags",
+    "Other",
+    "Little Ones",
   ];
 
   //For handling change in textFields
-  const handleChange = (event, productIndex) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
-
-    let items = products;
-    items[productIndex][name] = value;
-    setProducts(items);
+    console.log("handle change test");
+    setProduct(
+      name === "variationsQty" ||
+        name === "auxImagesQty" ||
+        name === "price" ||
+        name === "countInStock"
+        ? { ...product, [name]: parseInt(value) || value }
+        : { ...product, [name]: value }
+    );
   };
 
-  const handleSubmit = (event, productIndex, variationIndex) => {
-    const { id } = event.target;
-    if (id === "quantity") return setQty(event.target[0].value);
-    //else
-    const data = new FormData(event.target);
-    event.preventDefault();
+  // //add image based on title
+  // useEffect(() =>
+  //   setProduct({
+  //     ...product,
+  //     image: `image/${product.title}`,
+  //   })
+  // ),
+  //     [product.title];
 
-    if (id === `product${productIndex}title${variationIndex}`) {
-      let title, number;
-      for (const [key, value] of data.entries())
-        if (key === "title") title = value;
-        else number = value;
-      let items = products;
-      items[productIndex].variation[variationIndex] = {
-        title: title,
-        values: Array(number),
-      };
-      return setProducts(items);
-    }
-    //else
-    for (const [key, value] of data.entries()) {
-      let items = products;
-      items[productIndex].variation[variationIndex].values[key] = value;
-      setProducts(items);
-    }
+  //   //add auxillary images if present based on title
+  //   useEffect(
+  //     () =>
+  //       product.title &&
+  //       product.auxImagesQty > 0 &&
+  //       setProduct({
+  //         ...product,
+  //         auxImages: [...Array(product.auxImagesQty).keys()].map(
+  //           (auxImageIndex) => `${product.title}auxImage${auxImageIndex}`
+  //         ),
+  //       })
+  //   ),
+  //     [product.auxImagesQty, product.title];
+
+  //   create array of variations when variation qty is greater than 0
+  useEffect(
+    () =>
+      product.variationsQty > 0 &&
+      !product.variations &&
+      product.variations.length !== product.variationsQty &&
+      setProduct({
+        ...product,
+        variations: Array(parseInt(product.variationsQty)),
+      })
+  ),
+    [product.variationsQty];
+
+  //Assign variations
+  const handleVariations = (event, variationIndex) => {
+    console.log("handle variations test");
+    const { name, value } = event.target,
+      { variations } = product,
+      variation = variations[variationIndex];
+    setProduct({
+      ...product,
+      variations: [
+        ...variations.slice(0, variationIndex),
+        {
+          ...variation,
+          [name]:
+            name === "title"
+              ? value
+              : value
+              ? Array(parseInt(value))
+              : undefined,
+        },
+        ...variations.slice(variationIndex + 1),
+      ],
+    });
   };
 
-  // axios
-  //   .post("http://localhost3000/api/products", productDetails)
-  //   .catch(() => setError(true));
+  //   Assign values of variations
+  const handleVariationValues = (event, variationIndex, valueIndex) => {
+    const { value } = event.target,
+      { variations } = product,
+      variation = variations[variationIndex],
+      { values } = variation;
+    setProduct({
+      ...product,
+      variations: [
+        ...variations.slice(0, variationIndex),
+        {
+          ...variation,
+          values: [
+            ...values.slice(0, valueIndex),
+            value,
+            ...values.slice(valueIndex + 1),
+          ],
+        },
+        ...variations.slice(variationIndex + 1),
+      ],
+    });
+  };
 
   return (
     <div className={classes.root}>
-      <div className={classes.quantity}>
-        <form id="quantity" onSubmit={handleSubmit}>
-          <TextField
-            type="number"
-            name="productsQty"
-            label="Products Quantity"
-            fullWidth
-            margin="normal"
-          />
-          <Button type="submit">Submit</Button>
-        </form>
+      <div className={classes.addProduct}>
+        <Button onClick={() => setisClicked(true)}>Add Product</Button>{" "}
       </div>
-      <div className={classes.products}>
-        {qty > 0 &&
-          [...Array(qty).keys()].map((productIndex) => {
-            return (
-              <div className={classes.product} key={productIndex + 1}>
-                {productDetails.map((detail, index) => {
-                  return detail !== "auxImages" &&
-                    detail !== "variations" &&
-                    detail !== "image" ? (
+      {isClicked && (
+        <div className={classes.product}>
+          {Object.keys(product).map((prop, index) => {
+            return prop !== "auxImages" &&
+              prop !== "variations" &&
+              prop !== "category" &&
+              prop !== "image" ? (
+              <TextField
+                onChange={handleChange}
+                key={index}
+                name={prop}
+                type={
+                  prop === "variationsQty" ||
+                  prop === "auxImagesQty" ||
+                  prop === "price" ||
+                  prop === "countInStock"
+                    ? "number"
+                    : "text"
+                }
+                label={prop}
+                fullWidth
+                value={product[prop]}
+                margin="normal"
+              />
+            ) : prop === "category" ? (
+              <TextField
+                key={index}
+                SelectProps={{ native: true }}
+                fullWidth
+                margin="normal"
+                select
+              >
+                {categories.map((category, index) => {
+                  return <option key={index}>{category}</option>;
+                })}
+              </TextField>
+            ) : (
+              prop === "variations" &&
+              product.variations &&
+              [...product.variations.keys()].map((variationIndex) => {
+                return (
+                  <div key={variationIndex + 1}>
+                    <Typography>variation {variationIndex + 1}</Typography>
                     <TextField
-                      key={index}
-                      name={detail}
-                      onChange={(event) => handleChange(event, productIndex)}
+                      name="title"
                       fullWidth
                       margin="normal"
+                      onChange={(event) =>
+                        handleVariations(event, variationIndex)
+                      }
                     />
-                  ) : (
-                    detail === "variations" &&
-                      products[productIndex].variationQty > 0 &&
-                      [
-                        ...Array(products[productIndex].variationQty).keys(),
-                      ].map((variationIndex) => {
-                        return (
-                          <Fragment key={variationIndex + 1}>
-                            <form
-                              onSubmit={(event) =>
-                                handleSubmit(
+                    <TextField
+                      name="values"
+                      type="number"
+                      label="number of values"
+                      fullWidth
+                      margin="normal"
+                      onChange={(event) =>
+                        handleVariations(event, variationIndex)
+                      }
+                    />
+                    {product.variations[variationIndex] &&
+                      product.variations[variationIndex].values &&
+                      [...product.variations[variationIndex].values.keys()].map(
+                        (valueIndex) => {
+                          return (
+                            <TextField
+                              key={valueIndex + 1}
+                              fullWidth
+                              margin="normal"
+                              onChange={(event) =>
+                                handleVariationValues(
                                   event,
-                                  productIndex,
-                                  variationIndex
+                                  variationIndex,
+                                  valueIndex
                                 )
                               }
-                              id={`product${productIndex}title${variationIndex}`}
-                            >
-                              <TextField name={`title`} />
-                              <TextField name={`values`} />
-                              <Button type="submit">submit</Button>
-                            </form>
-                            <form
-                              id={`product${productIndex}values${variationIndex}`}
-                              onSubmit={(event) =>
-                                handleSubmit(
-                                  event,
-                                  productIndex,
-                                  variationIndex
-                                )
-                              }
-                            >
-                              {products[productIndex].variation[
-                                variationIndex
-                              ].values.map((value, index) => {
-                                return <TextField name={index} key={index} />;
-                              })}
-                              <Button type="submit">submit</Button>
-                            </form>
-                          </Fragment>
-                        );
-                      })
-                  );
-                })}
-              </div>
+                            />
+                          );
+                        }
+                      )}
+                  </div>
+                );
+              })
             );
           })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
+
+// axios
+//   .post("http://localhost3000/api/products", productDetails)
+//   .catch(() => setError(true));
