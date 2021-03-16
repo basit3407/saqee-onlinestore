@@ -3,6 +3,7 @@ import { Button, makeStyles, TextField, Typography } from "@material-ui/core";
 
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
+import ImageUpload from "../components/ImageUpload";
 
 // eslint-disable-next-line no-unused-vars
 const useStylyes = makeStyles((theme) => ({
@@ -10,6 +11,9 @@ const useStylyes = makeStyles((theme) => ({
   addProduct: {},
 
   product: {},
+  upload: {
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function AddProducts() {
@@ -29,11 +33,11 @@ export default function AddProducts() {
     [error, setError] = useState(false); //error on submission if
 
   const categories = [
-    "Garments",
-    "Cosmetics",
-    "Handbags",
-    "Other",
-    "Little Ones",
+    "garments",
+    "cosmetics",
+    "handbags",
+    "other",
+    "little Ones",
   ];
 
   //For handling change in textFields
@@ -48,13 +52,12 @@ export default function AddProducts() {
         name === "countInStock"
           ? parseInt(value) || value //convert to integer for number type inputs,guard for Nan on empty space
           : value,
-      ...(name === "title" && { image: `image/${value}` }), //set image based on title
-      ...(name === "auxImagesQty" &&
-        value > 0 && {
-          auxImages: [...Array(parseInt(value)).keys()].map(
-            (auxImageIndex) => `auxImage/${auxImageIndex + 1}` //set auxImages in an Array if present
-          ),
-        }),
+      // ...(name === "auxImagesQty" &&
+      //   value > 0 && {
+      //     auxImages: [...Array(parseInt(value)).keys()].map(
+      //       (auxImageIndex) => `auxImage/${auxImageIndex + 1}` //set auxImages in an Array if present
+      //     ),
+      //   }),
       ...(name === "variationsQty" &&
         value > 0 && { variations: Array(parseInt(value)) }), //create array of variations if present
     }));
@@ -136,6 +139,8 @@ export default function AddProducts() {
               key={index}
               SelectProps={{ native: true }}
               fullWidth
+              onChange={handleChange}
+              value={product[prop]}
               margin="normal"
               select
             >
@@ -209,6 +214,16 @@ export default function AddProducts() {
       </div>
 
       {error && <span>There was some issue please try again</span>}
+      <div className={classes.upload}>
+        <div className={classes.upload}>
+          <Typography>Main Image</Typography>
+          <ImageUpload category={product.category} title={product.title} />
+        </div>
+        {/* <div className={classes.upload}>
+          <Typography>Auxillary Images</Typography>
+          <ImageUpload />
+        </div> */}
+      </div>
     </div>
   );
 }

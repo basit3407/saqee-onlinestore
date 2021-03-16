@@ -99,6 +99,8 @@ export default async function ordersHandler(req, res) {
       break;
 
     default:
+      res.setHeader("Allow", ["POST"]);
+      res.status(405).end(`Method ${method} Not Allowed`);
       break;
   }
 }

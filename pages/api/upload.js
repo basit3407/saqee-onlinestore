@@ -1,4 +1,5 @@
 import multer from "multer";
+import fs from "fs-extra";
 
 export const config = {
   api: {
@@ -8,10 +9,15 @@ export const config = {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../../public/images");
+    const { category } = req.body,
+      path = `./public/images/${category}`;
+    fs.mkdirsSync(path);
+
+    cb(null, path);
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    const { title } = req.body;
+    cb(null, title);
   },
 });
 
@@ -19,8 +25,9 @@ const upload = multer({ storage: storage });
 
 export default (req, res) => {
   upload.array("iphoneAdPix", 3)(req, {}, (err) => {
-    // do error handling here
-    console.log(req.files); // do something with the files here
+    console.log(req.body);
+    // do error handling ere
+    console.log(req.files[0].fieldname); // do something with the files here
   });
-  res.status(200).send({});
+  res.status(200).json({});
 };
