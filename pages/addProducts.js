@@ -241,20 +241,7 @@ export default function AddProducts() {
           );
         })}
       </div>
-      <div>
-        <Button
-          onClick={() => {
-            axios
-              .post("http://localhost3000/api/products", product)
-              .then(() => setError(false))
-              .catch(() => setError(true));
-          }}
-        >
-          Dispatch Product
-        </Button>
-      </div>
 
-      {error && <span>There was some issue please try again</span>}
       <div className={classes.upload}>
         <div className={classes.upload}>
           <Typography>Main Image</Typography>
@@ -276,6 +263,20 @@ export default function AddProducts() {
             })}
         </div>
       </div>
+      <div>
+        <Button
+          onClick={() => {
+            axios
+              .post("http://localhost3000/api/products", product)
+              .then(() => setError(false))
+              .catch(() => setError(true));
+          }}
+        >
+          Dispatch Product
+        </Button>
+      </div>
+
+      {error && <span>There was some issue please try again</span>}
     </div>
   );
 }
