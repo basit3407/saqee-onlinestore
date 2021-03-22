@@ -27,6 +27,7 @@ export default function AddProducts() {
       category: "",
       price: 1000,
       countInstock: 10,
+      image: "",
       auxImagesQty: 0,
       variationsQty: 0,
     }),
@@ -52,16 +53,16 @@ export default function AddProducts() {
         name === "countInStock"
           ? parseInt(value) || value //convert to integer for number type inputs,guard for Nan on empty space
           : value,
-      // ...(name === "auxImagesQty" &&
-      //   value > 0 && {
-      //     auxImages: [...Array(parseInt(value)).keys()].map(
-      //       (auxImageIndex) => `auxImage/${auxImageIndex + 1}` //set auxImages in an Array if present
-      //     ),
-      //   }),
+      ...(name === "auxImagesQty" &&
+        value > 0 && {
+          auxImages: Array(parseInt(value)), //create an array of aux images if present
+        }),
       ...(name === "variationsQty" &&
         value > 0 && { variations: Array(parseInt(value)) }), //create array of variations if present
     }));
   };
+
+  //Assing names of aux
 
   //Assign titles of variations and define the number of values for each variation
   const handleVariations = (event, variationIndex) => {
@@ -148,9 +149,13 @@ export default function AddProducts() {
                 return <option key={index}>{category}</option>;
               })}
             </TextField>
+          ) : prop === "auxImages" ? (
+            [...product.auxImages.keys()].map((auxImageIndex) => {
+              return <div></div>;
+            })
           ) : (
             prop === "variations" &&
-            product.variations &&
+            {/* product.variations && */}
             [...product.variations.keys()].map((variationIndex) => {
               return (
                 <div key={variationIndex + 1}>
