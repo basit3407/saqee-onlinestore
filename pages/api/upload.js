@@ -16,18 +16,17 @@ const storage = multer.diskStorage({
     cb(null, path);
   },
   filename: function (req, file, cb) {
-    const { title } = req.body;
-    cb(null, title);
+    cb(null, file.originalname);
   },
 });
 
 const upload = multer({ storage: storage });
 
 export default (req, res) => {
-  upload.array("iphoneAdPix", 3)(req, {}, (err) => {
+  upload.single("productImage")(req, {}, (err) => {
     console.log(req.body);
     // do error handling ere
-    console.log(req.files[0].fieldname); // do something with the files here
+    console.log(req.file); // do something with the files here
   });
   res.status(200).json({});
 };

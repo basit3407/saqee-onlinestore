@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Button, makeStyles, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  makeStyles,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
@@ -62,7 +69,22 @@ export default function AddProducts() {
     }));
   };
 
-  //Assing names of aux
+  //Assing names of auxImages
+  const handleAuximages = (event, auxImageIndex) => {
+    const { value } = event.target;
+    setProduct((prevVal) => {
+      const { auxImages } = prevVal;
+
+      return {
+        ...prevVal,
+        auxImages: [
+          ...auxImages.slice(0, auxImageIndex),
+          value,
+          ...auxImages.slice(auxImageIndex + 1),
+        ],
+      };
+    });
+  };
 
   //Assign titles of variations and define the number of values for each variation
   const handleVariations = (event, variationIndex) => {
@@ -116,8 +138,7 @@ export default function AddProducts() {
         {Object.keys(product).map((prop, index) => {
           return prop !== "auxImages" &&
             prop !== "variations" &&
-            prop !== "category" &&
-            prop !== "image" ? (
+            prop !== "category" ? (
             <TextField
               onChange={handleChange}
               key={index}
@@ -136,26 +157,37 @@ export default function AddProducts() {
               margin="normal"
             />
           ) : prop === "category" ? (
-            <TextField
+            <Select
               key={index}
-              SelectProps={{ native: true }}
+              label={prop}
               fullWidth
               onChange={handleChange}
               value={product[prop]}
-              margin="normal"
-              select
+              name={prop}
             >
               {categories.map((category, index) => {
-                return <option key={index}>{category}</option>;
+                return (
+                  <MenuItem key={index} value={category}>
+                    {category}
+                  </MenuItem>
+                );
               })}
-            </TextField>
+            </Select>
           ) : prop === "auxImages" ? (
             [...product.auxImages.keys()].map((auxImageIndex) => {
-              return <div></div>;
+              return (
+                <div key={auxImageIndex + 1}>
+                  <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
+                  <TextField
+                    onChange={(event) => handleAuximages(event, auxImageIndex)}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
+              );
             })
           ) : (
             prop === "variations" &&
-            {/* product.variations && */}
             [...product.variations.keys()].map((variationIndex) => {
               return (
                 <div key={variationIndex + 1}>
@@ -186,6 +218,11 @@ export default function AddProducts() {
                           <TextField
                             key={valueIndex + 1}
                             fullWidth
+                            value={
+                              product.variations[variationIndex].values[
+                                valueIndex
+                              ]
+                            }
                             margin="normal"
                             onChange={(event) =>
                               handleVariationValues(
@@ -204,7 +241,6 @@ export default function AddProducts() {
           );
         })}
       </div>
-      <div></div>
       <div>
         <Button
           onClick={() => {
@@ -222,12 +258,23 @@ export default function AddProducts() {
       <div className={classes.upload}>
         <div className={classes.upload}>
           <Typography>Main Image</Typography>
-          <ImageUpload category={product.category} title={product.title} />
+          <ImageUpload category={product.category} />
+          <Typography>AuxImages</Typography>
+          {product.auxImages &&
+            product.auxImages.length > 0 &&
+            product.auxImages.map((auxImage, index) => {
+              return (
+                <div key={index}>
+                  {auxImage && (
+                    <div>
+                      <Typography>Auxillary Image {index + 1}</Typography>
+                      <ImageUpload category={product.category} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
         </div>
-        {/* <div className={classes.upload}>
-          <Typography>Auxillary Images</Typography>
-          <ImageUpload />
-        </div> */}
       </div>
     </div>
   );

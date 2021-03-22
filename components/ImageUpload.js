@@ -7,22 +7,22 @@ import "@uppy/core/dist/style.css";
 import "@uppy/drag-drop/dist/style.css";
 
 export default function ImageUpload(props) {
-  const { category, title } = props;
+  const { category } = props;
   const uppy = new Uppy({
-    meta: { type: "iphoneAdPix" },
+    meta: { type: "productImage" },
     restrictions: {
-      maxNumberOfFiles: 3,
+      maxNumberOfFiles: 1,
       maxFileSize: 1048576 * 4,
       allowedFileTypes: [".jpg", ".jpeg", ".png"],
     },
     autoProceed: true,
   });
 
-  uppy.setMeta({ category: category, title: title });
+  uppy.setMeta({ category: category });
 
   uppy.use(XHRUpload, {
     endpoint: "http://localhost:3000/api/upload",
-    fieldName: "iphoneAdPix",
+    fieldName: "productImage",
     formData: true,
   });
 
@@ -86,7 +86,4 @@ export default function ImageUpload(props) {
 
 ImageUpload.propTypes = {
   category: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  //   imageURL: PropTypes.string,
-  //   auxImages: PropTypes.arrayOf(PropTypes.string),
 };
