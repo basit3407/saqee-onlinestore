@@ -47,7 +47,7 @@ export default function ImageUpload(props) {
   uppy.on("upload-success", (file, response) => {
     setProduct((prevVal) => {
       const { image } = response.body,
-        { auxillaryImages } = prevVal;
+        { auxImages } = prevVal;
 
       return {
         ...prevVal,
@@ -55,9 +55,9 @@ export default function ImageUpload(props) {
           id === "image"
             ? image
             : [
-                ...auxillaryImages.slice(0, auxImageIndex),
+                ...auxImages.slice(0, auxImageIndex),
                 image,
-                ...auxillaryImages.slice(auxImageIndex + 1),
+                ...auxImages.slice(auxImageIndex + 1),
               ],
       };
     });

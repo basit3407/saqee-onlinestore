@@ -212,24 +212,6 @@ export default function AddProducts() {
                     <div className={classes.error}>{error[prop]}</div>
                   )}
                 </div>
-              ) : prop === "auxImages" ? (
-                [...product.auxImages.keys()].map((auxImageIndex) => {
-                  return (
-                    <div key={auxImageIndex + 1}>
-                      <Typography>
-                        Auxillary Image {auxImageIndex + 1}
-                      </Typography>
-                      <TextField
-                        onChange={(event) =>
-                          handleAuximages(event, auxImageIndex)
-                        }
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                      />
-                    </div>
-                  );
-                })
               ) : (
                 prop === "variations" &&
                 [...product.variations.keys()].map((variationIndex) => {
@@ -293,19 +275,27 @@ export default function AddProducts() {
           <div className={classes.upload}>
             <div className={classes.upload}>
               <Typography>Main Image</Typography>
-              <ImageUpload category={product.category} />
+              <ImageUpload
+                id="image"
+                setProduct={setProduct}
+                category={product.category}
+              />
 
               {product.auxImages &&
-                product.auxImages.length > 0 &&
-                product.auxImages.map((auxImage, index) => {
+                [...product.auxImages.keys()].map((auxImageIndex) => {
                   return (
-                    <div key={index}>
-                      {auxImage && (
-                        <div>
-                          <Typography>Auxillary Image {index + 1}</Typography>
-                          <ImageUpload category={product.category} />
-                        </div>
-                      )}
+                    <div key={auxImageIndex + 1}>
+                      <div>
+                        <Typography>
+                          Auxillary Image {auxImageIndex + 1}
+                        </Typography>
+                        <ImageUpload
+                          category={product.category}
+                          auxImageIndex={auxImageIndex}
+                          setProduct={setProduct}
+                          id="auxImages"
+                        />
+                      </div>
                     </div>
                   );
                 })}
