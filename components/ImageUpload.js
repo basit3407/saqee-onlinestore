@@ -7,7 +7,7 @@ import "@uppy/core/dist/style.css";
 import "@uppy/drag-drop/dist/style.css";
 
 export default function ImageUpload(props) {
-  const { category } = props;
+  const { category, setProduct, id, auxImageIndex } = props;
   const uppy = new Uppy({
     meta: { type: "productImage" },
     restrictions: {
@@ -35,13 +35,32 @@ export default function ImageUpload(props) {
     console.log(file.name, preview);
   });
 
-  uppy.on("complete", (result) => {
-    const url = result.successful[0].uploadURL;
-    console.log("successful upload", result);
-  });
+  // uppy.on("complete", (result) => {
+  //   const url = result.successful[0].uploadURL;
+  //   console.log("successful upload", result);
+  // });
 
   uppy.on("error", (error) => {
     console.error(error.stack);
+  });
+
+  uppy.on("upload-success", (file, response) => {
+    setProduct((prevVal) => {
+      const { image } = response.body,
+        { auxillaryImages } = prevVal;
+
+      return {
+        ...prevVal,
+        [id]:
+          id === "image"
+            ? image
+            : [
+                ...auxillaryImages.slice(0, auxImageIndex),
+                image,
+                ...auxillaryImages.slice(auxImageIndex + 1),
+              ],
+      };
+    });
   });
 
   uppy.on("restriction-failed", (file, error) => {
@@ -86,4 +105,7 @@ export default function ImageUpload(props) {
 
 ImageUpload.propTypes = {
   category: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  auxImageIndex: PropTypes.number,
+  setProduct: PropTypes.func.isRequired,
 };

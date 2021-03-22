@@ -9,10 +9,8 @@ export const config = {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const { category } = req.body,
-      path = `./public/images/${category}`;
+    const path = `./public/images/${req.body.category}`;
     fs.mkdirsSync(path);
-
     cb(null, path);
   },
   filename: function (req, file, cb) {
@@ -24,9 +22,7 @@ const upload = multer({ storage: storage });
 
 export default (req, res) => {
   upload.single("productImage")(req, {}, (err) => {
-    console.log(req.body);
-    // do error handling ere
-    console.log(req.file); // do something with the files here
+    // do error handling here
+    !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
   });
-  res.status(200).json({});
 };

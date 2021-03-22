@@ -1,22 +1,35 @@
 import { useState } from "react";
 import {
   Button,
+  Container,
   makeStyles,
   MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@material-ui/core";
-
-// eslint-disable-next-line no-unused-vars
 import axios from "axios";
 import ImageUpload from "../components/ImageUpload";
+import Top from "../components/layout/Top";
 
-// eslint-disable-next-line no-unused-vars
 const useStylyes = makeStyles((theme) => ({
-  root: {},
+  root: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 0,
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "2px solid #ccc",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.secondary.dark,
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: theme.palette.secondary.dark,
+    },
+  },
   addProduct: {},
-
+  error: {
+    color: theme.palette.error.main,
+  },
   product: {},
   upload: {
     margin: theme.spacing(1),
@@ -33,12 +46,12 @@ export default function AddProducts() {
       description: "",
       category: "",
       price: 1000,
-      countInstock: 10,
+      countInStock: 10,
       image: "",
       auxImagesQty: 0,
       variationsQty: 0,
     }),
-    [error, setError] = useState(false); //error on submission if
+    [error, setError] = useState({}); //error on submission if
 
   const categories = [
     "garments",
@@ -69,22 +82,21 @@ export default function AddProducts() {
     }));
   };
 
-  //Assing names of auxImages
-  const handleAuximages = (event, auxImageIndex) => {
-    const { value } = event.target;
-    setProduct((prevVal) => {
-      const { auxImages } = prevVal;
-
-      return {
-        ...prevVal,
-        auxImages: [
-          ...auxImages.slice(0, auxImageIndex),
-          value,
-          ...auxImages.slice(auxImageIndex + 1),
-        ],
-      };
-    });
-  };
+  // //Assing names of auxImages
+  // const handleAuximages = (event, auxImageIndex) => {
+  //   const { value } = event.target;
+  //   setProduct((prevVal) => {
+  //     const { auxImages } = prevVal;
+  //     return {
+  //       ...prevVal,
+  //       auxImages: [
+  //         ...auxImages.slice(0, auxImageIndex),
+  //         value,
+  //         ...auxImages.slice(auxImageIndex + 1),
+  //       ],
+  //     };
+  //   });
+  // };
 
   //Assign titles of variations and define the number of values for each variation
   const handleVariations = (event, variationIndex) => {
@@ -133,150 +145,202 @@ export default function AddProducts() {
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.product}>
-        {Object.keys(product).map((prop, index) => {
-          return prop !== "auxImages" &&
-            prop !== "variations" &&
-            prop !== "category" ? (
-            <TextField
-              onChange={handleChange}
-              key={index}
-              name={prop}
-              type={
-                prop === "variationsQty" ||
-                prop === "auxImagesQty" ||
-                prop === "price" ||
-                prop === "countInStock"
-                  ? "number"
-                  : "text"
-              }
-              label={prop}
-              fullWidth
-              value={product[prop]}
-              margin="normal"
-            />
-          ) : prop === "category" ? (
-            <Select
-              key={index}
-              label={prop}
-              fullWidth
-              onChange={handleChange}
-              value={product[prop]}
-              name={prop}
-            >
-              {categories.map((category, index) => {
-                return (
-                  <MenuItem key={index} value={category}>
-                    {category}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          ) : prop === "auxImages" ? (
-            [...product.auxImages.keys()].map((auxImageIndex) => {
-              return (
-                <div key={auxImageIndex + 1}>
-                  <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
-                  <TextField
-                    onChange={(event) => handleAuximages(event, auxImageIndex)}
-                    fullWidth
-                    margin="normal"
-                  />
-                </div>
-              );
-            })
-          ) : (
-            prop === "variations" &&
-            [...product.variations.keys()].map((variationIndex) => {
-              return (
-                <div key={variationIndex + 1}>
-                  <Typography>variation {variationIndex + 1}</Typography>
-                  <TextField
-                    name="title"
-                    fullWidth
-                    margin="normal"
-                    onChange={(event) =>
-                      handleVariations(event, variationIndex)
-                    }
-                  />
-                  <TextField
-                    name="values"
-                    type="number"
-                    label="number of values"
-                    fullWidth
-                    margin="normal"
-                    onChange={(event) =>
-                      handleVariations(event, variationIndex)
-                    }
-                  />
-                  {product.variations[variationIndex] &&
-                    product.variations[variationIndex].values &&
-                    [...product.variations[variationIndex].values.keys()].map(
-                      (valueIndex) => {
-                        return (
-                          <TextField
-                            key={valueIndex + 1}
-                            fullWidth
-                            value={
-                              product.variations[variationIndex].values[
-                                valueIndex
-                              ]
-                            }
-                            margin="normal"
-                            onChange={(event) =>
-                              handleVariationValues(
-                                event,
-                                variationIndex,
-                                valueIndex
-                              )
-                            }
-                          />
-                        );
-                      }
-                    )}
-                </div>
-              );
-            })
-          );
-        })}
-      </div>
-
-      <div className={classes.upload}>
-        <div className={classes.upload}>
-          <Typography>Main Image</Typography>
-          <ImageUpload category={product.category} />
-          <Typography>AuxImages</Typography>
-          {product.auxImages &&
-            product.auxImages.length > 0 &&
-            product.auxImages.map((auxImage, index) => {
-              return (
+    <>
+      <Top heading="Add Product" />
+      <div className={classes.root}>
+        <Container>
+          <div className={classes.product}>
+            {Object.keys(product).map((prop, index) => {
+              return prop !== "auxImages" &&
+                prop !== "variations" &&
+                prop !== "category" &&
+                prop !== "image" ? (
                 <div key={index}>
-                  {auxImage && (
-                    <div>
-                      <Typography>Auxillary Image {index + 1}</Typography>
-                      <ImageUpload category={product.category} />
-                    </div>
+                  <TextField
+                    onChange={handleChange}
+                    variant="outlined"
+                    name={prop}
+                    type={
+                      prop === "variationsQty" ||
+                      prop === "auxImagesQty" ||
+                      prop === "price" ||
+                      prop === "countInStock"
+                        ? "number"
+                        : "text"
+                    }
+                    label={
+                      prop === "brand" || prop === "description"
+                        ? prop.charAt(0).toUpperCase() +
+                          prop.slice(1).toLowerCase() +
+                          " (optional)"
+                        : prop.charAt(0).toUpperCase() +
+                          prop.slice(1).toLowerCase()
+                    }
+                    fullWidth
+                    value={product[prop]}
+                    multiline={prop === "description" ? true : false}
+                    rows={3}
+                    rowsMax={20}
+                    margin="normal"
+                  />
+                  {error[prop] && (
+                    <div className={classes.error}>{error[prop]}</div>
                   )}
                 </div>
+              ) : prop === "category" ? (
+                <div key={index}>
+                  <TextField
+                    variant="outlined"
+                    label={
+                      prop.charAt(0).toUpperCase() + prop.slice(1).toLowerCase()
+                    }
+                    select
+                    fullWidth
+                    onChange={handleChange}
+                    value={product[prop]}
+                    name={prop}
+                  >
+                    {categories.map((category, index) => {
+                      return (
+                        <MenuItem key={index} value={category}>
+                          {category}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                  {error[prop] && (
+                    <div className={classes.error}>{error[prop]}</div>
+                  )}
+                </div>
+              ) : prop === "auxImages" ? (
+                [...product.auxImages.keys()].map((auxImageIndex) => {
+                  return (
+                    <div key={auxImageIndex + 1}>
+                      <Typography>
+                        Auxillary Image {auxImageIndex + 1}
+                      </Typography>
+                      <TextField
+                        onChange={(event) =>
+                          handleAuximages(event, auxImageIndex)
+                        }
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                prop === "variations" &&
+                [...product.variations.keys()].map((variationIndex) => {
+                  return (
+                    <div key={variationIndex + 1}>
+                      <Typography>Variation {variationIndex + 1}</Typography>
+                      <TextField
+                        name="title"
+                        fullWidth
+                        label="Title"
+                        margin="normal"
+                        variant="outlined"
+                        onChange={(event) =>
+                          handleVariations(event, variationIndex)
+                        }
+                      />
+                      <TextField
+                        name="values"
+                        type="number"
+                        label="Number of values"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        onChange={(event) =>
+                          handleVariations(event, variationIndex)
+                        }
+                      />
+                      {product.variations[variationIndex] &&
+                        product.variations[variationIndex].values &&
+                        [
+                          ...product.variations[variationIndex].values.keys(),
+                        ].map((valueIndex) => {
+                          return (
+                            <TextField
+                              key={valueIndex + 1}
+                              fullWidth
+                              variant="outlined"
+                              value={
+                                product.variations[variationIndex].values[
+                                  valueIndex
+                                ]
+                              }
+                              margin="normal"
+                              onChange={(event) =>
+                                handleVariationValues(
+                                  event,
+                                  variationIndex,
+                                  valueIndex
+                                )
+                              }
+                            />
+                          );
+                        })}
+                    </div>
+                  );
+                })
               );
             })}
-        </div>
-      </div>
-      <div>
-        <Button
-          onClick={() => {
-            axios
-              .post("http://localhost3000/api/products", product)
-              .then(() => setError(false))
-              .catch(() => setError(true));
-          }}
-        >
-          Dispatch Product
-        </Button>
-      </div>
+          </div>
 
-      {error && <span>There was some issue please try again</span>}
-    </div>
+          <div className={classes.upload}>
+            <div className={classes.upload}>
+              <Typography>Main Image</Typography>
+              <ImageUpload category={product.category} />
+
+              {product.auxImages &&
+                product.auxImages.length > 0 &&
+                product.auxImages.map((auxImage, index) => {
+                  return (
+                    <div key={index}>
+                      {auxImage && (
+                        <div>
+                          <Typography>Auxillary Image {index + 1}</Typography>
+                          <ImageUpload category={product.category} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+          <div>
+            <Button
+              onClick={() => {
+                axios
+                  .post("http://localhost:3000/api/products", {
+                    ...product,
+                    //save image url for main and aux images
+                    image: product.image
+                      ? `/images/${product.category}/${product.image}`
+                      : "",
+                    ...(product.auxImages &&
+                      product.auxImages.length > 0 && {
+                        auxImages: product.auxImages.map(
+                          (auxImage) => `images/${product.category}/${auxImage}`
+                        ),
+                      }),
+                  })
+                  .then(() => setError({}))
+                  .catch((e) => setError(e.response.data));
+              }}
+            >
+              Dispatch Product
+            </Button>
+          </div>
+
+          {error.server && (
+            <span className={classes.error}>{error.server}</span>
+          )}
+        </Container>
+      </div>
+    </>
   );
 }

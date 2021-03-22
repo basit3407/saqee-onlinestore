@@ -1,28 +1,25 @@
 export default function validate(data) {
   let errors;
   for (const property in data) {
-    //exclude optional properties
-    errors =
-      !(
+    errors = {
+      ...errors,
+      //exclude optional properties
+      ...(!(
         property === "description" ||
-        property === "auxillaryImages" ||
+        property === "auxImagesQty" ||
         property === "brand" ||
-        property === "variations"
-      ) && !data[property] //empty fields validation
-        ? {
-            ...errors,
-            [property]: `${property.charAt(0).toUpperCase()}${property.slice(
-              1
-            )} is required`,
-          }
-        : {
-            ...errors,
-            ...((property === "countInStock" || property === "price") && //numbers validation
-              !/^d+$/.test(data[property]) && {
-                [property]: "Please enter number in numeric format",
-              }),
-          };
+        property === "variationsQty"
+      ) &&
+        !data[property] && {
+          //empty fields validatio n for compulsory fields
+          ...errors,
+          [property]: `${property.charAt(0).toUpperCase()}${property
+            .slice(1)
+            .replace(/([A-Z])/g, " $1")} is required`,
+        }),
+    };
   }
+
   return {
     errors,
     isValid: isEmpty(errors),
