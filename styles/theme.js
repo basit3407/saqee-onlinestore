@@ -27,19 +27,17 @@ const theme = createMuiTheme({
     },
   },
   typography: {
+    fontFamily: `'Work Sans', sans-serif`,
+    fontWeight: 400,
     h1: {
-      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
+      fontFamily: `'Ultra', serif`,
       fontSize: "4.5rem",
-      fontWeight: 500,
     },
-    h2: {
-      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
-      fontSize: "3.5rem",
-      fontWeight: 500,
-    },
-    h4: {
-      fontFamily: `"Ubuntu","Roboto","Helvetica","Arial",sans-serif`,
-    },
+    h2: { fontFamily: `'Ultra', serif` },
+    h3: { fontFamily: `'Ultra', serif` },
+    h4: { fontFamily: `'Ultra', serif` },
+    h5: { fontFamily: `'Ultra', serif` },
+    h6: { fontFamily: `'Ultra', serif` },
   },
 });
 

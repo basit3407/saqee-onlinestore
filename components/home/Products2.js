@@ -92,7 +92,7 @@ const MapImages = () => {
               alt=""
             />
             <div className={classes.overlay}>
-              <Typography color="textSecondary" display="block" variant="h4">
+              <Typography color="textSecondary" display="block" variant="h6">
                 {item.caption}
               </Typography>
 

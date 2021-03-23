@@ -15,14 +15,6 @@ export default class MyDocument extends Document {
           {/* Google fonts */}
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
-            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
-            rel="stylesheet"
-          />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          />
-          <link
             href="https://fonts.googleapis.com/css?family=Ultra|Work+Sans:400,500"
             rel="stylesheet"
           ></link>
