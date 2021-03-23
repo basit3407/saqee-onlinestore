@@ -196,6 +196,9 @@ export default function AddProducts() {
                   <TextField
                     onChange={handleChange}
                     variant="outlined"
+                    required={
+                      prop === "brand" || prop === "description" ? false : true
+                    }
                     name={prop}
                     type={
                       prop === "variationsQty" ||
@@ -233,6 +236,7 @@ export default function AddProducts() {
                     }
                     select
                     fullWidth
+                    required
                     onChange={handleChange}
                     value={product[prop]}
                     margin="normal"
@@ -263,16 +267,23 @@ export default function AddProducts() {
                         name="title"
                         fullWidth
                         label="Title"
+                        required
                         margin="normal"
                         variant="outlined"
                         onChange={(event) =>
                           handleVariations(event, variationIndex)
                         }
                       />
+                      {error.variations && (
+                        <div className={classes.error}>
+                          {error.variations[variationIndex].title}
+                        </div>
+                      )}
                       <TextField
                         name="values"
                         type="number"
                         label="Number of values"
+                        required
                         variant="outlined"
                         fullWidth
                         margin="normal"
@@ -280,33 +291,57 @@ export default function AddProducts() {
                           handleVariations(event, variationIndex)
                         }
                       />
+                      {error.variations && (
+                        <div className={classes.error}>
+                          {error.variations[variationIndex].values}
+                        </div>
+                      )}
                       {product.variations[variationIndex] &&
                         product.variations[variationIndex].values &&
                         [
                           ...product.variations[variationIndex].values.keys(),
                         ].map((valueIndex) => {
                           return (
-                            <TextField
-                              key={valueIndex + 1}
-                              fullWidth
-                              label={`Value ${valueIndex + 1}`}
-                              variant="outlined"
-                              value={
-                                product.variations[variationIndex].values[
-                                  valueIndex
-                                ]
-                              }
-                              margin="normal"
-                              onChange={(event) =>
-                                handleVariationValues(
-                                  event,
-                                  variationIndex,
-                                  valueIndex
-                                )
-                              }
-                            />
+                            <div key={valueIndex + 1}>
+                              <TextField
+                                fullWidth
+                                label={`Value ${valueIndex + 1}`}
+                                required
+                                variant="outlined"
+                                value={
+                                  product.variations[variationIndex].values[
+                                    valueIndex
+                                  ]
+                                }
+                                margin="normal"
+                                onChange={(event) =>
+                                  handleVariationValues(
+                                    event,
+                                    variationIndex,
+                                    valueIndex
+                                  )
+                                }
+                              />
+                              {error.variations &&
+                                error.variations[variationIndex].values && (
+                                  <div className={classes.error}>
+                                    {
+                                      error.variations[variationIndex].values[
+                                        valueIndex
+                                      ]
+                                    }
+                                  </div>
+                                )}
+                            </div>
                           );
                         })}
+                      {error.variations &&
+                        typeof error.variations[variationIndex] !==
+                          "object" && (
+                          <div className={classes.error}>
+                            {error.variations[variationIndex]}
+                          </div>
+                        )}
                     </div>
                   );
                 })
@@ -340,9 +375,11 @@ export default function AddProducts() {
                     <Typography>
                       Uploaded Image: {product.auxImages[auxImageIndex]}
                     </Typography>
-                    {/* {error.image && (
-                            <div className={classes.error}>{error.image}</div>
-                          )} */}
+                    {error.auxImages && (
+                      <div className={classes.error}>
+                        {error.auxImages[auxImageIndex]}
+                      </div>
+                    )}
                   </div>
                 );
               })}
