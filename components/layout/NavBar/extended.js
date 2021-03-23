@@ -41,6 +41,7 @@ export const SearchPopover = (props) => {
       onClose={handleSearchClose}
       classes={{ paper: classes.searchPaper }}
       PaperProps={{ elevation: 0 }}
+      elevation={0}
       //important for keeping popover to full left
       marginThreshold={0}
     >
@@ -89,7 +90,7 @@ export const ShoppingMenu = (props) => {
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
-      { title: "Kitchenware", href: "/products/kitchenware" },
+      { title: "Other", href: "/products/other" },
       { title: "Little Ones", href: "/products/babies" },
     ];
 

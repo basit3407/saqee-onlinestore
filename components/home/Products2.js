@@ -74,7 +74,7 @@ export default function Products2() {
 
 const MapImages = () => {
   const images = [
-      { img: "kitchen", caption: "Kitchen Tools" },
+      { img: "kitchen", caption: "Other Items", href: "other" },
       { img: "babies", caption: "Little Ones" },
     ],
     classes = useStyles();
@@ -92,7 +92,7 @@ const MapImages = () => {
               alt=""
             />
             <div className={classes.overlay}>
-              <Typography color="textSecondary" display="block" variant="h4">
+              <Typography color="textSecondary" display="block" variant="h6">
                 {item.caption}
               </Typography>
 
@@ -102,6 +102,7 @@ const MapImages = () => {
                 }}
                 size="large"
                 variant="contained"
+                href={`/products/${item.href}`}
               >
                 <Typography color="textSecondary" variant="button">
                   view products

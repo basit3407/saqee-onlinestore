@@ -1,5 +1,5 @@
 import { connectToDatabase } from "../../../util/mongodb";
-// import validate from "../../../../validation/product";
+import validate from "../../../validation/product";
 
 export default async function productsHandler(req, res) {
   const {
@@ -7,8 +7,6 @@ export default async function productsHandler(req, res) {
       method,
     } = req,
     { db } = await connectToDatabase();
-
-  console.log("i got called");
 
   switch (method) {
     case "GET":
@@ -36,12 +34,11 @@ export default async function productsHandler(req, res) {
           if (!products.length)
             return res.status(404).json({ error: "no such category" });
           //if no errors send success response
-          res.status(200).json({ products: products });
+          res.status(200).json(products);
         } catch (e) {
-          e &&
-            res
-              .status(500)
-              .json({ error: "there was some problem,please try again" });
+          res
+            .status(500)
+            .json({ error: "there was some problem,please try again" });
         }
       }
 
@@ -51,20 +48,19 @@ export default async function productsHandler(req, res) {
       // @desc create product in products of [name] in data base
       // @access public
       {
-        // // Form validation
-        // const { errors, isValid } = validate(req.body);
-        // //if not valid retrun error
-        // if (!isValid) return res.status(400).json(errors);
+        const { errors, isValid } = validate(req.body); // Form validation
+        if (!isValid) return res.status(400).json(errors); //if not valid retrun error
 
-        //if no errors save
+        let product = req.body;
+        for (const prop in product) !product[prop] && delete product[prop]; //delete optional empty fields
+
         try {
-          await db.collection("products").insertMany(req.body);
-          res.status(200).json({ message: "product saved" });
+          await db.collection("products").insertOne(product);
+          res.status(200).json({ message: "product saved" }); //save product in db
         } catch (e) {
-          e &&
-            res
-              .status(500)
-              .json({ error: "there was some problem,please try again" });
+          res
+            .status(500)
+            .json({ server: "there was some problem,please try again" });
         }
       }
 

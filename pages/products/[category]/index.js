@@ -6,12 +6,15 @@ import {
   Button,
   Link,
   Paper,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
-import FadeIn from "../../../components/FadeIn";
-import { connectToDatabase } from "../../../util/mongodb";
 import ErrorPage from "next/error";
 import { useState } from "react";
+import Image from "next/image";
+import { connectToDatabase } from "../../../util/mongodb";
+import FadeIn from "../../../components/FadeIn";
 import Top from "../../../components/layout/Top";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,8 +64,6 @@ const useStyles = makeStyles((theme) => ({
   },
   img: {
     marginBottom: "3%",
-    width: "100%",
-    height: "50vh",
     cursor: "pointer",
     transition: "transform 4000ms",
     WebkitTransition: "transform 4000ms",
@@ -96,9 +97,30 @@ export default function Products(props) {
     router = useRouter(),
     { category } = router.query;
 
+  //states
+  const [products, setProducts] = useState(array), //array of products
+    [anchorSort, setAnchorSort] = useState(); //anchor for sort DropDown
+
+  //for opening sort Menu
+  const openSortMenu = Boolean(anchorSort);
+
+  //This funcion handles the click on sort button
+  const handleClickSort = (event) => setAnchorSort(event.currentTarget);
+
+  // This function handles the clicks on options in sort menu
+  const handleSort = (event) => {
+    const { id } = event.target;
+    const ascendingOrder = products.sort((a, b) => a.price - b.price); //ascending
+    const sortedProducts =
+      id === "ascending" ? ascendingOrder : ascendingOrder.reverse(); //descending
+    setProducts(sortedProducts);
+    setAnchorSort();
+  };
+
   if (error) {
     return <ErrorPage statusCode={error} />;
   }
+
   return (
     <>
       <Top heading={category} />
@@ -110,7 +132,10 @@ export default function Products(props) {
                 <Grid container>
                   <Grid xs={false} sm={11} item></Grid>
                   <Grid classes={{ root: classes.gridButton }} item xs={12} sm>
-                    <Button classes={{ root: classes.button }}>
+                    <Button
+                      onClick={handleClickSort}
+                      classes={{ root: classes.button }}
+                    >
                       <Typography align="center" variant="button">
                         sort
                       </Typography>
@@ -129,9 +154,33 @@ export default function Products(props) {
           </FadeIn>
         </Grid>
         <Grid container>
-          <MapArray array={array} />
+          <MapProducts products={products} />
         </Grid>
       </section>
+      <Menu
+        anchorEl={anchorSort}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        //important for custom position of anchor origin
+        getContentAnchorEl={null}
+        keepMounted
+        open={openSortMenu}
+        onClose={() => setAnchorSort()}
+        classes={{ paper: classes.sortPaper }}
+        PaperProps={{ elevation: 0 }}
+        //important for keeping popover to full left
+        marginThreshold={0}
+      >
+        <MenuItem id="ascending" onClick={handleSort}>
+          Price low to high
+        </MenuItem>
+        <MenuItem id="descending" onClick={handleSort}>
+          Price high to low
+        </MenuItem>
+      </Menu>
     </>
   );
 }
@@ -159,17 +208,22 @@ Products.propTypes = {
   ),
 };
 
-const MapArray = (props) => {
-  const { array } = props,
+const MapProducts = (props) => {
+  const { products } = props,
     // eslint-disable-next-line no-unused-vars
     [isAdmin, setIsAdmin] = useState(false),
     classes = useStyles();
-  return array.map((item, index) => {
+  return products.map((item, index) => {
     return (
       <FadeIn key={index} timeout={2000}>
         <Grid classes={{ root: classes.array }} item xs={12} sm={6} md={4}>
           <Paper className={classes.productPaper} elevation={3}>
-            <img className={classes.img} src={item.image} alt="" />
+            <Image
+              width={425}
+              height={425}
+              className={classes.img}
+              src={item.image}
+            />
             <div className={classes.productCaption}>
               <Link
                 display="block"
@@ -216,8 +270,8 @@ const MapArray = (props) => {
   });
 };
 
-MapArray.propTypes = {
-  array: PropTypes.arrayOf(
+MapProducts.propTypes = {
+  products: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       title: PropTypes.string,

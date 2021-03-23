@@ -427,6 +427,20 @@ export default function insertMongodb() {
     };
   });
 
+  let garments = [];
+
+  for (let i = Fabrics.length; i < i + 25; i++) {
+    const garment = {
+      title: `DR-${i}`,
+      category: "garments",
+      price: 2179,
+      image: "",
+      countInStock: 10,
+    };
+
+    garments.push(garment);
+  }
+
   return (
     <button
       onClick={() => {

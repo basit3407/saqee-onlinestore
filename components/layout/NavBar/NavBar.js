@@ -24,6 +24,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuIcon from "@material-ui/icons/Menu";
 import Image from "next/image";
 import axios from "axios";
+import useSWR from "swr";
 import { SearchPopover, ShoppingMenu } from "./extended";
 
 const useStyles = makeStyles((theme) => ({
@@ -147,7 +148,7 @@ export default function NavBar(props) {
       { title: "Garments", href: "/products/garments" },
       { title: "Cosmetics", href: "products/Cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
-      { title: "Kitchenware", href: "/products/kitchenware" },
+      { title: "Other", href: "/products/other" },
       { title: "Little Ones", href: "/products/babies" },
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },
@@ -174,15 +175,11 @@ export default function NavBar(props) {
   const handleSearchQuery = (event) => setSearchQuery(event.target.value);
 
   //send Search Query to database and get results
-  useEffect(
-    () =>
-      searchQuery
-        ? sendSearchQuery(searchQuery).then((results) =>
-            setSearchResults(results)
-          )
-        : setSearchResults(),
-    [searchQuery]
+  const { data, error } = useSWR(
+    searchQuery ? `/api/search?keyword=${searchQuery}` : null,
+    fetcher
   );
+  useEffect(() => setSearchResults(error ? [] : data), [data, error]);
 
   //Function for closing search Bar
   const handleSearchClose = () => {
@@ -488,12 +485,5 @@ SearchBar.propTypes = {
   ),
 };
 
-//This function sends query to database
-const sendSearchQuery = async (query) => {
-  try {
-    const { data } = await axios.get(`/api/search?keyword=${query}`);
-    return data.products;
-  } catch (e) {
-    if (e.response.status === 404) return [];
-  }
-};
+//This function fetches data from database as per url
+const fetcher = (url) => axios.get(url).then((res) => res.data);
