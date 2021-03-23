@@ -24,6 +24,7 @@ const upload = multer({ storage: storage });
 export default (req, res) => {
   upload.single("productImage")(req, res, (err) => {
     // do error handling here
-    !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
+    // !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
   });
+  res.status(200).json({});
 };
