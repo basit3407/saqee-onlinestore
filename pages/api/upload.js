@@ -4,7 +4,7 @@ import fs from "fs-extra";
 export const config = {
   api: {
     bodyParser: false,
-    externalResolver: true,
+    // externalResolver: true,
   },
 };
 
