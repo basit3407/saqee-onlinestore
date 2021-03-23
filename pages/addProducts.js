@@ -15,24 +15,58 @@ const useStylyes = makeStyles((theme) => ({
   root: {
     "& .MuiOutlinedInput-root": {
       borderRadius: 0,
-    },
-    "& .MuiOutlinedInput-notchedOutline": {
-      border: "2px solid #ccc",
-    },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.secondary.dark,
+
+      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.secondary.dark,
+      },
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "2px solid #ccc",
+      },
     },
     "& .MuiFormLabel-root.Mui-focused": {
       color: theme.palette.secondary.dark,
     },
+
+    "& .MuiButton-root": {
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+      borderRadius: 0,
+      background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+      transition: "all 0.2s ease",
+      WebkitTransition: "all 0.2s ease",
+      msTransition: "all 0.2s ease",
+      MozTransition: "all 0.2s ease",
+      backgroundSize: "200%",
+
+      "&.MuiButton-text": {
+        padding: theme.spacing(1, 7),
+      },
+
+      "&:hover": {
+        backgroundPosition: "left",
+        boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+      },
+      margin: theme.spacing(1, 0),
+    },
+    "& .MuiTypography-root": {
+      margin: theme.spacing(1, 0),
+    },
+    marginBottom: theme.spacing(3),
   },
-  addProduct: {},
+
   error: {
     color: theme.palette.error.main,
   },
-  product: {},
+  product: {
+    marginBottom: theme.spacing(1),
+  },
   upload: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(3, 0),
+  },
+  image: {
+    margin: theme.spacing(3, 0),
+  },
+  textField: {
+    margin: theme.spacing(1, 0),
   },
 }));
 
@@ -44,7 +78,7 @@ export default function AddProducts() {
       title: "",
       brand: "",
       description: "",
-      category: "",
+      category: "garments",
       price: 1000,
       countInStock: 10,
       image: "",
@@ -81,22 +115,6 @@ export default function AddProducts() {
         value > 0 && { variations: Array(parseInt(value)) }), //create array of variations if present
     }));
   };
-
-  // //Assing names of auxImages
-  // const handleAuximages = (event, auxImageIndex) => {
-  //   const { value } = event.target;
-  //   setProduct((prevVal) => {
-  //     const { auxImages } = prevVal;
-  //     return {
-  //       ...prevVal,
-  //       auxImages: [
-  //         ...auxImages.slice(0, auxImageIndex),
-  //         value,
-  //         ...auxImages.slice(auxImageIndex + 1),
-  //       ],
-  //     };
-  //   });
-  // };
 
   //Assign titles of variations and define the number of values for each variation
   const handleVariations = (event, variationIndex) => {
@@ -144,6 +162,25 @@ export default function AddProducts() {
     });
   };
 
+  //This function handles click on dispatch button
+  const handleClick = () =>
+    axios
+      .post("http://localhost:3000/api/products", {
+        ...product,
+        //save image url for main and aux images
+        image: product.image
+          ? `/images/${product.category}/${product.image}`
+          : "",
+        ...(product.auxImages &&
+          product.auxImages.length > 0 && {
+            auxImages: product.auxImages.map((auxImage) =>
+              auxImage ? `images/${product.category}/${auxImage}` : ""
+            ),
+          }),
+      })
+      .then(() => setError({}))
+      .catch((e) => setError(e.response.data));
+
   return (
     <>
       <Top heading="Add Product" />
@@ -155,7 +192,7 @@ export default function AddProducts() {
                 prop !== "variations" &&
                 prop !== "category" &&
                 prop !== "image" ? (
-                <div key={index}>
+                <div className={classes.textField} key={index}>
                   <TextField
                     onChange={handleChange}
                     variant="outlined"
@@ -188,7 +225,7 @@ export default function AddProducts() {
                   )}
                 </div>
               ) : prop === "category" ? (
-                <div key={index}>
+                <div className={classes.textField} key={index}>
                   <TextField
                     variant="outlined"
                     label={
@@ -198,6 +235,7 @@ export default function AddProducts() {
                     fullWidth
                     onChange={handleChange}
                     value={product[prop]}
+                    margin="normal"
                     name={prop}
                   >
                     {categories.map((category, index) => {
@@ -216,7 +254,10 @@ export default function AddProducts() {
                 prop === "variations" &&
                 [...product.variations.keys()].map((variationIndex) => {
                   return (
-                    <div key={variationIndex + 1}>
+                    <div
+                      className={classes.variations}
+                      key={variationIndex + 1}
+                    >
                       <Typography>Variation {variationIndex + 1}</Typography>
                       <TextField
                         name="title"
@@ -248,6 +289,7 @@ export default function AddProducts() {
                             <TextField
                               key={valueIndex + 1}
                               fullWidth
+                              label={`Value ${valueIndex + 1}`}
                               variant="outlined"
                               value={
                                 product.variations[variationIndex].values[
@@ -271,64 +313,42 @@ export default function AddProducts() {
               );
             })}
           </div>
-
           <div className={classes.upload}>
-            <div className={classes.upload}>
+            <div className={classes.image}>
               <Typography>Main Image</Typography>
               <ImageUpload
                 id="image"
                 setProduct={setProduct}
                 category={product.category}
               />
-
-              {product.auxImages &&
-                [...product.auxImages.keys()].map((auxImageIndex) => {
-                  return (
-                    <div key={auxImageIndex + 1}>
-                      <div>
-                        <Typography>
-                          Auxillary Image {auxImageIndex + 1}
-                        </Typography>
-                        <ImageUpload
-                          category={product.category}
-                          auxImageIndex={auxImageIndex}
-                          setProduct={setProduct}
-                          id="auxImages"
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+              <Typography>Uploaded Image: {product.image}</Typography>
+              {error.image && (
+                <div className={classes.error}>{error.image}</div>
+              )}
             </div>
+            {product.auxImages &&
+              [...product.auxImages.keys()].map((auxImageIndex) => {
+                return (
+                  <div className={classes.image} key={auxImageIndex + 1}>
+                    <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
+                    <ImageUpload
+                      category={product.category}
+                      auxImageIndex={auxImageIndex}
+                      setProduct={setProduct}
+                      id="auxImages"
+                    />
+                    <Typography>
+                      Uploaded Image: {product.auxImages[auxImageIndex]}
+                    </Typography>
+                    {/* {error.image && (
+                            <div className={classes.error}>{error.image}</div>
+                          )} */}
+                  </div>
+                );
+              })}
           </div>
-          <div>
-            <Button
-              onClick={() => {
-                axios
-                  .post("http://localhost:3000/api/products", {
-                    ...product,
-                    //save image url for main and aux images
-                    image: product.image
-                      ? `/images/${product.category}/${product.image}`
-                      : "",
-                    ...(product.auxImages &&
-                      product.auxImages.length > 0 && {
-                        auxImages: product.auxImages.map(
-                          (auxImage) => `images/${product.category}/${auxImage}`
-                        ),
-                      }),
-                  })
-                  .then(() => setError({}))
-                  .catch((e) => setError(e.response.data));
-              }}
-            >
-              Dispatch Product
-            </Button>
-          </div>
-
-          {error.server && (
-            <span className={classes.error}>{error.server}</span>
-          )}
+          <Button onClick={handleClick}>Dispatch Product</Button>
+          {error.server && <div className={classes.error}>{error.server}</div>}
         </Container>
       </div>
     </>

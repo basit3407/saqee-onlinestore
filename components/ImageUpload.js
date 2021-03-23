@@ -3,16 +3,18 @@ import { DragDrop } from "@uppy/react";
 import ThumbnailGenerator from "@uppy/thumbnail-generator";
 import XHRUpload from "@uppy/xhr-upload";
 import PropTypes from "prop-types";
+import { ProgressBar } from "@uppy/react";
 import "@uppy/core/dist/style.css";
 import "@uppy/drag-drop/dist/style.css";
+import "@uppy/progress-bar/dist/style.css";
 
 export default function ImageUpload(props) {
   const { category, setProduct, id, auxImageIndex } = props;
   const uppy = new Uppy({
     meta: { type: "productImage" },
     restrictions: {
-      maxNumberOfFiles: 1,
-      maxFileSize: 1048576 * 4,
+      maxNumberOfFiles: null,
+      maxFileSize: null,
       allowedFileTypes: [".jpg", ".jpeg", ".png"],
     },
     autoProceed: true,
@@ -99,6 +101,7 @@ export default function ImageUpload(props) {
           },
         }}
       />
+      <ProgressBar uppy={uppy} fixed hideAfterFinish />
     </div>
   );
 }
