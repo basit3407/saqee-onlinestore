@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export default (req, res) => {
+  console.log("upload got called");
   upload.single("productImage")(req, res, (err) => {
     // do error handling here
     !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
