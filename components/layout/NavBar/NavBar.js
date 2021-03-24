@@ -336,7 +336,7 @@ NavBar.propTypes = {
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.objectOf(PropTypes.string),
       qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       price: PropTypes.number,
     })
@@ -477,8 +477,8 @@ SearchBar.propTypes = {
       auxillaryImages: PropTypes.arrayOf(PropTypes.string),
       variations: PropTypes.arrayOf(
         PropTypes.shape({
-          variationTitle: PropTypes.string,
-          variations: PropTypes.arrayOf(PropTypes.string),
+          title: PropTypes.string,
+          values: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })

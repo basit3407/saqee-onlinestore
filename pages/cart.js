@@ -248,7 +248,7 @@ Cart.propTypes = {
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.object,
       qty: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       price: PropTypes.number,
     })
@@ -314,13 +314,19 @@ const MapCartItems = (props) => {
             <Typography display="block">{item.title}</Typography>
             {/* if variations exist map variations */}
             {!isEmpty(item.variations) &&
-              Object.keys(item.variations).map((property, index) => {
-                return (
-                  <Typography display="block" key={index} variant="body2">
-                    {property}:{item.variations[property]}
-                  </Typography>
-                );
-              })}
+              Object.keys(item.variations).map(
+                (variationTitle, variationIndex) => {
+                  return (
+                    <Typography
+                      display="block"
+                      key={variationIndex + 1}
+                      variant="body2"
+                    >
+                      {variationTitle}:{item.variations[variationTitle]}
+                    </Typography>
+                  );
+                }
+              )}
             <Typography display="block" variant="body2">
               Rs {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Typography>
@@ -370,7 +376,7 @@ MapCartItems.propTypes = {
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.objectOf(PropTypes.string),
       qty: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       price: PropTypes.number,
     })

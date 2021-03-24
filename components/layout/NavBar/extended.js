@@ -75,8 +75,8 @@ SearchPopover.propTypes = {
       auxillaryImages: PropTypes.arrayOf(PropTypes.string),
       variations: PropTypes.arrayOf(
         PropTypes.shape({
-          variationTitle: PropTypes.string,
-          variations: PropTypes.arrayOf(PropTypes.string),
+          title: PropTypes.string,
+          values: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })

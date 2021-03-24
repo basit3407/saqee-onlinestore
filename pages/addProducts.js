@@ -85,7 +85,8 @@ export default function AddProducts() {
       auxImagesQty: 0,
       variationsQty: 0,
     }),
-    [error, setError] = useState({}); //error on submission if
+    [error, setError] = useState({}), //error on submission if
+    [success, setSuccess] = useState(false);
 
   const categories = [
     "garments",
@@ -178,7 +179,10 @@ export default function AddProducts() {
             ),
           }),
       })
-      .then(() => setError({}))
+      .then(() => {
+        setError({});
+        setSuccess(true);
+      })
       .catch((e) => setError(e.response.data));
 
   return (
@@ -274,7 +278,7 @@ export default function AddProducts() {
                           handleVariations(event, variationIndex)
                         }
                       />
-                      {error.variations && (
+                      {error.variations && error.variations[variationIndex] && (
                         <div className={classes.error}>
                           {error.variations[variationIndex].title}
                         </div>
@@ -291,11 +295,15 @@ export default function AddProducts() {
                           handleVariations(event, variationIndex)
                         }
                       />
-                      {error.variations && (
-                        <div className={classes.error}>
-                          {error.variations[variationIndex].values}
-                        </div>
-                      )}
+                      {error.variations &&
+                        error.variations[variationIndex] &&
+                        !Array.isArray(
+                          error.variations[variationIndex].values
+                        ) && (
+                          <div className={classes.error}>
+                            {error.variations[variationIndex].values}
+                          </div>
+                        )}
                       {product.variations[variationIndex] &&
                         product.variations[variationIndex].values &&
                         [
@@ -323,7 +331,10 @@ export default function AddProducts() {
                                 }
                               />
                               {error.variations &&
-                                error.variations[variationIndex].values && (
+                                error.variations[variationIndex] &&
+                                Array.isArray(
+                                  error.variations[variationIndex].values
+                                ) && (
                                   <div className={classes.error}>
                                     {
                                       error.variations[variationIndex].values[

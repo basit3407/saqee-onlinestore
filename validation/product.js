@@ -27,33 +27,46 @@ export default function validate(data) {
         : property === "variations"
         ? {
             ...errors,
-            [property]: data[property].map((item, index) => {
-              if (item) {
-                let obj = {};
-                if (!item.title)
-                  obj.title = `variation ${index + 1} title is required`;
-                if (!item.values)
-                  obj.values = `variation ${
-                    index + 1
-                  } number of values is required`;
-                else
-                  obj.values = item.values.map(
-                    (value, valueIndex) =>
-                      !value &&
-                      `Value ${valueIndex + 1} of variation ${
-                        index + 1
-                      } is required`
-                  );
-                return obj;
-              } else return `variation ${index + 1} entries are required`;
-            }),
+            [property]: data[property].map((item, variationIndex) =>
+              item
+                ? {
+                    ...(!item.title && {
+                      title: `variation ${
+                        variationIndex + 1
+                      } title is required`,
+                    }),
+                    values: item.values
+                      ? item.values.map(
+                          (value, valueIndex) =>
+                            !value &&
+                            `Value ${valueIndex + 1} of variation ${
+                              variationIndex + 1
+                            } is required`
+                        )
+                      : `variation ${
+                          variationIndex + 1
+                        } number of values is required`,
+                  }
+                : `variation ${variationIndex + 1} entries are required`
+            ),
           }
         : { ...errors };
   }
-  console.log(errors.variations);
 
-  errors.auxImages && isFalsy(errors.auxImages) && delete errors.auxImages; //delete array of errors for auxImages if no errors
-  // isFalsy(errors.variations) && delete errors.variations; //delete array pf errors for variations if no errors
+  errors.auxImages && isFalsy(errors.auxImages) && delete errors.auxImages; //delete array of errors for auxImages once errors are removed
+
+  // delete array of errors of variations once errors are removed
+  if (errors.variations) {
+    errors.variations.forEach((variation, index, variations) => {
+      !variation.title &&
+        Array.isArray(variation.values) &&
+        isFalsy(variation.values) &&
+        delete variation.values; // remove falsy values
+
+      isEmpty(variation) && variations.splice(index, 1); //remove empty objects
+    });
+    !errors.variations.length && delete errors.variations; //remove empty array
+  }
 
   return {
     errors,
