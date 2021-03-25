@@ -198,25 +198,25 @@ export default function Product(props) {
     !identicalIdItems.length &&
       localStorage.setItem(`${product.title}/${product._id}`, product.image);
     //update cart Items
-    setCartItems((prevVal) =>
-      duplicateItem
-        ? prevVal.map((cartItem) =>
-            isEqual(cartItem.variations, orderDetails.variations) //duplicate item
-              ? { ...cartItem, qty: cartItem.qty + orderDetails.qty } //increase the qty of duplicate item
-              : cartItem
-          )
-        : [
-            // if no duplicate item,add the ordered item
-            ...prevVal,
-            {
-              ...orderDetails,
-              title: product.title,
-              price: product.price,
-              id: product._id,
-            },
-          ]
-    );
-    localStorage.setItem("cartItems", JSON.stringify(cartItems)); //update cartItems in localStorage
+    const updatedCartItems = duplicateItem
+      ? cartItems.map((item) =>
+          isEqual(item.variations, orderDetails.variations) //duplicate item
+            ? { ...item, qty: item.qty + orderDetails.qty } //increase the qty of duplicate item
+            : item
+        )
+      : [
+          // if no duplicate item,add the ordered item
+          ...cartItems,
+          {
+            ...orderDetails,
+            title: product.title,
+            price: product.price,
+            id: product._id,
+          },
+        ];
+    setCartItems(updatedCartItems);
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems)); //update cartItems in localStorage
     router.push("/cart"); //redirect to carts page
   };
 
@@ -239,7 +239,7 @@ export default function Product(props) {
                   height={500}
                 />
                 {/* if auxillary images are present render them */}
-                {product.auxillaryImages && (
+                {product.auxImages && (
                   <div className={classes.auxillaryImages}>
                     {/*hide main image from aux section if it is set as main image */}
                     {mainImage !== product.image && (
@@ -257,7 +257,7 @@ export default function Product(props) {
                     <MapAuxillaryImages
                       mainImage={mainImage}
                       setMainImage={setMainImage}
-                      images={product.auxillaryImages}
+                      images={product.auxImages}
                     />
                   </div>
                 )}
@@ -358,7 +358,7 @@ Product.propTypes = {
     countInStock: PropTypes.number.isRequired,
     description: PropTypes.string,
     brand: PropTypes.string,
-    auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+    auxImages: PropTypes.arrayOf(PropTypes.string),
     variations: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string,

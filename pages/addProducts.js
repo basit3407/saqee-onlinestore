@@ -75,11 +75,11 @@ export default function AddProducts() {
   //states
 
   const [product, setProduct] = useState({
-      title: "",
+      title: "Lawn",
       brand: "",
       description: "",
-      category: "garments",
-      price: 1000,
+      category: "cosmetics",
+      price: 2199,
       countInStock: 10,
       image: "",
       auxImagesQty: 0,
@@ -88,13 +88,7 @@ export default function AddProducts() {
     [error, setError] = useState({}), //error on submission if
     [success, setSuccess] = useState(false);
 
-  const categories = [
-    "garments",
-    "cosmetics",
-    "handbags",
-    "other",
-    "little Ones",
-  ];
+  const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
   //For handling change in textFields
   const handleChange = (event) => {
@@ -175,7 +169,7 @@ export default function AddProducts() {
         ...(product.auxImages &&
           product.auxImages.length > 0 && {
             auxImages: product.auxImages.map((auxImage) =>
-              auxImage ? `images/${product.category}/${auxImage}` : ""
+              auxImage ? `/images/${product.category}/${auxImage}` : ""
             ),
           }),
       })

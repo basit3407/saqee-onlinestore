@@ -146,10 +146,10 @@ export default function NavBar(props) {
     mainMenuSmallScreenItems = [
       { title: "Home", href: "/" },
       { title: "Garments", href: "/products/garments" },
-      { title: "Cosmetics", href: "products/Cosmetics" },
+      { title: "Cosmetics", href: "/products/cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
       { title: "Other", href: "/products/other" },
-      { title: "Little Ones", href: "/products/babies" },
+      { title: "Kids", href: "/products/kids" },
       { title: "CONTACT US", href: "/contact" },
       { title: "ABOUT US", href: "/about" },
     ],
