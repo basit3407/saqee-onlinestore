@@ -10,7 +10,7 @@ export const config = {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `./images/${req.body.category}`;
+    const path = `./public/images/${req.body.category}`;
     fs.mkdirsSync(path);
     cb(null, path);
   },
