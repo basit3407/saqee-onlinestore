@@ -43,9 +43,11 @@ export default function Billing(props) {
                 </Typography>
                 {!isEmpty(item.variations) && //if variations are present render them
                   Object.keys(item.variations).map((variation, index) => {
-                    <Typography key={index}>
-                      {variation}:{item.variations[variation]}
-                    </Typography>;
+                    return (
+                      <Typography key={index + 1}>
+                        {variation}: {item.variations[variation]}
+                      </Typography>
+                    );
                   })}
               </div>
             </Grid>
@@ -108,7 +110,7 @@ Billing.propTypes = {
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.objectOf(PropTypes.string),
       qty: PropTypes.number,
       price: PropTypes.number,
     })

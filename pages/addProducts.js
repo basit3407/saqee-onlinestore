@@ -22,6 +22,22 @@ const useStylyes = makeStyles((theme) => ({
       "& .MuiOutlinedInput-notchedOutline": {
         border: "2px solid #ccc",
       },
+      //for removing spin arrows from input
+      "& input": {
+        /* Firefox */
+        "&[type=number]": {
+          "-moz-appearance": "textfield",
+        },
+        /* Chrome, Safari, Edge, Opera */
+        "&::-webkit-outer-spin-button": {
+          "-webkit-appearance": "none",
+          margin: 0,
+        },
+        "&::-webkit-inner-spin-button": {
+          "-webkit-appearance": "none",
+          margin: 0,
+        },
+      },
     },
     "& .MuiFormLabel-root.Mui-focused": {
       color: theme.palette.secondary.dark,
@@ -75,25 +91,20 @@ export default function AddProducts() {
   //states
 
   const [product, setProduct] = useState({
-      title: "",
+      title: "Lawn",
       brand: "",
       description: "",
-      category: "garments",
-      price: 1000,
+      category: "cosmetics",
+      price: 2199,
       countInStock: 10,
       image: "",
       auxImagesQty: 0,
       variationsQty: 0,
     }),
-    [error, setError] = useState({}); //error on submission if
+    [error, setError] = useState({}), //error on submission if
+    [success, setSuccess] = useState(false);
 
-  const categories = [
-    "garments",
-    "cosmetics",
-    "handbags",
-    "other",
-    "little Ones",
-  ];
+  const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
   //For handling change in textFields
   const handleChange = (event) => {
@@ -165,7 +176,7 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("http://localhost:3000/api/products", {
+      .post("https://saqee-onlinestore.vercel.app/api/products", {
         ...product,
         //save image url for main and aux images
         image: product.image
@@ -174,11 +185,14 @@ export default function AddProducts() {
         ...(product.auxImages &&
           product.auxImages.length > 0 && {
             auxImages: product.auxImages.map((auxImage) =>
-              auxImage ? `images/${product.category}/${auxImage}` : ""
+              auxImage ? `/images/${product.category}/${auxImage}` : ""
             ),
           }),
       })
-      .then(() => setError({}))
+      .then(() => {
+        setError({});
+        setSuccess(true);
+      })
       .catch((e) => setError(e.response.data));
 
   return (
@@ -196,6 +210,9 @@ export default function AddProducts() {
                   <TextField
                     onChange={handleChange}
                     variant="outlined"
+                    required={
+                      prop === "brand" || prop === "description" ? false : true
+                    }
                     name={prop}
                     type={
                       prop === "variationsQty" ||
@@ -233,6 +250,7 @@ export default function AddProducts() {
                     }
                     select
                     fullWidth
+                    required
                     onChange={handleChange}
                     value={product[prop]}
                     margin="normal"
@@ -263,16 +281,23 @@ export default function AddProducts() {
                         name="title"
                         fullWidth
                         label="Title"
+                        required
                         margin="normal"
                         variant="outlined"
                         onChange={(event) =>
                           handleVariations(event, variationIndex)
                         }
                       />
+                      {error.variations && error.variations[variationIndex] && (
+                        <div className={classes.error}>
+                          {error.variations[variationIndex].title}
+                        </div>
+                      )}
                       <TextField
                         name="values"
                         type="number"
                         label="Number of values"
+                        required
                         variant="outlined"
                         fullWidth
                         margin="normal"
@@ -280,33 +305,64 @@ export default function AddProducts() {
                           handleVariations(event, variationIndex)
                         }
                       />
+                      {error.variations &&
+                        error.variations[variationIndex] &&
+                        !Array.isArray(
+                          error.variations[variationIndex].values
+                        ) && (
+                          <div className={classes.error}>
+                            {error.variations[variationIndex].values}
+                          </div>
+                        )}
                       {product.variations[variationIndex] &&
                         product.variations[variationIndex].values &&
                         [
                           ...product.variations[variationIndex].values.keys(),
                         ].map((valueIndex) => {
                           return (
-                            <TextField
-                              key={valueIndex + 1}
-                              fullWidth
-                              label={`Value ${valueIndex + 1}`}
-                              variant="outlined"
-                              value={
-                                product.variations[variationIndex].values[
-                                  valueIndex
-                                ]
-                              }
-                              margin="normal"
-                              onChange={(event) =>
-                                handleVariationValues(
-                                  event,
-                                  variationIndex,
-                                  valueIndex
-                                )
-                              }
-                            />
+                            <div key={valueIndex + 1}>
+                              <TextField
+                                fullWidth
+                                label={`Value ${valueIndex + 1}`}
+                                required
+                                variant="outlined"
+                                value={
+                                  product.variations[variationIndex].values[
+                                    valueIndex
+                                  ]
+                                }
+                                margin="normal"
+                                onChange={(event) =>
+                                  handleVariationValues(
+                                    event,
+                                    variationIndex,
+                                    valueIndex
+                                  )
+                                }
+                              />
+                              {error.variations &&
+                                error.variations[variationIndex] &&
+                                Array.isArray(
+                                  error.variations[variationIndex].values
+                                ) && (
+                                  <div className={classes.error}>
+                                    {
+                                      error.variations[variationIndex].values[
+                                        valueIndex
+                                      ]
+                                    }
+                                  </div>
+                                )}
+                            </div>
                           );
                         })}
+                      {error.variations &&
+                        typeof error.variations[variationIndex] !==
+                          "object" && (
+                          <div className={classes.error}>
+                            {error.variations[variationIndex]}
+                          </div>
+                        )}
                     </div>
                   );
                 })
@@ -340,9 +396,11 @@ export default function AddProducts() {
                     <Typography>
                       Uploaded Image: {product.auxImages[auxImageIndex]}
                     </Typography>
-                    {/* {error.image && (
-                            <div className={classes.error}>{error.image}</div>
-                          )} */}
+                    {error.auxImages && (
+                      <div className={classes.error}>
+                        {error.auxImages[auxImageIndex]}
+                      </div>
+                    )}
                   </div>
                 );
               })}

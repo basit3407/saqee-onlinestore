@@ -10,7 +10,7 @@ export default async function searchHandler(req, res) {
   // @desc get all the products from data base,
   // @access public
 
-  //if search keyword present,find by search keywrod using regex for smart search
+  // if search keyword present,find by search keywrod using regex for smart search
   if (keyword) {
     try {
       const products = await db

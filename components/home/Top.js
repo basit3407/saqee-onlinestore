@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
   section: {
     backgroundColor: theme.palette.secondary.light,
     paddingTop: "3%",
-    height: "100vh",
   },
   containerGrid: {
     [theme.breakpoints.down("sm")]: {

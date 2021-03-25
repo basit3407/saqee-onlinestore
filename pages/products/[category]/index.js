@@ -76,17 +76,21 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.only("sm")]: {
       marginTop: "5%",
     },
-    boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
-    background:
-      "linear-gradient(to right, rgb(140, 208, 227) 50%, rgb(240, 140, 205) 100%) left",
+    boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
+    background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
+    transition: "all 0.2s ease",
+    WebkitTransition: "all 0.2s ease",
+    msTransition: "all 0.2s ease",
+    MozTransition: "all 0.2s ease",
     backgroundSize: "200%",
-    transition: "all 0.2s",
-    WebkitTransition: "all 0.2s",
-    MozTransition: "all 0.2s",
-    msTransition: "all 0.2s",
+
+    "&.MuiButton-textSizeLarge": {
+      padding: theme.spacing(1, 7),
+    },
+
     "&:hover": {
-      boxShadow: `3px 3px 0 ${theme.palette.secondary.main} `,
-      backgroundPosition: "right",
+      backgroundPosition: "left",
+      boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     },
   },
 }));

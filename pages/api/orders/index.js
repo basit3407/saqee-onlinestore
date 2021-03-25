@@ -62,6 +62,13 @@ export default async function ordersHandler(req, res) {
                     "id: " +
                     item.id +
                     "\n" +
+                    Object.keys(item.variations)
+                      .map(
+                        (variation) =>
+                          `${variation}: ${item.variations[variation]}`
+                      )
+                      .join("\n") +
+                    "\n" +
                     "qty: " +
                     item.qty +
                     "\n" +

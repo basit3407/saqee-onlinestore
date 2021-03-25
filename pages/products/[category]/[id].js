@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-onchange */
 import {
   Button,
   Container,
@@ -11,7 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ErrorPage from "next/error";
 import Image from "next/image";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import isEqual from "lodash.isequal";
 import { ObjectID } from "mongodb";
@@ -100,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       textAlign: "center",
     },
+    marginBottom: theme.spacing(3),
   },
   image: {
     borderRadius: theme.spacing(1),
@@ -109,75 +111,113 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     display: "inline-block",
   },
+  variations: {
+    marginBottom: theme.spacing(3),
+  },
+  variation: {
+    margin: theme.spacing(1, 0),
+    "& select": {
+      fontFamily: `'Work Sans', sans-serif`,
+      border: "2px solid #ccc",
+      textAlign: "center",
+      padding: theme.spacing(1),
+      cursor: "pointer",
+      "&:focus": {
+        outline: "none",
+      },
+    },
+  },
 }));
 
 export default function Product(props) {
   const { error, product, cartItems, setCartItems } = props,
     router = useRouter(),
     classes = useStyles(),
-    //image to be displayed on main
-    [mainImage, setMainImage] = useState(product.image),
-    //Qty and variation of the product being ordered by client
+    [mainImage, setMainImage] = useState(product.image), //image to be displayed on main
     [orderDetails, setOrderDetails] = useState({
+      //Qty and variation of the product being ordered by client
       qty: 1,
-      variations: {},
+      variations: null,
     });
+
+  //on page load Assign default values of variations if present
+  useEffect(() => {
+    product.variations &&
+      setOrderDetails({
+        ...orderDetails,
+        variations: Object.assign(
+          {},
+          ...product.variations.map((variation) => ({
+            [variation.title]: variation.values[0],
+          }))
+        ),
+      });
+  }, []);
 
   //This functions sets the quanitity and variations of order from customer.
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const order =
+    setOrderDetails((prevVal) =>
       name === "qty"
-        ? { ...orderDetails, [name]: parseInt(value) || value } //convert to integer if exist,if empty return empty string
+        ? {
+            ...prevVal,
+            [name]: parseInt(value) || value, //convert to integer if exist,if empty return empty string
+          }
         : {
-            ...orderDetails,
-            variations: { ...orderDetails.variations, [name]: value },
-          };
-    setOrderDetails(order);
+            ...prevVal,
+            variations: { ...prevVal.variations, [name]: value },
+          }
+    );
   };
 
   //This function handles the clicks of increase or decrease icons in quantitySelector component
   const handleClick = (event) => {
     const name = event.currentTarget.getAttribute("name");
-    const order =
+    setOrderDetails((prevVal) =>
       name === "add"
-        ? { ...orderDetails, qty: parseInt(orderDetails.qty) + 1 || 1 } //convert to integer if exist,if empty return 1
+        ? { ...prevVal, qty: parseInt(prevVal.qty) + 1 || 1 } //convert to integer if exist,if empty return 1
         : {
-            ...orderDetails,
-            qty: orderDetails.qty > 1 ? orderDetails.qty - 1 : 1,
-          };
-    setOrderDetails(order);
+            ...prevVal,
+            qty: prevVal.qty > 1 ? prevVal.qty - 1 : 1,
+          }
+    );
   };
 
-  //Add to cart function
+  //Handling of Add to cart Button click
   const handleAddToCart = () => {
-    const orderedItem = {
-      title: product.title,
-      qty: orderDetails.qty < 1 ? 1 : orderDetails.qty, //if qty is less than 1,set it to 1
-      variations: orderDetails.variations,
-      price: product.price,
-      id: product._id,
-    };
-    //check if items with this id are already present in cart
-    const duplicateId = cartItems.filter((item) => item.id === orderedItem.id);
-    // if new Id set imageUrl to localStorage to be used in other pages.
-    !duplicateId.length &&
-      localStorage.setItem(
-        `${orderedItem.title}/${orderedItem.id}`,
-        product.image
-      );
-    //update the cartItems
-    const updatedCartItems = duplicateId.length
+    //check if duplicate item exist or not.
+    const identicalIdItems = cartItems.filter(
+        (item) => item.id === product._id
+      ),
+      duplicateItem =
+        identicalIdItems.length &&
+        identicalIdItems.find((item) =>
+          isEqual(item.variations, orderDetails.variations)
+        );
+    //if new item,set image to local storage
+    !identicalIdItems.length &&
+      localStorage.setItem(`${product.title}/${product._id}`, product.image);
+    //update cart Items
+    const updatedCartItems = duplicateItem
       ? cartItems.map((item) =>
-          isEqual(item.variations, orderedItem.variations) //duplicate item
-            ? { ...item, qty: item.qty + orderedItem.qty } //increase the qty of duplicate item
+          isEqual(item.variations, orderDetails.variations) //duplicate item
+            ? { ...item, qty: item.qty + orderDetails.qty } //increase the qty of duplicate item
             : item
         )
-      : [...cartItems, orderedItem]; // if no duplicate item,add the ordered item
+      : [
+          // if no duplicate item,add the ordered item
+          ...cartItems,
+          {
+            ...orderDetails,
+            title: product.title,
+            price: product.price,
+            id: product._id,
+          },
+        ];
     setCartItems(updatedCartItems);
-    //update cartItems in localStorage
-    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-    router.push("/cart");
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems)); //update cartItems in localStorage
+    router.push("/cart"); //redirect to carts page
   };
 
   if (error) {
@@ -199,7 +239,7 @@ export default function Product(props) {
                   height={500}
                 />
                 {/* if auxillary images are present render them */}
-                {product.auxillaryImages && (
+                {product.auxImages && (
                   <div className={classes.auxillaryImages}>
                     {/*hide main image from aux section if it is set as main image */}
                     {mainImage !== product.image && (
@@ -217,7 +257,7 @@ export default function Product(props) {
                     <MapAuxillaryImages
                       mainImage={mainImage}
                       setMainImage={setMainImage}
-                      images={product.auxillaryImages}
+                      images={product.auxImages}
                     />
                   </div>
                 )}
@@ -263,7 +303,7 @@ export default function Product(props) {
                 </div>
                 {/* if in stock and variations are present show variations */}
                 {product.countInStock > 0 && product.variations && (
-                  <div>
+                  <div className={classes.variations}>
                     <MapVariations
                       handleChange={handleChange}
                       variations={product.variations}
@@ -318,18 +358,18 @@ Product.propTypes = {
     countInStock: PropTypes.number.isRequired,
     description: PropTypes.string,
     brand: PropTypes.string,
-    auxillaryImages: PropTypes.arrayOf(PropTypes.string),
+    auxImages: PropTypes.arrayOf(PropTypes.string),
     variations: PropTypes.arrayOf(
       PropTypes.shape({
-        variationTitle: PropTypes.string,
-        variations: PropTypes.arrayOf(PropTypes.string),
+        title: PropTypes.string,
+        values: PropTypes.arrayOf(PropTypes.string),
       })
     ),
   }),
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.objectOf(PropTypes.string),
       qty: PropTypes.number,
       price: PropTypes.number,
     })
@@ -368,21 +408,22 @@ MapAuxillaryImages.propTypes = {
 
 // This function is for mapping variations of product
 const MapVariations = (props) => {
-  const { variations, handleChange, orderDetails } = props;
-  return variations.map((item) => {
+  const { variations, handleChange, orderDetails } = props,
+    classes = useStyles();
+  return variations.map((variation, variationIndex) => {
     return (
-      <>
-        <Typography>{item.title}</Typography>
+      <div className={classes.variation} key={variationIndex + 1}>
+        <Typography>{variation.title}:</Typography>
         <select
-          value={orderDetails.variations.item.title}
-          onBlur={handleChange}
-          name={item.title}
+          value={orderDetails[variation.title]}
+          onChange={handleChange}
+          name={variation.title}
         >
-          {item.variations.map((variation, index) => {
-            return <option key={index}>{variation}</option>;
+          {variation.values.map((value, valueIndex) => {
+            return <option key={valueIndex + 1}>{value}</option>;
           })}
         </select>
-      </>
+      </div>
     );
   });
 };
@@ -390,13 +431,13 @@ const MapVariations = (props) => {
 MapVariations.propTypes = {
   variations: PropTypes.arrayOf(
     PropTypes.shape({
-      variationTitle: PropTypes.string.isRequired,
-      variations: PropTypes.arrayOf(PropTypes.string.isRequired),
+      title: PropTypes.string.isRequired,
+      values: PropTypes.arrayOf(PropTypes.string.isRequired),
     })
   ).isRequired,
   handleChange: PropTypes.func.isRequired,
   orderDetails: PropTypes.shape({
-    qty: PropTypes.number.isRequired,
+    qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     variations: PropTypes.objectOf(PropTypes.string.isRequired),
   }),
 };

@@ -422,7 +422,7 @@ Checkout.propTypes = {
   cartItems: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.object),
+      variations: PropTypes.objectOf(PropTypes.string),
       qty: PropTypes.number,
       price: PropTypes.number,
     })

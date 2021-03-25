@@ -75,8 +75,8 @@ SearchPopover.propTypes = {
       auxillaryImages: PropTypes.arrayOf(PropTypes.string),
       variations: PropTypes.arrayOf(
         PropTypes.shape({
-          variationTitle: PropTypes.string,
-          variations: PropTypes.arrayOf(PropTypes.string),
+          title: PropTypes.string,
+          values: PropTypes.arrayOf(PropTypes.string),
         })
       ),
     })
@@ -88,10 +88,10 @@ export const ShoppingMenu = (props) => {
     { anchorShopping, setAnchorShopping, openShopping } = props,
     shoppingMenuItems = [
       { title: "Garments", href: "/products/garments" },
-      { title: "Cosmetics", href: "products/Cosmetics" },
+      { title: "Cosmetics", href: "/products/cosmetics" },
       { title: "Handbags", href: "/products/handbags" },
       { title: "Other", href: "/products/other" },
-      { title: "Little Ones", href: "/products/babies" },
+      { title: "Kids", href: "/products/kids" },
     ];
 
   return (

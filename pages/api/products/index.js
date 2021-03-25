@@ -51,9 +51,13 @@ export default async function productsHandler(req, res) {
         const { errors, isValid } = validate(req.body); // Form validation
         if (!isValid) return res.status(400).json(errors); //if not valid retrun error
 
+        //delete extra entries in product
         let product = req.body;
         for (const prop in product) !product[prop] && delete product[prop]; //delete optional empty fields
+        delete product.auxImagesQty;
+        delete product.variationsQty;
 
+        //save to db
         try {
           await db.collection("products").insertOne(product);
           res.status(200).json({ message: "product saved" }); //save product in db
