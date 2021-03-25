@@ -23,7 +23,8 @@ export default function ImageUpload(props) {
   uppy.setMeta({ category: category });
 
   uppy.use(XHRUpload, {
-    endpoint: "http://localhost:3000/api/upload",
+    endpoint:
+      "https://saqee-onlinestore-61tzh9lwq-basit3407.vercel.app/api/upload",
     fieldName: "productImage",
     formData: true,
   });

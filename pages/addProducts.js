@@ -22,6 +22,22 @@ const useStylyes = makeStyles((theme) => ({
       "& .MuiOutlinedInput-notchedOutline": {
         border: "2px solid #ccc",
       },
+      //for removing spin arrows from input
+      "& input": {
+        /* Firefox */
+        "&[type=number]": {
+          "-moz-appearance": "textfield",
+        },
+        /* Chrome, Safari, Edge, Opera */
+        "&::-webkit-outer-spin-button": {
+          "-webkit-appearance": "none",
+          margin: 0,
+        },
+        "&::-webkit-inner-spin-button": {
+          "-webkit-appearance": "none",
+          margin: 0,
+        },
+      },
     },
     "& .MuiFormLabel-root.Mui-focused": {
       color: theme.palette.secondary.dark,
@@ -160,19 +176,22 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("http://localhost:3000/api/products", {
-        ...product,
-        //save image url for main and aux images
-        image: product.image
-          ? `/images/${product.category}/${product.image}`
-          : "",
-        ...(product.auxImages &&
-          product.auxImages.length > 0 && {
-            auxImages: product.auxImages.map((auxImage) =>
-              auxImage ? `/images/${product.category}/${auxImage}` : ""
-            ),
-          }),
-      })
+      .post(
+        "https://saqee-onlinestore-61tzh9lwq-basit3407.vercel.app/api/products",
+        {
+          ...product,
+          //save image url for main and aux images
+          image: product.image
+            ? `/images/${product.category}/${product.image}`
+            : "",
+          ...(product.auxImages &&
+            product.auxImages.length > 0 && {
+              auxImages: product.auxImages.map((auxImage) =>
+                auxImage ? `/images/${product.category}/${auxImage}` : ""
+              ),
+            }),
+        }
+      )
       .then(() => {
         setError({});
         setSuccess(true);
