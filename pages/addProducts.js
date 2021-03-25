@@ -94,7 +94,7 @@ export default function AddProducts() {
       title: "Lawn",
       brand: "",
       description: "",
-      category: "cosmetics",
+      category: "other",
       price: 2199,
       countInStock: 10,
       image: "",

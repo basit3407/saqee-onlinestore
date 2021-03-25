@@ -74,7 +74,7 @@ export default function Products2() {
 
 const MapImages = () => {
   const images = [
-      { img: "kitchen", caption: "Other Items", href: "others" },
+      { img: "kitchen", caption: "Other Items", href: "other" },
       { img: "babies", caption: "Kids", href: "kids" },
     ],
     classes = useStyles();
