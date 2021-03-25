@@ -1,5 +1,5 @@
 import multer from "multer";
-import fs from "fs-extra";
+import MulterGoogleCloudStorage from "multer-google-storage";
 
 export const config = {
   api: {
@@ -8,21 +8,12 @@ export const config = {
   },
 };
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const path = `./public/images/${req.body.category}`;
-    fs.mkdirsSync(path);
-    cb(null, path);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+const uploadHandler = multer({
+  storage: new MulterGoogleCloudStorage(),
 });
 
-const upload = multer({ storage: storage });
-
 export default (req, res) => {
-  upload.single("productImage")(req, res, (err) => {
+  uploadHandler.single("productImage")(req, {}, (err) => {
     // do error handling here
     !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
   });
