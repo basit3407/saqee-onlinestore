@@ -176,22 +176,19 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post(
-        "https://saqee-onlinestore-61tzh9lwq-basit3407.vercel.app/api/products",
-        {
-          ...product,
-          //save image url for main and aux images
-          image: product.image
-            ? `/images/${product.category}/${product.image}`
-            : "",
-          ...(product.auxImages &&
-            product.auxImages.length > 0 && {
-              auxImages: product.auxImages.map((auxImage) =>
-                auxImage ? `/images/${product.category}/${auxImage}` : ""
-              ),
-            }),
-        }
-      )
+      .post("https://saqee-onlinestore.vercel.app/api/products", {
+        ...product,
+        //save image url for main and aux images
+        image: product.image
+          ? `/images/${product.category}/${product.image}`
+          : "",
+        ...(product.auxImages &&
+          product.auxImages.length > 0 && {
+            auxImages: product.auxImages.map((auxImage) =>
+              auxImage ? `/images/${product.category}/${auxImage}` : ""
+            ),
+          }),
+      })
       .then(() => {
         setError({});
         setSuccess(true);
