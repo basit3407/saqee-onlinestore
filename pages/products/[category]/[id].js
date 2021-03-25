@@ -138,10 +138,7 @@ export default function Product(props) {
       //Qty and variation of the product being ordered by client
       qty: 1,
       variations: null,
-    }),
-    [identicalIdItems, setIdenticalIdItems] = useState(), //for checking if item with this id already present
-    [duplicateItem, setDuplicateItem] = useState(), //for checking if duplicate item exist or not
-    [isClicked, setIsClicked] = useState(false); //click state of add to cart button
+    });
 
   //on page load Assign default values of variations if present
   useEffect(() => {
@@ -156,42 +153,6 @@ export default function Product(props) {
         ),
       });
   }, []);
-
-  useEffect(() => {
-    //check if items with id of this product are already present in cart)
-    cartItems &&
-      !identicalIdItems &&
-      setIdenticalIdItems(cartItems.filter((item) => item.id === product._id));
-
-    // //when add to cart button is clicked
-    // if (isClicked) {
-    //   localStorage.setItem("cartItems", JSON.stringify(cartItems)); //update cartItems in localStorage
-    //   router.push("/cart"); //redirect to carts page
-    // }
-  }, [cartItems]);
-
-  //check if any identical Id items have exact same variations
-  useEffect(
-    () =>
-      identicalIdItems &&
-      identicalIdItems.length &&
-      orderDetails.variations &&
-      setDuplicateItem(
-        identicalIdItems.find((item) =>
-          isEqual(item.variations, orderDetails.variations)
-        )
-      ),
-    [orderDetails.variations, identicalIdItems]
-  );
-
-  // if new Id set imageUrl to localStorage to be used in other pages.
-  useEffect(
-    () =>
-      identicalIdItems &&
-      !identicalIdItems.length &&
-      localStorage.setItem(`${product.title}/${product._id}`, product.image),
-    [identicalIdItems]
-  );
 
   //This functions sets the quanitity and variations of order from customer.
   const handleChange = (event) => {
@@ -224,7 +185,19 @@ export default function Product(props) {
 
   //Handling of Add to cart Button click
   const handleAddToCart = () => {
-    // setIsClicked(true);
+    //check if duplicate item exist or not.
+    const identicalIdItems = cartItems.filter(
+        (item) => item.id === product._id
+      ),
+      duplicateItem =
+        identicalIdItems.length &&
+        identicalIdItems.find((item) =>
+          isEqual(item.variations, orderDetails.variations)
+        );
+    //if new item,set image to local storage
+    !identicalIdItems.length &&
+      localStorage.setItem(`${product.title}/${product._id}`, product.image);
+    //update cart Items
     setCartItems((prevVal) =>
       duplicateItem
         ? prevVal.map((cartItem) =>

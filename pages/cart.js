@@ -290,12 +290,17 @@ const MapCartItems = (props) => {
 
   //This functions handles the click on remove Button
   const handleClickRemove = (item) => {
-    const remainingItems = cartItems.filter(
-      (cartItem) => !isEqual(cartItem, item)
+    //remove item from cart
+    setCartItems((prevVal) =>
+      prevVal.filter((cartItem) => !isEqual(cartItem, item))
     );
-    localStorage.removeItem(`${item.title}/${item.id}`); //remove image
-    setCartItems(remainingItems);
-    localStorage.setItem("cartItems", JSON.stringify(remainingItems));
+    //remove image if no other identicalId item is present
+    const identicalIdItem = cartItems.find(
+      (cartItem) => cartItem.id === item.id
+    );
+    !identicalIdItem && localStorage.removeItem(`${item.title}/${item.id}`);
+    //update cartItems in localStorage
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   };
 
   return cartItems.map((item, index) => {
