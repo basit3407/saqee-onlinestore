@@ -163,11 +163,11 @@ export default function Product(props) {
       !identicalIdItems &&
       setIdenticalIdItems(cartItems.filter((item) => item.id === product._id));
 
-    //when add to cart button is clicked
-    if (isClicked) {
-      localStorage.setItem("cartItems", JSON.stringify(cartItems)); //update cartItems in localStorage
-      router.push("/cart"); //redirect to carts page
-    }
+    // //when add to cart button is clicked
+    // if (isClicked) {
+    //   localStorage.setItem("cartItems", JSON.stringify(cartItems)); //update cartItems in localStorage
+    //   router.push("/cart"); //redirect to carts page
+    // }
   }, [cartItems]);
 
   //check if any identical Id items have exact same variations
@@ -224,7 +224,7 @@ export default function Product(props) {
 
   //Handling of Add to cart Button click
   const handleAddToCart = () => {
-    setIsClicked(true);
+    // setIsClicked(true);
     setCartItems((prevVal) =>
       duplicateItem
         ? prevVal.map((cartItem) =>
@@ -243,6 +243,8 @@ export default function Product(props) {
             },
           ]
     );
+    localStorage.setItem("cartItems", JSON.stringify(cartItems)); //update cartItems in localStorage
+    router.push("/cart"); //redirect to carts page
   };
 
   if (error) {
