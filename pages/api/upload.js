@@ -23,21 +23,28 @@ const multer = Multer({
 });
 
 export default (req, res) =>
-  multer.single("productImage")(req, res, () => {
+  multer.single("productImage")(req, res, (err) => {
+    const {
+      body: { category },
+      file: { originalname },
+    } = req;
+
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "there was some issue please try again" });
+
     if (!req.file) {
-      res.status(400).send("No file uploaded.");
-      return;
+      return res.status(400).json({ error: "No file uploaded." });
     }
 
     // Create a new blob in the bucket and upload the file data.
-    const blob = bucket.file(req.file.originalname);
+    const blob = bucket.file(`${category}/${originalname}`);
     const blobStream = blob.createWriteStream();
 
-    // blobStream.on("error", (err) => {
-    //   if (err) {
-    //     res.status(500).end();
-    //   }
-    // });
+    blobStream.on("error", (err) => {
+      if (err) throw err;
+    });
 
     blobStream.on("finish", () => {
       // The public URL can be used to directly access the file via HTTP.
