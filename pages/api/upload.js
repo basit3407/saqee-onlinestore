@@ -1,22 +1,23 @@
-import multer from "multer";
-import MulterGoogleCloudStorage from "multer-google-storage";
+import { Storage } from "@google-cloud/storage";
 
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
+export default async function handler(req, res) {
+  const storage = new Storage({
+    projectId: process.env.GCLOUD_PROJECT,
+    credentials: {
+      client_email: process.env.CLIENT_EMAIL,
+      private_key: process.env.PRIVATE_KEY,
+    },
+  });
+  console.log(req.query);
+  const bucket = storage.bucket(process.env.GCS_BUCKET);
+  const file = bucket.file("hello world");
+  const options = {
+    expires: Date.now() + 60 * 60 * 1000, //  1 hour,
+    fields: { "x-goog-meta-test": "data" },
+  };
 
-const uploadHandler = multer({
-  storage: new MulterGoogleCloudStorage(),
-});
-
-export default (req, res) =>
-  uploadHandler.single("productImage")(req, res, (err) =>
-    !err
-      ? res.status(200).json(req.file)
-      : res
-          .status(500)
-          .json({ error: "an error occured while uploading,plesae try again" })
-  );
+  const [response] = await file.generateSignedPostPolicyV4(options);
+  console.log(file);
+  console.log(response);
+  res.status(200).json(response);
+}
