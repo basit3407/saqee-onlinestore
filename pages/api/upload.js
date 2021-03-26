@@ -12,9 +12,11 @@ const uploadHandler = multer({
   storage: new MulterGoogleCloudStorage(),
 });
 
-export default (req, res) => {
-  uploadHandler.single("productImage")(req, {}, (err) => {
-    // do error handling here
-    !err && res.status(200).json({ image: req.file.originalname }); // do something with the files here
-  });
-};
+export default (req, res) =>
+  uploadHandler.single("productImage")(req, res, (err) =>
+    !err
+      ? res.status(200).json(req.file)
+      : res
+          .status(500)
+          .json({ error: "an error occured while uploading,plesae try again" })
+  );
