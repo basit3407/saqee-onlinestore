@@ -8,11 +8,13 @@ export const config = {
   },
 };
 
+const { privateKey } = JSON.parse(process.env.GCS_PRIVATE_KEY);
+
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
   credentials: {
     client_email: process.env.GCS_CLIENT_EMAIL,
-    private_key: process.env.GCS_PRIVATE_KEY,
+    private_key: privateKey,
   },
 });
 
