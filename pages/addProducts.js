@@ -176,7 +176,7 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("http://localhost:3000/api/products", product)
+      .post("https://saqee-onlinestore.vercel.app/api/products", product)
       .then(() => {
         setError({});
         setSuccess(true);
