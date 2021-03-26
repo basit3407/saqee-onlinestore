@@ -363,7 +363,7 @@ export default function AddProducts() {
               <ImageUpload
                 id="image"
                 setProduct={setProduct}
-                // category={product.category}
+                category={product.category}
               />
               <Typography>Uploaded Image: {product.image}</Typography>
               {error.image && (
@@ -376,7 +376,7 @@ export default function AddProducts() {
                   <div className={classes.image} key={auxImageIndex + 1}>
                     <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
                     <ImageUpload
-                      // category={product.category}
+                      category={product.category}
                       auxImageIndex={auxImageIndex}
                       setProduct={setProduct}
                       id="auxImages"

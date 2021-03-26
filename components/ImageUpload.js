@@ -9,7 +9,7 @@ import "@uppy/drag-drop/dist/style.css";
 import "@uppy/progress-bar/dist/style.css";
 
 export default function ImageUpload(props) {
-  const { setProduct, id, auxImageIndex } = props;
+  const { category, setProduct, id, auxImageIndex } = props;
   const uppy = new Uppy({
     meta: { type: "productImage" },
     restrictions: {
@@ -20,7 +20,7 @@ export default function ImageUpload(props) {
     autoProceed: true,
   });
 
-  // uppy.setMeta({ category: category });
+  uppy.setMeta({ category: category });
 
   uppy.use(XHRUpload, {
     endpoint: "http://localhost:3000/api/upload",
@@ -47,8 +47,7 @@ export default function ImageUpload(props) {
   });
 
   uppy.on("upload-success", (file, response) => {
-    const { filename } = response.body,
-      url = `https://storage.googleapis.com/saqeeonlinestore-images/${filename}`;
+    const { url } = response.body;
 
     setProduct((prevVal) => {
       const { auxImages } = prevVal;
@@ -112,4 +111,5 @@ ImageUpload.propTypes = {
   id: PropTypes.string.isRequired,
   auxImageIndex: PropTypes.number,
   setProduct: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
 };
