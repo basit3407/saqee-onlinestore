@@ -47,8 +47,7 @@ export default function ImageUpload(props) {
   });
 
   uppy.on("upload-success", (file, response) => {
-    const { filename } = response.body,
-      url = `https://storage.googleapis.com/saqeeonlinestore-images/${filename}`;
+    const { url } = response.body;
 
     setProduct((prevVal) => {
       const { auxImages } = prevVal;
