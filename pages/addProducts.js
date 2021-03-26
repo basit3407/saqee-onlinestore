@@ -94,7 +94,7 @@ export default function AddProducts() {
       title: "Lawn",
       brand: "",
       description: "",
-      category: "cosmetics",
+      category: "other",
       price: 2199,
       countInStock: 10,
       image: "",
@@ -176,19 +176,7 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("https://saqee-onlinestore.vercel.app/api/products", {
-        ...product,
-        //save image url for main and aux images
-        image: product.image
-          ? `/images/${product.category}/${product.image}`
-          : "",
-        ...(product.auxImages &&
-          product.auxImages.length > 0 && {
-            auxImages: product.auxImages.map((auxImage) =>
-              auxImage ? `/images/${product.category}/${auxImage}` : ""
-            ),
-          }),
-      })
+      .post("http://localhost:3000/api/products", product)
       .then(() => {
         setError({});
         setSuccess(true);
@@ -375,7 +363,7 @@ export default function AddProducts() {
               <ImageUpload
                 id="image"
                 setProduct={setProduct}
-                category={product.category}
+                // category={product.category}
               />
               <Typography>Uploaded Image: {product.image}</Typography>
               {error.image && (
@@ -388,7 +376,7 @@ export default function AddProducts() {
                   <div className={classes.image} key={auxImageIndex + 1}>
                     <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
                     <ImageUpload
-                      category={product.category}
+                      // category={product.category}
                       auxImageIndex={auxImageIndex}
                       setProduct={setProduct}
                       id="auxImages"

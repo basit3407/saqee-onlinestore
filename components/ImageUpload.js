@@ -9,7 +9,7 @@ import "@uppy/drag-drop/dist/style.css";
 import "@uppy/progress-bar/dist/style.css";
 
 export default function ImageUpload(props) {
-  const { category, setProduct, id, auxImageIndex } = props;
+  const { setProduct, id, auxImageIndex } = props;
   const uppy = new Uppy({
     meta: { type: "productImage" },
     restrictions: {
@@ -20,10 +20,10 @@ export default function ImageUpload(props) {
     autoProceed: true,
   });
 
-  uppy.setMeta({ category: category });
+  // uppy.setMeta({ category: category });
 
   uppy.use(XHRUpload, {
-    endpoint: "https://saqee-onlinestore.vercel.app/api/upload",
+    endpoint: "http://localhost:3000/api/upload",
     fieldName: "productImage",
     formData: true,
   });
@@ -47,18 +47,20 @@ export default function ImageUpload(props) {
   });
 
   uppy.on("upload-success", (file, response) => {
+    const { filename } = response.body,
+      url = `https://storage.googleapis.com/saqeeonlinestore-images/${filename}`;
+
     setProduct((prevVal) => {
-      const { image } = response.body,
-        { auxImages } = prevVal;
+      const { auxImages } = prevVal;
 
       return {
         ...prevVal,
         [id]:
           id === "image"
-            ? image
+            ? url
             : [
                 ...auxImages.slice(0, auxImageIndex),
-                image,
+                url,
                 ...auxImages.slice(auxImageIndex + 1),
               ],
       };
@@ -107,7 +109,6 @@ export default function ImageUpload(props) {
 }
 
 ImageUpload.propTypes = {
-  category: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   auxImageIndex: PropTypes.number,
   setProduct: PropTypes.func.isRequired,
