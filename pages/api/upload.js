@@ -46,7 +46,8 @@ export default (req, res) =>
     const blobStream = blob.createWriteStream();
 
     blobStream.on("error", (err) => {
-      if (err) throw err;
+      if (err)
+        res.status(400).json({ error: "Image with this name already exists" });
     });
 
     blobStream.on("finish", () => {

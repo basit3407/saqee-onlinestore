@@ -42,12 +42,23 @@ export default function ImageUpload(props) {
   //   console.log("successful upload", result);
   // });
 
-  uppy.on("error", (error) => {
-    console.error(error.stack);
+  uppy.on("upload-error", (file, e, response) => {
+    const { error } = response.body;
+    console.log(error);
+
+    console.log(response);
+    console.log("error with file:", file.id);
+    console.log("error message:", e);
   });
+
+  // uppy.on("error", (error) => {
+  //   console.log(error);
+  // });
 
   uppy.on("upload-success", (file, response) => {
     const { url } = response.body;
+    console.log(response.body);
+    console.log(file);
 
     setProduct((prevVal) => {
       const { auxImages } = prevVal;
