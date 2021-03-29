@@ -3,13 +3,20 @@ import { DragDrop } from "@uppy/react";
 import ThumbnailGenerator from "@uppy/thumbnail-generator";
 import XHRUpload from "@uppy/xhr-upload";
 import PropTypes from "prop-types";
-import { ProgressBar } from "@uppy/react";
+import { StatusBar } from "@uppy/react";
 import "@uppy/core/dist/style.css";
 import "@uppy/drag-drop/dist/style.css";
-import "@uppy/progress-bar/dist/style.css";
+import "@uppy/status-bar/dist/style.css";
 
 export default function ImageUpload(props) {
-  const { category, setProduct, id, auxImageIndex } = props;
+  const {
+    category,
+    setProduct,
+    id,
+    auxImageIndex,
+    setUploadError,
+    uploadError,
+  } = props;
   const uppy = new Uppy({
     meta: { type: "productImage" },
     restrictions: {
@@ -44,11 +51,15 @@ export default function ImageUpload(props) {
 
   uppy.on("upload-error", (file, e, response) => {
     const { error } = response.body;
-    console.log(error);
 
-    console.log(response);
-    console.log("error with file:", file.id);
-    console.log("error message:", e);
+    setUploadError((prevVal) => ({
+      ...prevVal,
+      ...(id === "image"
+        ? { [id]: error }
+        : {
+            [id + auxImageIndex]: error,
+          }),
+    }));
   });
 
   // uppy.on("error", (error) => {
@@ -57,9 +68,22 @@ export default function ImageUpload(props) {
 
   uppy.on("upload-success", (file, response) => {
     const { url } = response.body;
-    console.log(response.body);
-    console.log(file);
 
+    //Remove upload errors if any.
+    const error = uploadError;
+    if (id === "image") {
+      if (error[id]) {
+        delete error[id];
+        setUploadError(error);
+      }
+    } else {
+      if (error[id + auxImageIndex]) {
+        delete error[id + auxImageIndex];
+        setUploadError(error);
+      }
+    }
+
+    //update the image url in product
     setProduct((prevVal) => {
       const { auxImages } = prevVal;
 
@@ -113,7 +137,12 @@ export default function ImageUpload(props) {
           },
         }}
       />
-      <ProgressBar uppy={uppy} fixed hideAfterFinish />
+      <StatusBar
+        uppy={uppy}
+        hideUploadButton
+        hideAfterFinish={false}
+        showProgressDetails
+      />
     </div>
   );
 }
@@ -122,5 +151,7 @@ ImageUpload.propTypes = {
   id: PropTypes.string.isRequired,
   auxImageIndex: PropTypes.number,
   setProduct: PropTypes.func.isRequired,
+  uploadError: PropTypes.objectOf(PropTypes.string),
+  setUploadError: PropTypes.func.isRequired,
   category: PropTypes.string.isRequired,
 };
