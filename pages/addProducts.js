@@ -68,6 +68,18 @@ const useStylyes = makeStyles((theme) => ({
     },
     marginBottom: theme.spacing(3),
   },
+  productDisplay: {
+    margin: theme.spacing(2, 0),
+  },
+  productProp: {
+    margin: theme.spacing(1, 0),
+    "& .MuiTypography-h6": {
+      fontSize: "1rem",
+    },
+    // "& .MuiTypography-root": {
+    //   margin: 0,
+    // },
+  },
 
   error: {
     color: theme.palette.error.main,
@@ -88,21 +100,23 @@ const useStylyes = makeStyles((theme) => ({
 
 export default function AddProducts() {
   const classes = useStylyes();
+  const initialState = {
+    title: "Lawn",
+    brand: "",
+    description: "",
+    category: "garments",
+    price: 2999,
+    countInStock: 10,
+    image: "",
+    auxImagesQty: 0,
+    variationsQty: 0,
+  };
   //states
 
-  const [product, setProduct] = useState({
-      title: "Lawn",
-      brand: "",
-      description: "",
-      category: "other",
-      price: 2199,
-      countInStock: 10,
-      image: "",
-      auxImagesQty: 0,
-      variationsQty: 0,
-    }),
-    [error, setError] = useState({}), //error on submission if
-    [success, setSuccess] = useState(false);
+  const [product, setProduct] = useState(initialState),
+    [error, setError] = useState({}), //error on submission of product if any
+    [uploadError, setUploadError] = useState({}), //image upload error
+    [isClicked, setIsClicked] = useState(false); //click state of add product button
 
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
@@ -179,7 +193,8 @@ export default function AddProducts() {
       .post("https://saqee-onlinestore.vercel.app/api/products", product)
       .then(() => {
         setError({});
-        setSuccess(true);
+        setIsClicked(false);
+        setProduct(initialState);
       })
       .catch((e) => setError(e.response.data));
 
@@ -188,213 +203,319 @@ export default function AddProducts() {
       <Top heading="Add Product" />
       <div className={classes.root}>
         <Container>
-          <div className={classes.product}>
-            {Object.keys(product).map((prop, index) => {
-              return prop !== "auxImages" &&
-                prop !== "variations" &&
-                prop !== "category" &&
-                prop !== "image" ? (
-                <div className={classes.textField} key={index}>
-                  <TextField
-                    onChange={handleChange}
-                    variant="outlined"
-                    required={
-                      prop === "brand" || prop === "description" ? false : true
-                    }
-                    name={prop}
-                    type={
-                      prop === "variationsQty" ||
-                      prop === "auxImagesQty" ||
-                      prop === "price" ||
-                      prop === "countInStock"
-                        ? "number"
-                        : "text"
-                    }
-                    label={
-                      prop === "brand" || prop === "description"
-                        ? prop.charAt(0).toUpperCase() +
-                          prop.slice(1).toLowerCase() +
-                          " (optional)"
-                        : prop.charAt(0).toUpperCase() +
-                          prop.slice(1).toLowerCase()
-                    }
-                    fullWidth
-                    value={product[prop]}
-                    multiline={prop === "description" ? true : false}
-                    rows={3}
-                    rowsMax={20}
-                    margin="normal"
-                  />
-                  {error[prop] && (
-                    <div className={classes.error}>{error[prop]}</div>
-                  )}
-                </div>
-              ) : prop === "category" ? (
-                <div className={classes.textField} key={index}>
-                  <TextField
-                    variant="outlined"
-                    label={
-                      prop.charAt(0).toUpperCase() + prop.slice(1).toLowerCase()
-                    }
-                    select
-                    fullWidth
-                    required
-                    onChange={handleChange}
-                    value={product[prop]}
-                    margin="normal"
-                    name={prop}
-                  >
-                    {categories.map((category, index) => {
-                      return (
-                        <MenuItem key={index} value={category}>
-                          {category}
-                        </MenuItem>
-                      );
-                    })}
-                  </TextField>
-                  {error[prop] && (
-                    <div className={classes.error}>{error[prop]}</div>
-                  )}
-                </div>
-              ) : (
-                prop === "variations" &&
-                [...product.variations.keys()].map((variationIndex) => {
-                  return (
-                    <div
-                      className={classes.variations}
-                      key={variationIndex + 1}
-                    >
-                      <Typography>Variation {variationIndex + 1}</Typography>
+          {isClicked ? (
+            <>
+              <div className={classes.product}>
+                {Object.keys(product).map((prop, index) => {
+                  return prop !== "auxImages" &&
+                    prop !== "variations" &&
+                    prop !== "category" &&
+                    prop !== "image" ? (
+                    <div className={classes.textField} key={index}>
                       <TextField
-                        name="title"
-                        fullWidth
-                        label="Title"
-                        required
-                        margin="normal"
+                        onChange={handleChange}
                         variant="outlined"
-                        onChange={(event) =>
-                          handleVariations(event, variationIndex)
+                        required={
+                          prop === "brand" || prop === "description"
+                            ? false
+                            : true
                         }
+                        name={prop}
+                        type={
+                          prop === "variationsQty" ||
+                          prop === "auxImagesQty" ||
+                          prop === "price" ||
+                          prop === "countInStock"
+                            ? "number"
+                            : "text"
+                        }
+                        label={
+                          prop === "brand" || prop === "description"
+                            ? prop.charAt(0).toUpperCase() +
+                              prop.slice(1).toLowerCase() +
+                              " (optional)"
+                            : prop.charAt(0).toUpperCase() +
+                              prop.slice(1).toLowerCase()
+                        }
+                        fullWidth
+                        value={product[prop]}
+                        multiline={prop === "description" ? true : false}
+                        rows={3}
+                        rowsMax={20}
+                        margin="normal"
                       />
-                      {error.variations && error.variations[variationIndex] && (
-                        <div className={classes.error}>
-                          {error.variations[variationIndex].title}
-                        </div>
+                      {error[prop] && (
+                        <div className={classes.error}>{error[prop]}</div>
                       )}
+                    </div>
+                  ) : prop === "category" ? (
+                    <div className={classes.textField} key={index}>
                       <TextField
-                        name="values"
-                        type="number"
-                        label="Number of values"
-                        required
                         variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        onChange={(event) =>
-                          handleVariations(event, variationIndex)
+                        label={
+                          prop.charAt(0).toUpperCase() +
+                          prop.slice(1).toLowerCase()
                         }
-                      />
-                      {error.variations &&
-                        error.variations[variationIndex] &&
-                        !Array.isArray(
-                          error.variations[variationIndex].values
-                        ) && (
-                          <div className={classes.error}>
-                            {error.variations[variationIndex].values}
-                          </div>
-                        )}
-                      {product.variations[variationIndex] &&
-                        product.variations[variationIndex].values &&
-                        [
-                          ...product.variations[variationIndex].values.keys(),
-                        ].map((valueIndex) => {
+                        select
+                        fullWidth
+                        required
+                        onChange={handleChange}
+                        value={product[prop]}
+                        margin="normal"
+                        name={prop}
+                      >
+                        {categories.map((category, index) => {
                           return (
-                            <div key={valueIndex + 1}>
-                              <TextField
-                                fullWidth
-                                label={`Value ${valueIndex + 1}`}
-                                required
-                                variant="outlined"
-                                value={
-                                  product.variations[variationIndex].values[
-                                    valueIndex
-                                  ]
-                                }
-                                margin="normal"
-                                onChange={(event) =>
-                                  handleVariationValues(
-                                    event,
-                                    variationIndex,
-                                    valueIndex
-                                  )
-                                }
-                              />
-                              {error.variations &&
-                                error.variations[variationIndex] &&
-                                Array.isArray(
-                                  error.variations[variationIndex].values
-                                ) && (
-                                  <div className={classes.error}>
-                                    {
-                                      error.variations[variationIndex].values[
+                            <MenuItem key={index} value={category}>
+                              {category}
+                            </MenuItem>
+                          );
+                        })}
+                      </TextField>
+                      {error[prop] && (
+                        <div className={classes.error}>{error[prop]}</div>
+                      )}
+                    </div>
+                  ) : (
+                    prop === "variations" &&
+                    [...product.variations.keys()].map((variationIndex) => {
+                      return (
+                        <div
+                          className={classes.variations}
+                          key={variationIndex + 1}
+                        >
+                          <Typography>
+                            Variation {variationIndex + 1}
+                          </Typography>
+                          <TextField
+                            name="title"
+                            fullWidth
+                            label="Title"
+                            required
+                            margin="normal"
+                            variant="outlined"
+                            onChange={(event) =>
+                              handleVariations(event, variationIndex)
+                            }
+                          />
+                          {error.variations &&
+                            error.variations[variationIndex] && (
+                              <div className={classes.error}>
+                                {error.variations[variationIndex].title}
+                              </div>
+                            )}
+                          <TextField
+                            name="values"
+                            type="number"
+                            label="Number of values"
+                            required
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            onChange={(event) =>
+                              handleVariations(event, variationIndex)
+                            }
+                          />
+                          {error.variations &&
+                            error.variations[variationIndex] &&
+                            !Array.isArray(
+                              error.variations[variationIndex].values
+                            ) && (
+                              <div className={classes.error}>
+                                {error.variations[variationIndex].values}
+                              </div>
+                            )}
+                          {product.variations[variationIndex] &&
+                            product.variations[variationIndex].values &&
+                            [
+                              ...product.variations[
+                                variationIndex
+                              ].values.keys(),
+                            ].map((valueIndex) => {
+                              return (
+                                <div key={valueIndex + 1}>
+                                  <TextField
+                                    fullWidth
+                                    label={`Value ${valueIndex + 1}`}
+                                    required
+                                    variant="outlined"
+                                    value={
+                                      product.variations[variationIndex].values[
                                         valueIndex
                                       ]
                                     }
-                                  </div>
-                                )}
-                            </div>
-                          );
-                        })}
-                      {error.variations &&
-                        typeof error.variations[variationIndex] !==
-                          "object" && (
+                                    margin="normal"
+                                    onChange={(event) =>
+                                      handleVariationValues(
+                                        event,
+                                        variationIndex,
+                                        valueIndex
+                                      )
+                                    }
+                                  />
+                                  {error.variations &&
+                                    error.variations[variationIndex] &&
+                                    Array.isArray(
+                                      error.variations[variationIndex].values
+                                    ) && (
+                                      <div className={classes.error}>
+                                        {
+                                          error.variations[variationIndex]
+                                            .values[valueIndex]
+                                        }
+                                      </div>
+                                    )}
+                                </div>
+                              );
+                            })}
+                          {error.variations &&
+                            typeof error.variations[variationIndex] !==
+                              "object" && (
+                              <div className={classes.error}>
+                                {error.variations[variationIndex]}
+                              </div>
+                            )}
+                        </div>
+                      );
+                    })
+                  );
+                })}
+              </div>
+              <div className={classes.upload}>
+                <div className={classes.image}>
+                  <Typography>Main Image</Typography>
+                  <ImageUpload
+                    id="image"
+                    setProduct={setProduct}
+                    setUploadError={setUploadError}
+                    uploadError={uploadError}
+                    category={product.category}
+                  />
+                  <Typography>Uploaded Image: {product.image}</Typography>
+                  {error.image && (
+                    <div className={classes.error}>{error.image}</div>
+                  )}
+                  {uploadError.image && (
+                    <div className={classes.error}>{uploadError.image}</div>
+                  )}
+                </div>
+                {product.auxImages &&
+                  [...product.auxImages.keys()].map((auxImageIndex) => {
+                    return (
+                      <div className={classes.image} key={auxImageIndex + 1}>
+                        <Typography>
+                          Auxillary Image {auxImageIndex + 1}
+                        </Typography>
+                        <ImageUpload
+                          category={product.category}
+                          auxImageIndex={auxImageIndex}
+                          setProduct={setProduct}
+                          setUploadError={setUploadError}
+                          uploadError={uploadError}
+                          id="auxImages"
+                        />
+                        <Typography>
+                          Uploaded Image: {product.auxImages[auxImageIndex]}
+                        </Typography>
+                        {error.auxImages && (
                           <div className={classes.error}>
-                            {error.variations[variationIndex]}
+                            {error.auxImages[auxImageIndex]}
                           </div>
                         )}
+                        {uploadError[`auxImages${auxImageIndex}`] && (
+                          <div className={classes.error}>
+                            {uploadError[`auxImages${auxImageIndex}`]}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+              </div>
+              <div className={classes.productDisplay}>
+                {Object.keys(product).map((prop, index) => {
+                  return (
+                    <div className={classes.productProp} key={index + 1}>
+                      <Typography
+                        variant="h6"
+                        display={
+                          prop === "auxImages" ||
+                          prop === "variations" ||
+                          prop === "description"
+                            ? "block"
+                            : "inline"
+                        }
+                      >
+                        {prop}:
+                      </Typography>{" "}
+                      {prop === "auxImages" ? (
+                        <div>
+                          {product.auxImages.map((auxImage, auxImageIndex) => {
+                            return (
+                              <div key={auxImageIndex + 1}>
+                                <Typography display="inline">
+                                  {`auxillary Image ${auxImageIndex + 1}`}:{" "}
+                                </Typography>
+                                <Typography display="inline">
+                                  {auxImage}
+                                </Typography>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : prop === "variations" ? (
+                        <div>
+                          {product.variations.map(
+                            (variation, variationIndex) => {
+                              return (
+                                <div key={variationIndex + 1}>
+                                  <Typography>
+                                    Variation {variationIndex + 1}:
+                                  </Typography>
+                                  <Typography>{variation.title}</Typography>
+                                  <Typography display="inline">
+                                    values:{" "}
+                                  </Typography>
+                                  {variation.values &&
+                                    variation.values.map(
+                                      (value, valueIndex) => {
+                                        return (
+                                          <Typography
+                                            display="inline"
+                                            key={valueIndex + 1}
+                                          >
+                                            {value},{" "}
+                                          </Typography>
+                                        );
+                                      }
+                                    )}
+                                </div>
+                              );
+                            }
+                          )}
+                        </div>
+                      ) : (
+                        <Typography
+                          classes={{ root: classes.productDisplayTypo }}
+                          style={{ whiteSpace: "pre-line" }}
+                          display="inline"
+                        >
+                          {product[prop]}
+                        </Typography>
+                      )}
                     </div>
                   );
-                })
-              );
-            })}
-          </div>
-          <div className={classes.upload}>
-            <div className={classes.image}>
-              <Typography>Main Image</Typography>
-              <ImageUpload
-                id="image"
-                setProduct={setProduct}
-                category={product.category}
-              />
-              <Typography>Uploaded Image: {product.image}</Typography>
-              {error.image && (
-                <div className={classes.error}>{error.image}</div>
+                })}
+              </div>
+              <Button onClick={handleClick}>Dispatch Product</Button>
+              {error.server && (
+                <div className={classes.error}>{error.server}</div>
               )}
-            </div>
-            {product.auxImages &&
-              [...product.auxImages.keys()].map((auxImageIndex) => {
-                return (
-                  <div className={classes.image} key={auxImageIndex + 1}>
-                    <Typography>Auxillary Image {auxImageIndex + 1}</Typography>
-                    <ImageUpload
-                      category={product.category}
-                      auxImageIndex={auxImageIndex}
-                      setProduct={setProduct}
-                      id="auxImages"
-                    />
-                    <Typography>
-                      Uploaded Image: {product.auxImages[auxImageIndex]}
-                    </Typography>
-                    {error.auxImages && (
-                      <div className={classes.error}>
-                        {error.auxImages[auxImageIndex]}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-          <Button onClick={handleClick}>Dispatch Product</Button>
-          {error.server && <div className={classes.error}>{error.server}</div>}
+            </>
+          ) : (
+            <>
+              <Button onClick={() => setIsClicked(true)}>Add Product</Button>
+            </>
+          )}
         </Container>
       </div>
     </>

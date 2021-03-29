@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
   subHeading: { marginBottom: "1%" },
   description: {
     marginBottom: "5%",
+    whiteSpace: "pre-line",
   },
   status: {
     marginBottom: "5%",

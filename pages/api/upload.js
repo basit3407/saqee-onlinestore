@@ -8,7 +8,8 @@ export const config = {
   },
 };
 
-const { privateKey } = JSON.parse(process.env.GCS_PRIVATE_KEY);
+// const { privateKey } = JSON.parse(process.env.GCS_PRIVATE_KEY); //For production;
+const privateKey = process.env.GCS_PRIVATE_KEY; // For development
 
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
@@ -45,7 +46,8 @@ export default (req, res) =>
     const blobStream = blob.createWriteStream();
 
     blobStream.on("error", (err) => {
-      if (err) throw err;
+      if (err)
+        res.status(400).json({ error: "Image with this name already exists" });
     });
 
     blobStream.on("finish", () => {
