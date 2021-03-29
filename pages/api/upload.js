@@ -8,8 +8,8 @@ export const config = {
   },
 };
 
-// const { privateKey } = JSON.parse(process.env.GCS_PRIVATE_KEY); //For production;
-const privateKey = process.env.GCS_PRIVATE_KEY; // For development
+const { privateKey } = JSON.parse(process.env.GCS_PRIVATE_KEY); //For production;
+// const privateKey = process.env.GCS_PRIVATE_KEY; // For development
 
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
