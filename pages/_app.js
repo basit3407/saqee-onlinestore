@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { Provider } from "next-auth/client";
 import theme from "../styles/theme";
 import NavBar from "../components/layout/NavBar/NavBar";
 import Footer from "../components/layout/Footer";
@@ -44,12 +45,15 @@ export default function MyApp(props) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <NavBar {...passedProps} />
-        <Component {...passedProps} />
-        <ContactIcon />
-        <Footer />
+        <Provider session={pageProps.session}>
+          <CssBaseline />
+          <NavBar {...passedProps} />
+          <Component {...passedProps} />
+          <ContactIcon />
+          <Footer />
+        </Provider>
       </ThemeProvider>
     </>
   );
