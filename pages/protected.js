@@ -16,7 +16,6 @@ export default function Page() {
       }
     };
     fetchData();
-    session && console.log(session.user);
   }, [session]);
 
   // When rendering client side don't display anything until loading is complete

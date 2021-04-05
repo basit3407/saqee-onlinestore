@@ -15,7 +15,7 @@ export const UserSchema = {
   columns: {
     ...Adapters.TypeORM.Models.User.schema.columns,
     // Adds a phoneNumber to the User schema
-    phoneNumber: {
+    slug: {
       type: "varchar",
       nullable: true,
     },
