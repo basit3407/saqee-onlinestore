@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
 import { useStyles } from "../../pages/checkout";
 import { useState, useEffect } from "react";
+import { signIn } from "next-auth/client";
 import { validateEmail } from "../../validation/user";
 
 export default function Customer(props) {
@@ -113,9 +114,17 @@ export default function Customer(props) {
               Continue as Guest
             </Button>
           </div>
-          {/* <Typography>
-            Already have an account ? <Link href="#">Sign in now</Link>
-          </Typography> */}
+          <Typography>
+            Already have an account ?{" "}
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                signIn();
+              }}
+            >
+              Sign in now
+            </Button>
+          </Typography>
         </div>
       </Grid>
     </>

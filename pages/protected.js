@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/client";
+import { useSession, signOut } from "next-auth/client";
 import AccessDenied from "../components/access-denied";
 
 export default function Page() {
@@ -16,6 +16,7 @@ export default function Page() {
       }
     };
     fetchData();
+    session && console.log(session.user);
   }, [session]);
 
   // When rendering client side don't display anything until loading is complete
@@ -33,6 +34,7 @@ export default function Page() {
       <p>
         <strong>{content || "\u00a0"}</strong>
       </p>
+      <button onClick={signOut}>sign out</button>
     </>
   );
 }
