@@ -7,11 +7,6 @@ export default NextAuth({
     Providers.Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      // clientId:
-      //   "20657131300-vjklg33m1d36nu6meimcn1210pmcnaai.apps.googleusercontent.com",
-      // clientSecret: "6-V9YphKHp8Ln03fU33j-EzI",
-      // authorizationUrl:
-      //   "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code",
     }),
     Providers.Email({
       server: process.env.EMAIL_SERVER,
@@ -48,5 +43,4 @@ export default NextAuth({
 
   // A database is optional, but required to persist accounts in a database
   database: process.env.MONGODB_URI,
-  debug: true,
 });
