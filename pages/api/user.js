@@ -17,18 +17,20 @@ handler
     // handlers after this (PUT, DELETE) all require an authenticated user
     // This middleware to check if user is authenticated before continuing
     if (!req.user) {
-      res.status(401).send("unauthenticated");
+      res.status(401).json({ error: "unauthenticated" });
     } else {
       next();
     }
   })
-  .put((req, res) => {
-    const { name } = req.body;
-    const user = updateUserByUsername(req, req.user.username, { name });
-    res.json({ user });
+  .put(async (req, res) => {
+    const updatedUser = req.body;
+
+    const user = await updateUserByUsername(req.user.username, updatedUser);
+    console.log("user = ", user);
+    res.json({ user: user });
   })
   .delete((req, res) => {
-    deleteUser(req);
+    deleteUser(req.body.username);
     req.logOut();
     res.status(204).end();
   });

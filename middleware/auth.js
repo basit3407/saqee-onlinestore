@@ -1,7 +1,7 @@
 import nextConnect from "next-connect";
+import { findUserByUsername } from "../lib/db";
 import passport from "../lib/passport";
 import session from "../lib/session";
-// import { connectToDatabase } from "../util/mongodb";
 
 const auth = nextConnect()
   .use(
@@ -17,17 +17,12 @@ const auth = nextConnect()
       },
     })
   )
-  // .use((req, res, next) => {
-  //   const { db } = connectToDatabase();
-  //   const users = db.collection("users").find().toArray();
-
-  //   req.session.users = users || [];
-
-  //   // // Initialize mocked database
-  //   // // Remove this after you add your own database
-  //   // req.session.users = req.session.users || [];
-  //   next();
-  // })
+  .use(async (req, res, next) => {
+    const { username } = req.body;
+    const user = await findUserByUsername(username);
+    if (user) req.session.user = user;
+    next();
+  })
   .use(passport.initialize())
   .use(passport.session());
 
