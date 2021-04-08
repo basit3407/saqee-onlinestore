@@ -5,7 +5,8 @@ import passport from "../../lib/passport";
 const handler = nextConnect();
 
 handler.use(auth).post(passport.authenticate("local"), (req, res) => {
-  res.json({ user: req.user });
+  const { name, email } = req.user;
+  res.json({ user: { name, email } });
 });
 
 export default handler;

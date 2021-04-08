@@ -9,13 +9,10 @@ handler
   .get((req, res) => {
     // You do not generally want to return the whole user object
     // because it may contain sensitive field such as !!password!! Only return what needed
-    // const { name, email, favoriteColor } = req.user
-    // res.json({ user: { name, email, favoriteColor } })
-    console.log("get", req.user);
-    res.json({ user: req.user });
+    const { name, email } = req.user;
+    res.json({ user: { name, email } });
   })
   .use((req, res, next) => {
-    console.log("use ", req.user);
     // handlers after this (PUT, DELETE) all require an authenticated user
     // This middleware to check if user is authenticated before continuing
     if (!req.user) {
@@ -26,11 +23,11 @@ handler
   })
   .put(async (req, res) => {
     const updatedUser = req.body;
-    console.log("put", req.user);
 
     const user = await updateUserByEmail(req.user.email, updatedUser);
-    console.log("user = ", user);
-    res.json({ user: user });
+
+    const { name, email } = user;
+    res.json({ user: { name, email } });
   })
   .delete((req, res) => {
     deleteUser(req.body.email);
