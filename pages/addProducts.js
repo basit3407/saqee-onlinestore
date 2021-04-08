@@ -126,13 +126,13 @@ export default function AddProducts() {
 
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
+  // redirect user to login if not admin
   useEffect(() => {
-    // redirect user to login if not admin
-    if (!loading && !user) router.replace("/login");
+    !loading && (!user || (user && !user.isAdmin)) && router.replace("/login");
   }, [user, loading]);
 
   // Server-render loading state
-  if (!user || loading) {
+  if (loading || !user) {
     return <Layout>Loading...</Layout>;
   }
 

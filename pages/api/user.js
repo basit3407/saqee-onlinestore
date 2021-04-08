@@ -9,8 +9,18 @@ handler
   .get((req, res) => {
     // You do not generally want to return the whole user object
     // because it may contain sensitive field such as !!password!! Only return what needed
-    const { name, email } = req.user;
-    res.json({ user: { name, email } });
+    if (req.user) {
+      const { name, email, isAdmin } = req.user;
+
+      return res.json({
+        user: {
+          name,
+          email,
+          ...(isAdmin && { isAdmin }),
+        },
+      });
+    }
+    res.status(400).json({ error: "no user present" });
   })
   .use((req, res, next) => {
     // handlers after this (PUT, DELETE) all require an authenticated user
