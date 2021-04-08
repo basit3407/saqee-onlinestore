@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -11,6 +11,8 @@ import axios from "axios";
 import ImageUpload from "../components/ImageUpload";
 import Top from "../components/layout/Top";
 import Layout from "../components/layout";
+import { useUser } from "../lib/hooks";
+import { useRouter } from "next/router";
 
 const useStylyes = makeStyles((theme) => ({
   root: {
@@ -119,7 +121,20 @@ export default function AddProducts() {
     [uploadError, setUploadError] = useState({}), //image upload error
     [isClicked, setIsClicked] = useState(false); //click state of add product button
 
+  const [user, { loading }] = useUser();
+  const router = useRouter();
+
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
+
+  useEffect(() => {
+    // redirect user to login if not admin
+    if (!loading && !user) router.replace("/login");
+  }, [user, loading]);
+
+  // Server-render loading state
+  if (!user || loading) {
+    return <Layout>Loading...</Layout>;
+  }
 
   //For handling change in textFields
   const handleChange = (event) => {

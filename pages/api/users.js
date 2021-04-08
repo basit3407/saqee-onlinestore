@@ -1,4 +1,5 @@
 import nextConnect from "next-connect";
+import argon2 from "argon2";
 // import argon2 from "argon2";
 import auth from "../../middleware/auth";
 import { getAllUsers, createUser } from "../../lib/db";
@@ -16,14 +17,18 @@ handler
   .post((req, res) => {
     const user = req.body;
 
-    validate(user).then(({ errors, isValid }) => {
+    validate(user).then(async ({ errors, isValid }) => {
       if (!isValid) return res.status(400).json(errors); //if not valid retrun error
-      createUser(user);
-      req.logIn(user, (err) => {
+
+      // Security-wise, you must hash the password before saving it
+      const hashedPass = await argon2.hash(user.password);
+      const securedUser = { ...user, password: hashedPass };
+      createUser(securedUser);
+      req.logIn(securedUser, (err) => {
         if (err) throw err;
         // Log the signed up user in
         res.status(201).json({
-          user,
+          securedUser,
         });
       });
     });

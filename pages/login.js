@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 function Copyright() {
   return (
@@ -79,9 +80,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
+  const router = useRouter();
 
   const [loginDetails, setLoginDetails] = useState({
-    username: "",
+    password: "",
     email: "",
   });
   const [errors, setErrors] = useState({});
@@ -98,9 +100,15 @@ export default function SignIn() {
   const handleClick = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/users", loginDetails)
-      .then(() => setErrors({}))
-      .catch((e) => console.log(e.response.data));
+      .post("http://localhost:3000/api/login", loginDetails)
+      .then(() => router.push("/"))
+      .catch((e) =>
+        setErrors(
+          e.response.status === 401
+            ? { password: "invalid email or password" }
+            : e.response.data
+        )
+      );
   };
 
   return (
@@ -124,9 +132,7 @@ export default function SignIn() {
             autoComplete="email"
             onChange={handleChange}
           />
-          {errors.username && (
-            <div className={classes.error}>{errors.username}</div>
-          )}
+          {errors.email && <div className={classes.error}>{errors.email}</div>}
           <TextField
             variant="outlined"
             margin="normal"
@@ -139,6 +145,9 @@ export default function SignIn() {
             autoComplete="current-password"
             onChange={handleChange}
           />
+          {errors.password && (
+            <div className={classes.error}>{errors.password}</div>
+          )}
           <Button
             type="submit"
             fullWidth

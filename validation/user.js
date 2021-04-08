@@ -1,4 +1,4 @@
-import { findUserByUsername } from "../lib/db";
+import { findUserByEmail } from "../lib/db";
 import { validateEmail } from "./email";
 import { isEmpty } from "./product";
 
@@ -12,13 +12,13 @@ export default async function validate(data) {
         .slice(1)
         .replace(/([A-Z])/g, " $1")} is required`;
     //email validation
-    else if (property === "username" && !validateEmail(data[property]))
+    else if (property === "email" && !validateEmail(data[property]))
       errors[property] = "Please enter valid email address";
   }
-  //duplicate username validation
-  if (!errors.username) {
-    const userNameExists = await findUserByUsername(data.username);
-    if (userNameExists) errors.username = "This username already exists";
+  //duplicate email validation
+  if (!errors.email) {
+    const userNameExists = await findUserByEmail(data.email);
+    if (userNameExists) errors.email = "This email already exists";
   }
 
   return {

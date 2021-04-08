@@ -1,5 +1,5 @@
 import nextConnect from "next-connect";
-// import { findUserByUsername } from "../lib/db";
+import { findUserByEmail } from "../lib/db";
 import passport from "../lib/passport";
 import session from "../lib/session";
 
@@ -17,12 +17,16 @@ const auth = nextConnect()
       },
     })
   )
-  // .use(async (req, res, next) => {
-  //   const { username } = req.body;
-  //   const user = await findUserByUsername(username);
-  //   if (user) req.session.user = user;
-  //   next();
-  // })
+  .use(async (req, res, next) => {
+    const { email } = req.body;
+    const user = await findUserByEmail(email);
+    if (user) req.session.user = user;
+
+    // Initialize mocked database
+    // Remove this after you add your own database
+    // req.session.users = req.session.users || [];
+    next();
+  })
   .use(passport.initialize())
   .use(passport.session());
 
