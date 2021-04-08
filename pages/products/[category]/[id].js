@@ -18,6 +18,7 @@ import isEqual from "lodash.isequal";
 import { ObjectID } from "mongodb";
 import { connectToDatabase } from "../../../util/mongodb";
 import Top from "../../../components/layout/Top";
+import Layout from "../../../components/layout";
 
 const useStyles = makeStyles((theme) => ({
   auxillaryImages: {
@@ -226,7 +227,7 @@ export default function Product(props) {
   }
 
   return (
-    <>
+    <Layout cartItems={cartItems}>
       <Top heading={product.title} />
       <section>
         <Container>
@@ -344,7 +345,7 @@ export default function Product(props) {
           </Grid>
         </Container>
       </section>
-    </>
+    </Layout>
   );
 }
 

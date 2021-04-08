@@ -15,6 +15,7 @@ import { useState } from "react";
 import { QuantitySelector } from "./products/[category]/[id]";
 import { isEmpty } from "../validation/product";
 import Top from "../components/layout/Top";
+import Layout from "../components/layout";
 
 const useSTyles = makeStyles((theme) => ({
   heading: {},
@@ -139,7 +140,7 @@ export default function Cart(props) {
   };
 
   return (
-    <>
+    <Layout cartItems={cartItems}>
       <Top heading="Cart" />
       {Array.isArray(cartItems) && cartItems.length > 0 ? (
         <section>
@@ -240,7 +241,7 @@ export default function Cart(props) {
           </Grid>
         </Grid>
       )}
-    </>
+    </Layout>
   );
 }
 

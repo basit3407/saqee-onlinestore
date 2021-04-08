@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import ImageUpload from "../components/ImageUpload";
 import Top from "../components/layout/Top";
+import Layout from "../components/layout";
 
 const useStylyes = makeStyles((theme) => ({
   root: {
@@ -199,7 +200,7 @@ export default function AddProducts() {
       .catch((e) => setError(e.response.data));
 
   return (
-    <>
+    <Layout>
       <Top heading="Add Product" />
       <div className={classes.root}>
         <Container>
@@ -518,6 +519,6 @@ export default function AddProducts() {
           )}
         </Container>
       </div>
-    </>
+    </Layout>
   );
 }

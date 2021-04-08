@@ -12,8 +12,7 @@ import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
 import { useStyles } from "../../pages/checkout";
 import { useState, useEffect } from "react";
-import { signIn } from "next-auth/client";
-import { validateEmail } from "../../validation/user";
+import { validateEmail } from "../../validation/email";
 
 export default function Customer(props) {
   const classes = useStyles(),
@@ -115,15 +114,7 @@ export default function Customer(props) {
             </Button>
           </div>
           <Typography>
-            Already have an account ?{" "}
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                signIn();
-              }}
-            >
-              Sign in now
-            </Button>
+            Already have an account ? <Button>Sign in now</Button>
           </Typography>
         </div>
       </Grid>
