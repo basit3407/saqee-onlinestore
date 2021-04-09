@@ -30,7 +30,7 @@ export default function ImageUpload(props) {
   uppy.setMeta({ category: category });
 
   uppy.use(XHRUpload, {
-    endpoint: "https://saqee-onlinestore.vercel.app/api/upload",
+    endpoint: `/api/upload`,
     fieldName: "productImage",
     formData: true,
   });
