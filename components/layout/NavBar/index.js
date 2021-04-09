@@ -21,11 +21,13 @@ import {
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import Image from "next/image";
 import axios from "axios";
 import useSWR from "swr";
 import { SearchPopover, ShoppingMenu } from "./extended";
+import { useUser } from "../../../lib/hooks";
 
 const useStyles = makeStyles((theme) => ({
   "@keyframes blinker": {
@@ -134,6 +136,11 @@ const useStyles = makeStyles((theme) => ({
   searchList: {
     listStyleType: "none",
   },
+  logo: {
+    [theme.breakpoints.only("xs")]: {
+      marginTop: theme.spacing(1),
+    },
+  },
 }));
 
 export default function NavBar(props) {
@@ -195,6 +202,8 @@ export default function NavBar(props) {
     setAnchorSearch(divRef.current);
   };
 
+  const [user] = useUser(); //Authentication
+
   return (
     <>
       <div className={classes.top}>
@@ -211,7 +220,7 @@ export default function NavBar(props) {
         <Toolbar ref={divRef} className={classes.toolbar}>
           <Container>
             <Grid className={classes.root} spacing={1} container>
-              <Grid item xs>
+              <Grid item xs={2}>
                 <Hidden implementation="css" smDown>
                   <button
                     id="search"
@@ -267,29 +276,48 @@ export default function NavBar(props) {
                   </Menu>
                 </Hidden>
               </Grid>
-              <Grid className={classes.bigMenu} item xs={8}>
-                <Image
-                  width={matches ? 125 : 150}
-                  height={matches ? 75 : 100}
-                  src="/images/logo.png"
-                  alt=""
-                />
+              <Grid className={classes.bigMenu} item xs={4} sm={7} md={8}>
+                <div className={classes.logo}>
+                  <Image
+                    width={150}
+                    height={100}
+                    src="/images/logo.png"
+                    alt=""
+                  />
+                </div>
               </Grid>
-              <Grid style={{ textAlign: "right" }} item xs>
-                <Link href="/cart" underline="none">
-                  <button className={classes.sideGridItem}>
-                    <Sides
-                      matches={matches}
-                      icon={ShoppingCartIcon}
-                      text="cart"
-                    />
-                    {Array.isArray(cartItems) && cartItems.length > 0 && (
-                      <Avatar classes={{ root: classes.avatar }}>
-                        {cartItems.reduce((a, c) => a + c.qty, 0)}
-                      </Avatar>
-                    )}
-                  </button>
-                </Link>
+              <Grid style={{ textAlign: "right" }} item container xs>
+                <Grid item xs={8}>
+                  <Link href={user ? "/" : "/login"} underline="none">
+                    <button className={classes.sideGridItem}>
+                      <Sides
+                        matches={matches}
+                        icon={AccountCircleIcon}
+                        text={
+                          user
+                            ? `${user.name}`.split(" ")[0] //Show first name only
+                            : "Sign In / Register"
+                        }
+                      />
+                    </button>
+                  </Link>
+                </Grid>
+                <Grid item xs>
+                  <Link href="/cart" underline="none">
+                    <button className={classes.sideGridItem}>
+                      <Sides
+                        matches={matches}
+                        icon={ShoppingCartIcon}
+                        text="cart"
+                      />
+                      {Array.isArray(cartItems) && cartItems.length > 0 && (
+                        <Avatar classes={{ root: classes.avatar }}>
+                          {cartItems.reduce((a, c) => a + c.qty, 0)}
+                        </Avatar>
+                      )}
+                    </button>
+                  </Link>
+                </Grid>
               </Grid>
               <Grid
                 //hide main menu of big screen on smaller screens
@@ -355,6 +383,7 @@ const Sides = (props) => {
         fontSize={matches ? "small" : "large"}
         color="primary"
       />
+
       <Typography
         variant="caption"
         className={classes.item}

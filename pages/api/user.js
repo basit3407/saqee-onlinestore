@@ -32,11 +32,12 @@ handler
     }
   })
   .put(async (req, res) => {
-    const updatedUser = req.body;
+    const { email, update } = req.body;
 
-    const user = await updateUserByEmail(req.user.email, updatedUser);
-
-    const { name, email } = user;
+    const user = await updateUserByEmail(email, update);
+    if (!user)
+      return res.status(404).json({ email: "This user is not registered" });
+    const { name } = user;
     res.json({ user: { name, email } });
   })
   .delete((req, res) => {

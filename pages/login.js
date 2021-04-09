@@ -103,11 +103,12 @@ export default function SignIn() {
       .post("http://localhost:3000/api/login", loginDetails)
       .then(() => router.push("/"))
       .catch((e) =>
-        setErrors(
-          e.response.status === 401
-            ? { password: "invalid email or password" }
-            : e.response.data
-        )
+        setErrors({
+          password:
+            e.response.status === 401
+              ? "invalid email or password"
+              : "Please fill the missing fields",
+        })
       );
   };
 

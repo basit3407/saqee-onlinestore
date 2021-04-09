@@ -5,8 +5,6 @@ import {
   Typography,
   Button,
   TextField,
-  // eslint-disable-next-line no-unused-vars
-  Link,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import DoneIcon from "@material-ui/icons/Done";
@@ -114,7 +112,7 @@ export default function Customer(props) {
             </Button>
           </div>
           <Typography>
-            Already have an account ? <Button>Sign in now</Button>
+            Already have an account ? <Button href="/login">Sign in now</Button>
           </Typography>
         </div>
       </Grid>
