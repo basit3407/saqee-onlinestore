@@ -121,7 +121,7 @@ export default function AddProducts() {
     [uploadError, setUploadError] = useState({}), //image upload error
     [isClicked, setIsClicked] = useState(false); //click state of add product button
 
-  const [user, { loading }] = useUser();
+  const [user, { loading }] = useUser(); //authentication
   const router = useRouter();
 
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];

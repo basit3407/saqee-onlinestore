@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -11,8 +10,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-function Copyright() {
+export function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
@@ -22,7 +22,7 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -126,10 +126,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"
+            type="email"
+            value={loginDetails.email}
             onChange={handleChange}
           />
           {errors.email && <div className={classes.error}>{errors.email}</div>}
@@ -141,8 +141,7 @@ export default function SignIn() {
             name="password"
             label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
+            value={loginDetails.password}
             onChange={handleChange}
           />
           {errors.password && (
