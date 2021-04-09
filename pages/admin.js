@@ -13,6 +13,7 @@ import Top from "../components/layout/Top";
 import Layout from "../components/layout";
 import { useUser } from "../lib/hooks";
 import { useRouter } from "next/router";
+import { validateEmail } from "../validation/email";
 
 const useStylyes = makeStyles((theme) => ({
   root: {
@@ -99,9 +100,12 @@ const useStylyes = makeStyles((theme) => ({
   textField: {
     margin: theme.spacing(1, 0),
   },
+  admin: {
+    margin: theme.spacing(1, 0),
+  },
 }));
 
-export default function AddProducts() {
+export default function Admin() {
   const classes = useStylyes();
   const initialState = {
     title: "Lawn",
@@ -119,22 +123,41 @@ export default function AddProducts() {
   const [product, setProduct] = useState(initialState),
     [error, setError] = useState({}), //error on submission of product if any
     [uploadError, setUploadError] = useState({}), //image upload error
-    [isClicked, setIsClicked] = useState(false); //click state of add product button
+    [isClicked, setIsClicked] = useState({
+      addProduct: false,
+      addAdmin: false,
+    }), //click state of add product button
+    [email, setEmail] = useState("");
 
-  const [user, { loading }] = useUser();
+  const [user, { loading }] = useUser(); //authentication
   const router = useRouter();
 
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
+  const handleAdminClick = () => {
+    if (!validateEmail(email))
+      return setError({ ...error, email: "Please enter valid email address" });
+
+    axios
+      .put("http://localhost:3000/api/user", {
+        email,
+        update: { isAdmin: true },
+      })
+      .then(() => {
+        setIsClicked({ ...isClicked, addAdmin: false });
+        setError({ ...error, email: "" });
+      })
+      .catch((e) => setError({ ...error, ...e.response.data }));
+  };
+
   // redirect user to login if not admin
-  useEffect(() => {
-    !loading && (!user || (user && !user.isAdmin)) && router.replace("/login");
-  }, [user, loading]);
+  useEffect(
+    () => !loading && (!user || (user && !user.isAdmin)) && router.replace("/"),
+    [user, loading]
+  );
 
   // Server-render loading state
-  if (loading || !user) {
-    return <Layout>Loading...</Layout>;
-  }
+  if (loading || !user || !user.isAdmin) return <Layout>Loading...</Layout>;
 
   //For handling change in textFields
   const handleChange = (event) => {
@@ -209,17 +232,17 @@ export default function AddProducts() {
       .post("http://localhost:3000/api/products", product)
       .then(() => {
         setError({});
-        setIsClicked(false);
+        setIsClicked({ ...isClicked, addProduct: false });
         setProduct(initialState);
       })
       .catch((e) => setError(e.response.data));
 
   return (
     <Layout>
-      <Top heading="Add Product" />
+      <Top heading="Admin Panel" />
       <div className={classes.root}>
         <Container>
-          {isClicked ? (
+          {isClicked.addProduct ? (
             <>
               <div className={classes.product}>
                 {Object.keys(product).map((prop, index) => {
@@ -529,8 +552,44 @@ export default function AddProducts() {
             </>
           ) : (
             <>
-              <Button onClick={() => setIsClicked(true)}>Add Product</Button>
+              <Button
+                onClick={() => setIsClicked({ ...isClicked, addProduct: true })}
+              >
+                Add Product
+              </Button>
             </>
+          )}
+          {!isClicked.addAdmin ? (
+            <div>
+              <Button
+                onClick={() => setIsClicked({ ...isClicked, addAdmin: true })}
+              >
+                Add Admin
+              </Button>
+            </div>
+          ) : (
+            <div className={classes.admin}>
+              <TextField
+                placeholder="Email"
+                variant="outlined"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+              <div className={classes.buttonDiv}>
+                <Button
+                  name="customer"
+                  classes={{ root: classes.button }}
+                  onClick={handleAdminClick}
+                >
+                  Make Admin
+                </Button>
+                {error.email && (
+                  <div className={classes.error}>{error.email}</div>
+                )}
+              </div>
+            </div>
           )}
         </Container>
       </div>
