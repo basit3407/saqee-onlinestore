@@ -100,7 +100,7 @@ export default function SignIn() {
   const handleClick = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/login", loginDetails)
+      .post("https://saqee-onlinestore.vercel.app/api/login", loginDetails)
       .then(() => router.push("/"))
       .catch((e) =>
         setErrors({
