@@ -18,6 +18,7 @@ import Customer from "../components/checkout/Customer";
 import Shipping from "../components/checkout/Shipping";
 import Payment from "../components/checkout/Payment";
 import Billing from "../components/checkout/Billing";
+import Layout from "../components/layout";
 
 export const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -322,7 +323,7 @@ export default function Checkout(props) {
   };
 
   return (
-    <>
+    <Layout cartItems={cartItems}>
       <Top matches={matches} heading="checkout" />
       {Array.isArray(cartItems) && cartItems.length === 0 ? (
         <h1>Empty Cart</h1>
@@ -414,7 +415,7 @@ export default function Checkout(props) {
           </section>
         )
       )}
-    </>
+    </Layout>
   );
 }
 

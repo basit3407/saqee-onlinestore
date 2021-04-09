@@ -16,6 +16,7 @@ import Image from "next/image";
 import { connectToDatabase } from "../../../util/mongodb";
 import FadeIn from "../../../components/FadeIn";
 import Top from "../../../components/layout/Top";
+import Layout from "../../../components/layout";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -96,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Products(props) {
-  const { error, array } = props,
+  const { error, array, cartItems } = props,
     classes = useStyles(),
     router = useRouter(),
     { category } = router.query;
@@ -126,7 +127,7 @@ export default function Products(props) {
   }
 
   return (
-    <>
+    <Layout cartItems={cartItems}>
       <Top heading={category} />
       <section className={classes.section}>
         <Grid container>
@@ -185,12 +186,20 @@ export default function Products(props) {
           Price high to low
         </MenuItem>
       </Menu>
-    </>
+    </Layout>
   );
 }
 
 Products.propTypes = {
   error: PropTypes.number,
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.string),
+      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      price: PropTypes.number,
+    })
+  ),
   array: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,

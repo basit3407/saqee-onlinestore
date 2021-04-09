@@ -4,9 +4,6 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../styles/theme";
-import NavBar from "../components/layout/NavBar/NavBar";
-import Footer from "../components/layout/Footer";
-import ContactIcon from "../components/ContactIcon";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;
@@ -46,10 +43,7 @@ export default function MyApp(props) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <NavBar {...passedProps} />
         <Component {...passedProps} />
-        <ContactIcon />
-        <Footer />
       </ThemeProvider>
     </>
   );

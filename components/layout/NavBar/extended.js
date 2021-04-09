@@ -1,6 +1,6 @@
 import { makeStyles, Popover, Menu, MenuItem } from "@material-ui/core";
 import PropTypes from "prop-types";
-import { MapMenu, SearchBar } from "./NavBar";
+import { MapMenu, SearchBar } from "./index.js";
 
 const useStyles = makeStyles((theme) => ({
   searchPaper: {

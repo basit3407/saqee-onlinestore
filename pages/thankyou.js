@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Typography,
   Box,
@@ -6,6 +7,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
+import Layout from "../components/layout";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -34,31 +36,46 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
   },
 }));
-export default function Thankyou() {
+export default function Thankyou(props) {
   const classes = useStyles(),
     theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const { cartItems } = props;
+
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyItems="center"
-      padding={matches ? 10 : 20}
-    >
-      <Typography align={matches ? "center" : "left"} variant="h3">
-        Thank you
-      </Typography>
-      <Typography
-        align={matches ? "center" : "left"}
-        classes={{ root: classes.typo }}
+    <Layout cartItems={cartItems}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyItems="center"
+        padding={matches ? 10 : 20}
       >
-        Your order will be delivered in 2 to 3 days
-      </Typography>
-      <Button href="/" classes={{ root: classes.button }}>
-        <Typography>Explore</Typography>
-      </Button>
-    </Box>
+        <Typography align={matches ? "center" : "left"} variant="h3">
+          Thank you
+        </Typography>
+        <Typography
+          align={matches ? "center" : "left"}
+          classes={{ root: classes.typo }}
+        >
+          Your order will be delivered in 2 to 3 days
+        </Typography>
+        <Button href="/" classes={{ root: classes.button }}>
+          <Typography>Explore</Typography>
+        </Button>
+      </Box>
+    </Layout>
   );
 }
+
+Thankyou.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.string),
+      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      price: PropTypes.number,
+    })
+  ),
+};

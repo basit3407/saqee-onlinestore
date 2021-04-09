@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Grid,
   TextField,
@@ -9,6 +10,7 @@ import {
   Button,
 } from "@material-ui/core";
 import FadeIn from "../components/FadeIn";
+import Layout from "../components/layout";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -43,80 +45,98 @@ const useStyles = makeStyles((theme) => ({
     padding: "5% 0",
   },
 }));
-export default function Contact() {
+export default function Contact(props) {
+  const { cartItems } = props;
   const classes = useStyles();
   return (
-    <section className={classes.section}>
-      <Container>
-        <Grid container>
-          <FadeIn timeout={1000}>
-            <Grid item xs={12}>
-              <Typography display="block" align="center" variant="h6">
-                CONTACT US
-              </Typography>
+    <Layout cartItems={cartItems}>
+      {" "}
+      <section className={classes.section}>
+        <Container>
+          <Grid container>
+            <FadeIn timeout={1000}>
+              <Grid item xs={12}>
+                <Typography display="block" align="center" variant="h6">
+                  CONTACT US
+                </Typography>
+              </Grid>
+            </FadeIn>
+            <Grid item component={Box} md display={{ xs: "none", md: "block" }}>
+              <Info />
             </Grid>
-          </FadeIn>
-          <Grid item component={Box} md display={{ xs: "none", md: "block" }}>
-            <Info />
-          </Grid>
-          <FadeIn timeout={400}>
-            <Grid item xs={12} md={9}>
-              <form>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  placeholder="Name"
-                  size="small"
-                  fullWidth
-                  className={classes.root}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  placeholder="Email"
-                  className={classes.root}
-                  size="small"
-                  fullWidth
-                />
+            <FadeIn timeout={400}>
+              <Grid item xs={12} md={9}>
+                <form>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    placeholder="Name"
+                    size="small"
+                    fullWidth
+                    className={classes.root}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    placeholder="Email"
+                    className={classes.root}
+                    size="small"
+                    fullWidth
+                  />
 
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  placeholder="Phone (optional)"
-                  className={classes.root}
-                  size="small"
-                />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    placeholder="Phone (optional)"
+                    className={classes.root}
+                    size="small"
+                  />
 
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  placeholder="Message"
-                  multiline
-                  size="small"
-                  className={classes.root}
-                  rows="10"
-                  fullWidth
-                />
-                <Button variant="contained" classes={{ root: classes.button }}>
-                  <Typography variant="button">send message</Typography>
-                </Button>
-              </form>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    placeholder="Message"
+                    multiline
+                    size="small"
+                    className={classes.root}
+                    rows="10"
+                    fullWidth
+                  />
+                  <Button
+                    variant="contained"
+                    classes={{ root: classes.button }}
+                  >
+                    <Typography variant="button">send message</Typography>
+                  </Button>
+                </form>
+              </Grid>
+            </FadeIn>
+            <Grid
+              item
+              component={Box}
+              xs={12}
+              display={{ xs: "block", md: "none" }}
+            >
+              <Info />
             </Grid>
-          </FadeIn>
-          <Grid
-            item
-            component={Box}
-            xs={12}
-            display={{ xs: "block", md: "none" }}
-          >
-            <Info />
           </Grid>
-        </Grid>
-      </Container>
-    </section>
+        </Container>
+      </section>
+    </Layout>
   );
 }
+
+Contact.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      variations: PropTypes.objectOf(PropTypes.string),
+      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      price: PropTypes.number,
+    })
+  ),
+};
 
 const Info = () => {
   const classes = useStyles();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -10,6 +10,9 @@ import {
 import axios from "axios";
 import ImageUpload from "../components/ImageUpload";
 import Top from "../components/layout/Top";
+import Layout from "../components/layout";
+import { useUser } from "../lib/hooks";
+import { useRouter } from "next/router";
 
 const useStylyes = makeStyles((theme) => ({
   root: {
@@ -118,7 +121,20 @@ export default function AddProducts() {
     [uploadError, setUploadError] = useState({}), //image upload error
     [isClicked, setIsClicked] = useState(false); //click state of add product button
 
+  const [user, { loading }] = useUser();
+  const router = useRouter();
+
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
+
+  // redirect user to login if not admin
+  useEffect(() => {
+    !loading && (!user || (user && !user.isAdmin)) && router.replace("/login");
+  }, [user, loading]);
+
+  // Server-render loading state
+  if (loading || !user) {
+    return <Layout>Loading...</Layout>;
+  }
 
   //For handling change in textFields
   const handleChange = (event) => {
@@ -190,7 +206,7 @@ export default function AddProducts() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("https://saqee-onlinestore.vercel.app/api/products", product)
+      .post("http://localhost:3000/api/products", product)
       .then(() => {
         setError({});
         setIsClicked(false);
@@ -199,7 +215,7 @@ export default function AddProducts() {
       .catch((e) => setError(e.response.data));
 
   return (
-    <>
+    <Layout>
       <Top heading="Add Product" />
       <div className={classes.root}>
         <Container>
@@ -518,6 +534,6 @@ export default function AddProducts() {
           )}
         </Container>
       </div>
-    </>
+    </Layout>
   );
 }
