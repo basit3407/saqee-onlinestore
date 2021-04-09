@@ -139,7 +139,7 @@ export default function Admin() {
       return setError({ ...error, email: "Please enter valid email address" });
 
     axios
-      .put("http://localhost:3000/api/user", {
+      .put("https://saqee-onlinestore.vercel.app/api/user", {
         email,
         update: { isAdmin: true },
       })
@@ -229,7 +229,7 @@ export default function Admin() {
   //This function handles click on dispatch button
   const handleClick = () =>
     axios
-      .post("http://localhost:3000/api/products", product)
+      .post("https://saqee-onlinestore.vercel.app/api/products", product)
       .then(() => {
         setError({});
         setIsClicked({ ...isClicked, addProduct: false });

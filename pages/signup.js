@@ -34,7 +34,7 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:3000/api/users", details)
+      .post("https://saqee-onlinestore.vercel.app/api/users", details)
       .then(() => router.push("/"))
       .catch((e) => setErrors(e.response.data));
   };
