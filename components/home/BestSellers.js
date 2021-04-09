@@ -78,7 +78,7 @@ const MapProducts = () => {
   const products1 = [
       {
         category: "garments",
-        id: "60403b8c69c3fa2e3c01670e",
+        id: "6061a129a0862b22f0295352",
         title: "Shirt & Trousers (2 piece)",
         brand: "Aiman Zaman",
         price: 2250,
@@ -87,7 +87,7 @@ const MapProducts = () => {
       {
         category: "garments",
         title: "Shirt, Duppatta & Lehenga (3 piece)",
-        id: "60403b8c69c3fa2e3c016710",
+        id: "6061a06fa0862b22f0295351",
         brand: "Aisha Imran",
         price: 3450,
         image: 5,
@@ -95,7 +95,7 @@ const MapProducts = () => {
       {
         category: "garments",
         title: "Shirt, Duppatta & Trousers (3 piece)",
-        id: "60403b8c69c3fa2e3c016711",
+        id: "60619fb6a0862b22f0295350",
         brand: "Gul Warin",
         price: 3550,
         image: 2,
@@ -105,19 +105,19 @@ const MapProducts = () => {
       {
         category: "other",
         price: 350,
-        id: "60403b8c69c3fa2e3c01671d",
+        id: "60602264f4b7d33600598a31",
         image: 9,
       },
       {
         category: "other",
         price: 950,
-        id: "60403b8c69c3fa2e3c01671e",
+        id: "60602264f4b7d33600598a32",
         image: 10,
       },
       {
         category: "other",
         price: 750,
-        id: "60403b8c69c3fa2e3c01671f",
+        id: "60602264f4b7d33600598a33",
         image: 11,
       },
     ],
@@ -125,19 +125,19 @@ const MapProducts = () => {
       {
         category: "other",
         price: 1350,
-        id: "60403b8c69c3fa2e3c016725",
+        id: "60602264f4b7d33600598a39",
         image: 12,
       },
       {
         category: "other",
         price: 1250,
-        id: "60403b8c69c3fa2e3c01672c",
+        id: "60602264f4b7d33600598a40",
         image: 13,
       },
       {
         category: "other",
         price: 950,
-        id: "60403b8c69c3fa2e3c01672e",
+        id: "60602264f4b7d33600598a42",
         image: 14,
       },
     ],
