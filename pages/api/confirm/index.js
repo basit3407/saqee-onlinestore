@@ -63,6 +63,7 @@ const handler = nc().post(async (req, res) => {
       };
       transporter.sendMail(mailOptions, (err) => {
         if (err) {
+          console.log(err);
           return res
             .status(500)
             .json({ error: "technical issue,please click on resend" });
