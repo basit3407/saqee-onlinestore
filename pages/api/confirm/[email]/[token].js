@@ -37,7 +37,12 @@ export default async function emailVerificationHandler(req, res) {
       if (!user) return sendResponse(req, res, "This user is not registered");
 
       if (user.isVerified)
-        return sendResponse(req, res, "This user has already been verified");
+        return sendResponse(
+          req,
+          res,
+          "This user has already been verified",
+          "done"
+        );
 
       //set is verified to true
       await db
@@ -53,12 +58,12 @@ export default async function emailVerificationHandler(req, res) {
                 "There is some unknown issue,Please try again"
               );
 
-            sendResponse(req, res, "account verified successfully");
+            sendResponse(req, res, "account verified successfully", "done");
           }
         );
     });
   });
 }
 
-const sendResponse = (req, res, message) =>
-  res.redirect(`https://${req.headers.host}/email/${message}`);
+const sendResponse = (req, res, message, status) =>
+  res.redirect(`https://${req.headers.host}/email/${message}?status=${status}`);
