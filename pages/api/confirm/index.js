@@ -51,7 +51,7 @@ const handler = nc().post(async (req, res) => {
           "Hello " +
           name +
           ",\n\n" +
-          "Please verify your account by clicking the link: \nhttp://" +
+          "Please verify your account by clicking the link: \nhttps://" +
           req.headers.host +
           "/api/confirm/" +
           email +
