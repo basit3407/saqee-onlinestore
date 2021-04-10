@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     borderRadius: 0,
     background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
