@@ -126,28 +126,52 @@ export default function Admin() {
     [isClicked, setIsClicked] = useState({
       addProduct: false,
       addAdmin: false,
+      deleteUser: false,
     }), //click state of add product button
-    [email, setEmail] = useState("");
+    [email, setEmail] = useState({
+      admin: "",
+      delete: "",
+    });
 
   const [user, { loading }] = useUser(); //authentication
   const router = useRouter();
 
   const categories = ["garments", "cosmetics", "handbags", "other", "kids"];
 
-  const handleAdminClick = () => {
-    if (!validateEmail(email))
-      return setError({ ...error, email: "Please enter valid email address" });
+  const handleAdminClick = (event) => {
+    const { id } = event.currentTarget;
+    console.log(id);
 
-    axios
-      .put(`/api/user`, {
-        email,
-        update: { isAdmin: true },
-      })
-      .then(() => {
-        setIsClicked({ ...isClicked, addAdmin: false });
-        setError({ ...error, email: "" });
-      })
-      .catch((e) => setError({ ...error, ...e.response.data }));
+    if (!validateEmail(email[id]))
+      return setError({
+        ...error,
+        [`email${id}`]: "Please enter valid email address",
+      });
+    id === "admin"
+      ? axios
+          .put(`/api/user`, {
+            email: email.admin,
+            update: { isAdmin: true },
+          })
+          .then(() => {
+            setIsClicked({ ...isClicked, addAdmin: false });
+            setError({ ...error, [`email${id}`]: "" });
+            setEmail({ ...email, admin: "" });
+          })
+          .catch((e) =>
+            setError({ ...error, emailadmin: e.response.data.error })
+          )
+      : axios
+          .delete(`/api/user`, {
+            data: {
+              email: email.delete,
+            },
+          })
+          .then(() => {
+            setError({ ...error, [`email${id}`]: "" });
+            setEmail({ ...email, delete: "" });
+            setIsClicked({ ...isClicked, deleteUser: false });
+          });
   };
 
   // redirect user to login if not admin
@@ -573,8 +597,13 @@ export default function Admin() {
                 placeholder="Email"
                 variant="outlined"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={email.admin}
+                onChange={(e) =>
+                  setEmail((prevVal) => ({
+                    ...prevVal,
+                    admin: e.target.value,
+                  }))
+                }
               />
 
               <div className={classes.buttonDiv}>
@@ -582,11 +611,50 @@ export default function Admin() {
                   name="customer"
                   classes={{ root: classes.button }}
                   onClick={handleAdminClick}
+                  id="admin"
                 >
                   Make Admin
                 </Button>
-                {error.email && (
-                  <div className={classes.error}>{error.email}</div>
+                {error.emailadmin && (
+                  <div className={classes.error}>{error.emailadmin}</div>
+                )}
+              </div>
+            </div>
+          )}
+          {!isClicked.deleteUser ? (
+            <div>
+              <Button
+                onClick={() => setIsClicked({ ...isClicked, deleteUser: true })}
+              >
+                Delete User
+              </Button>
+            </div>
+          ) : (
+            <div className={classes.admin}>
+              <TextField
+                placeholder="Email"
+                variant="outlined"
+                type="email"
+                value={email.delete}
+                onChange={(e) =>
+                  setEmail((prevVal) => ({
+                    ...prevVal,
+                    delete: e.target.value,
+                  }))
+                }
+              />
+
+              <div className={classes.buttonDiv}>
+                <Button
+                  name="customer"
+                  classes={{ root: classes.button }}
+                  onClick={handleAdminClick}
+                  id="delete"
+                >
+                  Delete User
+                </Button>
+                {error.emaildelete && (
+                  <div className={classes.error}>{error.emaildelete}</div>
                 )}
               </div>
             </div>

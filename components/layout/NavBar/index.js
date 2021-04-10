@@ -204,6 +204,8 @@ export default function NavBar(props) {
 
   const [user] = useUser(); //Authentication
 
+  useEffect(() => console.log(user), [user]);
+
   return (
     <>
       <div className={classes.top}>
@@ -288,13 +290,20 @@ export default function NavBar(props) {
               </Grid>
               <Grid style={{ textAlign: "right" }} item container xs>
                 <Grid item xs={8}>
-                  <Link href={user ? "/" : "/login"} underline="none">
+                  <Link
+                    href={
+                      user && user.isVerified
+                        ? `/account/${user.name}`
+                        : "/login"
+                    }
+                    underline="none"
+                  >
                     <button className={classes.sideGridItem}>
                       <Sides
                         matches={matches}
                         icon={AccountCircleIcon}
                         text={
-                          user
+                          user && user.isVerified
                             ? `${user.name}`.split(" ")[0] //Show first name only
                             : "Sign In / Register"
                         }

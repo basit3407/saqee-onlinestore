@@ -101,7 +101,14 @@ export default function SignIn() {
     e.preventDefault();
     axios
       .post(`/api/login`, loginDetails)
-      .then(() => router.push("/"))
+      .then((res) =>
+        res.data.user.isVerified
+          ? router.push("/")
+          : setErrors({
+              password:
+                "your account is not verified. please verify your account by clicking on the link sent to your email",
+            })
+      )
       .catch((e) =>
         setErrors({
           password:

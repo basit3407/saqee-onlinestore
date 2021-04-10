@@ -10,13 +10,14 @@ handler
     // You do not generally want to return the whole user object
     // because it may contain sensitive field such as !!password!! Only return what needed
     if (req.user) {
-      const { name, email, isAdmin } = req.user;
+      const { name, email, isAdmin, isVerified } = req.user;
 
       return res.json({
         user: {
           name,
           email,
           ...(isAdmin && { isAdmin }),
+          ...(isVerified && { isVerified }),
         },
       });
     }
@@ -36,13 +37,14 @@ handler
 
     const user = await updateUserByEmail(email, update);
     if (!user)
-      return res.status(404).json({ email: "This user is not registered" });
+      return res.status(404).json({ error: "This user is not registered" });
+
     const { name } = user;
     res.json({ user: { name, email } });
   })
-  .delete((req, res) => {
-    deleteUser(req.body.email);
-    req.logOut();
+  .delete(async (req, res) => {
+    await deleteUser(req.body.email);
+    // req.logOut();
     res.status(204).end();
   });
 

@@ -19,6 +19,7 @@ export default function SignUp() {
     email: "",
     password: "",
   });
+  const { name, email } = details;
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
@@ -35,7 +36,7 @@ export default function SignUp() {
     event.preventDefault();
     axios
       .post(`/api/users`, details)
-      .then(() => router.push("/"))
+      .then(() => router.push(`/email?email=${email}&name=${name}`))
       .catch((e) => setErrors(e.response.data));
   };
 
