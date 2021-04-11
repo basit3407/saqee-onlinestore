@@ -39,7 +39,7 @@ const handler = nc().post(async (req, res) => {
       const msg = {
         to: email, // Change to your recipient
         from: "bm@basitminhas.com", // Change to your verified sender
-        subject: "Account Verification Link",
+        subject: "Saqee's Online Store",
         text:
           "Hello " +
           name +
