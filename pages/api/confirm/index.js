@@ -46,7 +46,7 @@ const handler = nc().post(async (req, res) => {
           ",\n\n" +
           "Please verify your account by clicking the link:" +
           process.env.CLIENT_URL +
-          "/api/confirm/" +
+          "api/confirm/" +
           email +
           "/" +
           token +
