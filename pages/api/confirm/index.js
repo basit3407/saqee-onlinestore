@@ -1,13 +1,11 @@
 import nc from "next-connect";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 import { connectToDatabase } from "../../../util/mongodb";
 
 const handler = nc().post(async (req, res) => {
   const { name, email } = req.body;
   const { db } = await connectToDatabase();
-
-  console.log("i got called");
 
   const user = await db.collection("users").findOne({ email });
   if (!user) return res.status(400).json({ error: "user doesnt exist" });
@@ -37,45 +35,41 @@ const handler = nc().post(async (req, res) => {
           .status(500)
           .json({ error: "there was an unknown issue,please try again" });
 
-      //if no error send email
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "basit.prevail@gmail.com",
-          pass: "Pe@14012020",
-        },
-      });
-      const mailOptions = {
-        from: "basit.prevail@gmail.com",
-        to: email,
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: email, // Change to your recipient
+        from: "bm@basitminhas.com", // Change to your verified sender
         subject: "Account Verification Link",
         text:
           "Hello " +
           name +
           ",\n\n" +
           "Please verify your account by clicking the link: \nhttps://" +
-          req.headers.host +
+          "saqee-onlinestore.vercel.app" +
           "/api/confirm/" +
           email +
           "/" +
           token +
           "\n\nThank You!\n",
+        // html: "<strong>and easy to do anywhere, even with Node.js</strong>",
       };
-      transporter.sendMail(mailOptions, (err) => {
-        if (err) {
-          console.log(err);
-          return res
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log("Email sent");
+          res.status(200).json({
+            success:
+              "A verification email has been sent to " +
+              email +
+              ". It will  expire after one day. If you didn't get verification Email click on resend token.",
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          res
             .status(500)
             .json({ error: "technical issue,please click on resend" });
-        }
-
-        return res.status(200).json({
-          success:
-            "A verification email has been sent to " +
-            email +
-            ". It will  expire after one day. If you didn't get verification Email click on resend token.",
         });
-      });
     }
   );
 });

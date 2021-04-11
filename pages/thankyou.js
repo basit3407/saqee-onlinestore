@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import {
   Typography,
   Box,
@@ -36,15 +35,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
   },
 }));
-export default function Thankyou(props) {
+export default function Thankyou() {
   const classes = useStyles(),
     theme = useTheme(),
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { cartItems } = props;
-
   return (
-    <Layout cartItems={cartItems}>
+    <Layout>
       <Box
         display="flex"
         flexDirection="column"
@@ -68,14 +65,3 @@ export default function Thankyou(props) {
     </Layout>
   );
 }
-
-Thankyou.propTypes = {
-  cartItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      variations: PropTypes.objectOf(PropTypes.string),
-      qty: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-      price: PropTypes.number,
-    })
-  ),
-};

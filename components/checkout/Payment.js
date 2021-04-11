@@ -39,7 +39,7 @@ export default function Payment(props) {
           router.push("/thankyou");
         }
       })
-      .catch((err) => err && setError("There was some issue please try again"));
+      .catch(() => setError("There was some issue please try again"));
   };
 
   return (
