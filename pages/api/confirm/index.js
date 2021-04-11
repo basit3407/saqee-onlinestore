@@ -44,8 +44,8 @@ const handler = nc().post(async (req, res) => {
           "Hello " +
           name +
           ",\n\n" +
-          "Please verify your account by clicking the link: \nhttps://" +
-          "saqee-onlinestore.vercel.app" +
+          "Please verify your account by clicking the link:" +
+          process.env.CLIENT_URL +
           "/api/confirm/" +
           email +
           "/" +

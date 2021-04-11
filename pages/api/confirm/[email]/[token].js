@@ -66,4 +66,4 @@ export default async function emailVerificationHandler(req, res) {
 }
 
 const sendResponse = (req, res, message, status) =>
-  res.redirect(`https://${req.headers.host}/email/${message}?status=${status}`);
+  res.redirect(`${process.env.CLIENT_URL}/email/${message}?status=${status}`);
