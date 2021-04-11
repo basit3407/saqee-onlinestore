@@ -17,7 +17,7 @@ export default function EmailVerified() {
     matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box p={matches ? 10 : 20} display="flex" flexDirection="column">
+    <Box p={matches ? 15 : 40} display="flex" flexDirection="column">
       <Typography> {message}</Typography>
       {status !== "done" ? (
         <Button classes={{ root: classes.button }}>Resend</Button>
