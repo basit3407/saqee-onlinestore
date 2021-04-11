@@ -39,7 +39,8 @@ const handler = nc().post(async (req, res) => {
 
       //if no error send email
       const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 465,
         auth: {
           user: "basit.prevail@gmail.com",
           pass: "Pe@14012020",
