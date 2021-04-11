@@ -63,7 +63,7 @@ export default function Email() {
 
   return (
     <Box
-      p={matches ? 15 : 40}
+      p={matches ? 10 : 40}
       display="flex"
       flexDirection="column"
       justifyContent="center"
