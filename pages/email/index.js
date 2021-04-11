@@ -1,4 +1,11 @@
-import { Typography, Box, Button, makeStyles } from "@material-ui/core";
+import {
+  Typography,
+  Box,
+  Button,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -38,6 +45,9 @@ export default function Email() {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  const theme = useTheme(),
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
+
   const sendEmail = () =>
     axios
       .post("/api/confirm", { email, name })
@@ -52,7 +62,12 @@ export default function Email() {
   if (isLoading) return <Typography>Loading...</Typography>;
 
   return (
-    <Box p={40} display="flex" flexDirection="column" justifyContent="center">
+    <Box
+      p={matches ? 10 : 20}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
       <Typography>{message}</Typography>
       {!isLoading && (
         <Button onClick={handleClick} classes={{ root: classes.button }}>

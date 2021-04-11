@@ -1,4 +1,10 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import { useRouter } from "next/router";
 import { useStyles } from ".";
 
@@ -7,8 +13,11 @@ export default function EmailVerified() {
   const router = useRouter();
   const { message, status } = router.query;
 
+  const theme = useTheme(),
+    matches = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <Box p={50} display="flex" flexDirection="column">
+    <Box p={matches ? 10 : 20} display="flex" flexDirection="column">
       <Typography> {message}</Typography>
       {status !== "done" ? (
         <Button classes={{ root: classes.button }}>Resend</Button>
