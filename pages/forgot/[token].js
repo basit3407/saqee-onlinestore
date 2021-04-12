@@ -100,77 +100,149 @@ export default function Reset() {
       .then((res) => {
         setErrors();
         setRequestMessage(res.data.message);
-        setIsDone(true);
       })
       .catch((e) => setErrors(e.response.data.error))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+        setIsDone(true);
+      });
   };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      {status === "done" ? (
-        !isDone ? (
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
+  if (status === "done") {
+    if (!isDone)
+      return (
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Reset Password
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              name="password"
+              type="password"
+              value={loginDetails.password}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="confirm"
+              label="Confirm Password"
+              type="password"
+              value={loginDetails.confirm}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleClick}
+              className={classes.submit}
+            >
               Reset Password
-            </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Password"
-                name="password"
-                type="password"
-                value={loginDetails.password}
-                onChange={handleChange}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="confirm"
-                label="Confirm Password"
-                type="password"
-                value={loginDetails.confirm}
-                onChange={handleChange}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleClick}
-                className={classes.submit}
-              >
-                Reset Password
-              </Button>
-              {isLoading && (
-                <Typography variant="caption">Loading...</Typography>
-              )}
-              {!isLoading && <div className={classes.error}>{errors}</div>}
-            </form>
-          </div>
-        ) : (
-          !isLoading && <Typography>{requestMessage}</Typography>
-        )
-      ) : (
-        <div className={classes.root}>
-          <Typography> {message}</Typography>
-          <Button classes={{ root: classes.submit }} href="/forgot">
-            Resend
-          </Button>
+            </Button>
+            {isLoading && <Typography variant="caption">Loading...</Typography>}
+            {!isLoading && errors && (
+              <div className={classes.error}>{errors}</div>
+            )}
+          </form>
         </div>
-      )}
+      );
+    if (errors) return <div className={classes.error}>{errors}</div>;
+    return <Typography>{requestMessage}</Typography>;
+  }
 
+  return (
+    <div className={classes.root}>
+      <Typography> {message}</Typography>
+      <Button classes={{ root: classes.submit }} href="/forgot">
+        Resend
+      </Button>
       <Box mt={8}>
         <Copyright />
       </Box>
-    </Container>
+    </div>
   );
+
+  // return (
+  //   <Container component="main" maxWidth="xs">
+  //     {status === "done" ? (
+  //       !isDone ? (
+  //         <div className={classes.paper}>
+  //           <Avatar className={classes.avatar}>
+  //             <LockOutlinedIcon />
+  //           </Avatar>
+  //           <Typography component="h1" variant="h5">
+  //             Reset Password
+  //           </Typography>
+  //           <form className={classes.form} noValidate>
+  //             <TextField
+  //               variant="outlined"
+  //               margin="normal"
+  //               required
+  //               fullWidth
+  //               label="Password"
+  //               name="password"
+  //               type="password"
+  //               value={loginDetails.password}
+  //               onChange={handleChange}
+  //             />
+  //             <TextField
+  //               variant="outlined"
+  //               margin="normal"
+  //               required
+  //               fullWidth
+  //               name="confirm"
+  //               label="Confirm Password"
+  //               type="password"
+  //               value={loginDetails.confirm}
+  //               onChange={handleChange}
+  //             />
+  //             <Button
+  //               type="submit"
+  //               fullWidth
+  //               variant="contained"
+  //               color="primary"
+  //               onClick={handleClick}
+  //               className={classes.submit}
+  //             >
+  //               Reset Password
+  //             </Button>
+  //             {isLoading && (
+  //               <Typography variant="caption">Loading...</Typography>
+  //             )}
+  //             {!isLoading && errors && (
+  //               <div className={classes.error}>{errors}</div>
+  //             )}
+  //           </form>
+  //         </div>
+  //       ) : (
+  //         !isLoading && (
+  //           <>
+  //             <Typography>{requestMessage}</Typography>
+  //             {errors && <div className={classes.error}>{errors}</div>}
+  //           </>
+  //         )
+  //       )
+  //     ) : (
+  //   <div className={classes.root}>
+  //     <Typography> {message}</Typography>
+  //     <Button classes={{ root: classes.submit }} href="/forgot">
+  //       Resend
+  //     </Button>
+  //   </div>
+  // )}
+
+  // </Container>
+  // );
 }

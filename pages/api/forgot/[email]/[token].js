@@ -13,6 +13,7 @@ export default async function forgotPasswordHandler(req, res) {
   const { db } = await connectToDatabase();
 
   const hash = crypto.createHash("sha512").update(token).digest("hex");
+  console.log(hash);
 
   db.collection("tokens").findOne({ token: hash }, (error, token) => {
     if (error)

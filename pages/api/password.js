@@ -5,11 +5,15 @@ import { connectToDatabase } from "../../util/mongodb";
 const handler = nc().put(async (req, res) => {
   const { email, password, token } = req.body;
 
+  console.log(token);
+
   const { db } = await connectToDatabase();
 
   const hash = crypto.createHash("sha512").update(token).digest("hex");
+  console.log(hash);
 
   db.collection("tokens").findOne({ token: hash }, (error, token) => {
+    console.log(token);
     if (error)
       return res
         .status(500)
