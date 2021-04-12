@@ -42,7 +42,7 @@ export default async function forgotPasswordHandler(req, res) {
       if (!user)
         return sendResponse(email, token.token, res, "no such user exists");
 
-      sendResponse(email, token.token, res, "done", true);
+      sendResponse(email, token.token, res, "done", "done");
     });
   });
 }

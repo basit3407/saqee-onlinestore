@@ -102,20 +102,13 @@ export default function Reset() {
         setRequestMessage(res.data.message);
         setIsDone(true);
       })
-      .catch((e) =>
-        setErrors({
-          password:
-            e.response.status === 401
-              ? "invalid email or password"
-              : "Please fill the missing fields",
-        })
-      )
+      .catch((e) => setErrors(e.response.data.error))
       .finally(() => setIsLoading(false));
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      {status ? (
+      {status === "done" ? (
         !isDone ? (
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -141,7 +134,7 @@ export default function Reset() {
                 margin="normal"
                 required
                 fullWidth
-                name="password"
+                name="confirm"
                 label="Confirm Password"
                 type="password"
                 value={loginDetails.confirm}
@@ -164,7 +157,7 @@ export default function Reset() {
             </form>
           </div>
         ) : (
-          <Typography>{requestMessage}</Typography>
+          !isLoading && <Typography>{requestMessage}</Typography>
         )
       ) : (
         <div className={classes.root}>

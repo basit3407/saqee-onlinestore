@@ -1,4 +1,5 @@
 import nc from "next-connect";
+import crypto from "crypto";
 import { connectToDatabase } from "../../util/mongodb";
 
 const handler = nc().put(async (req, res) => {
@@ -8,7 +9,7 @@ const handler = nc().put(async (req, res) => {
 
   const hash = crypto.createHash("sha512").update(token).digest("hex");
 
-  db.collections("tokens").findOne({ token: hash }, (error, token) => {
+  db.collection("tokens").findOne({ token: hash }, (error, token) => {
     if (error)
       return res
         .status(500)
@@ -19,7 +20,7 @@ const handler = nc().put(async (req, res) => {
         .status(400)
         .json({ error: "your token may have expired,please click on resend" });
 
-    db.collections("user").findOne({ email }, (error, user) => {
+    db.collection("users").findOne({ email }, (error, user) => {
       if (error)
         return res
           .status(500)
@@ -33,7 +34,7 @@ const handler = nc().put(async (req, res) => {
         .pbkdf2Sync(password, salt, 1000, 64, "sha512")
         .toString("hex");
 
-      db.collections("user").findOneAndUpdate(
+      db.collection("users").findOneAndUpdate(
         { email },
         { $set: { salt, hash } },
         (error) => {
