@@ -1,14 +1,11 @@
-import {
-  Typography,
-  Box,
-  Button,
-  makeStyles,
-  useTheme,
-  useMediaQuery,
-} from "@material-ui/core";
+import { Typography, Button, makeStyles, Container } from "@material-ui/core";
 import Layout from "../components/layout";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+    margin: "50% 0",
+  },
   button: {
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     borderRadius: 0,
@@ -36,32 +33,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Thankyou() {
-  const classes = useStyles(),
-    theme = useTheme(),
-    matches = useMediaQuery(theme.breakpoints.down("sm"));
+  const classes = useStyles();
 
   return (
     <Layout>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyItems="center"
-        padding={matches ? 10 : 20}
-      >
-        <Typography align={matches ? "center" : "left"} variant="h3">
-          Thank you
-        </Typography>
-        <Typography
-          align={matches ? "center" : "left"}
-          classes={{ root: classes.typo }}
-        >
-          Your order will be delivered in 2 to 3 days
-        </Typography>
-        <Button href="/" classes={{ root: classes.button }}>
-          <Typography>Explore</Typography>
-        </Button>
-      </Box>
+      <Container maxWidth="xs">
+        <div className={classes.root}>
+          <Typography display="block" variant="h3">
+            Thank you
+          </Typography>
+          <Typography classes={{ root: classes.typo }} display="block">
+            Your order will be delivered in 2 to 3 days
+          </Typography>
+          <div>
+            <Button href="/" classes={{ root: classes.button }}>
+              <Typography>Explore</Typography>
+            </Button>
+          </div>
+        </div>
+      </Container>
     </Layout>
   );
 }

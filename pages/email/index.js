@@ -1,16 +1,13 @@
-import {
-  Typography,
-  Box,
-  Button,
-  makeStyles,
-  useMediaQuery,
-  useTheme,
-} from "@material-ui/core";
+import { Typography, Button, makeStyles, Container } from "@material-ui/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+    margin: "50% 0",
+  },
   button: {
     margin: theme.spacing(1, 0),
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
@@ -45,9 +42,6 @@ export default function Email() {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  const theme = useTheme(),
-    matches = useMediaQuery(theme.breakpoints.down("sm"));
-
   const sendEmail = () =>
     axios
       .post("/api/confirm", { email, name })
@@ -62,20 +56,21 @@ export default function Email() {
   if (isLoading) return <Typography>Loading...</Typography>;
 
   return (
-    <Box
-      p={matches ? 10 : 40}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-    >
-      <Typography>{message}</Typography>
-      {!isLoading && (
-        <Button onClick={handleClick} classes={{ root: classes.button }}>
-          Resend Token
-        </Button>
-      )}
+    <Container maxWidth="sm">
+      <div className={classes.root}>
+        <Typography display="block" className={classes.root}>
+          <Typography display="block">{message}</Typography>
+          {!isLoading && (
+            <div>
+              <Button onClick={handleClick} classes={{ root: classes.button }}>
+                Resend Token
+              </Button>
+            </div>
+          )}
 
-      {error && <div className={classes.error}>{error}</div>}
-    </Box>
+          {error && <div className={classes.error}>{error}</div>}
+        </Typography>
+      </div>
+    </Container>
   );
 }
