@@ -9,7 +9,8 @@ export const config = {
   },
 };
 const handler = nc().post(async (req, res) => {
-  const { name, email } = req.body;
+  const { email } = req.body;
+
   const { db } = await connectToDatabase();
 
   db.collection("users").findOne({ email }, (error, user) => {
@@ -18,17 +19,16 @@ const handler = nc().post(async (req, res) => {
         .status(500)
         .json({ error: "an unknown error occured,please try again" });
     if (!user) return res.status(400).json({ error: "user doesnt exist" });
-    if (user.isVerified)
-      return res
-        .status(200)
-        .json({ success: "This account has already been verified" });
+
+    const { name } = user;
 
     const token = crypto.randomBytes(128).toString("hex");
+    const hash = crypto.createHash("sha512").update(token).digest("hex");
 
     db.collection("tokens").insertOne(
       {
         createdAt: new Date(),
-        token,
+        token: hash,
       },
       (error) => {
         if (error)
@@ -37,31 +37,32 @@ const handler = nc().post(async (req, res) => {
             .json({ error: "there was an unknown issue,please try again" });
 
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
         const msg = {
-          to: email, // Change to your recipient
-          from: "bm@basitminhas.com", // Change to your verified sender
+          to: email,
+          from: "bm@basitminhas.com",
           subject: "Saqee's Online Store",
           text:
             "Hello " +
             name +
             ",\n\n" +
-            "Please verify your account by clicking the link:" +
+            "Please reset your password by clicking the link:" +
             process.env.CLIENT_URL +
-            "api/confirm/" +
+            "api/forgot/" +
             email +
             "/" +
             token +
             "\n\nThank You!\n",
-          // html: "<strong>and easy to do anywhere, even with Node.js</strong>",
         };
+
         sgMail
           .send(msg)
           .then(() => {
             res.status(200).json({
-              success:
-                "A verification email has been sent to " +
+              message:
+                "Password reset link has been sent to  " +
                 email +
-                ". It will  expire after one day. If you didn't get verification Email click on resend token.",
+                ". It will  expire after one day. If you didn't get the link,Kindly click again on reset password.",
             });
           })
           .catch((error) => {
@@ -73,14 +74,6 @@ const handler = nc().post(async (req, res) => {
       }
     );
   });
-
-  //generate email verification token and save
-
-  //   //TTL Index for auto expiry,will be executed only once for index creation
-  //   db.collection("tokens").createIndex(
-  //     { createdAt: 1 },
-  //     { expireAfterSeconds: 86400 } //1 day in seconds
-  //   );
 });
 
 export default handler;

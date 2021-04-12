@@ -12,15 +12,10 @@ export default async function emailVerificationHandler(req, res) {
   const { db } = await connectToDatabase();
   db.collection("tokens").findOne({ token }, (error, token) => {
     if (error)
-      return sendResponse(
-        req,
-        res,
-        "There is some unknown issue,Please try again"
-      );
+      return sendResponse(res, "There is some unknown issue,Please try again");
 
     if (!token)
       return sendResponse(
-        req,
         res,
         "Your token may have expired,Please click on resend "
       );
@@ -29,7 +24,6 @@ export default async function emailVerificationHandler(req, res) {
     db.collection("users").findOne({ email }, async (error, user) => {
       if (error)
         return sendResponse(
-          req,
           res,
           "There is some unknown issue,Please try again"
         );
@@ -37,12 +31,7 @@ export default async function emailVerificationHandler(req, res) {
       if (!user) return sendResponse(req, res, "This user is not registered");
 
       if (user.isVerified)
-        return sendResponse(
-          req,
-          res,
-          "This user has already been verified",
-          "done"
-        );
+        return sendResponse(res, "This user has already been verified", "done");
 
       //set is verified to true
       await db
@@ -58,12 +47,12 @@ export default async function emailVerificationHandler(req, res) {
                 "There is some unknown issue,Please try again"
               );
 
-            sendResponse(req, res, "account verified successfully", "done");
+            sendResponse(res, "account verified successfully", "done");
           }
         );
     });
   });
 }
 
-const sendResponse = (req, res, message, status) =>
+const sendResponse = (res, message, status) =>
   res.redirect(`${process.env.CLIENT_URL}email/${message}?status=${status}`);
