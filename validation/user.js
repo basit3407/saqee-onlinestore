@@ -1,5 +1,5 @@
 import { findUserByEmail } from "../lib/db";
-import { validateEmail } from "./email";
+import { validateEmail, validatePassword } from "./email";
 import { isEmpty } from "./product";
 
 export default async function validate(data) {
@@ -14,6 +14,9 @@ export default async function validate(data) {
     //email validation
     else if (property === "email" && !validateEmail(data[property]))
       errors[property] = "Please enter valid email address";
+    else if (property === "password" && !validatePassword(data[property]))
+      errors[property] =
+        "Password should consist of minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:";
   }
   //duplicate email validation
   if (!errors.email) {

@@ -69,8 +69,8 @@ export const useStyles = makeStyles((theme) => ({
 export default function Reset() {
   const classes = useStyles();
   const router = useRouter();
-  const { message, status, email, token } = router.query;
-  const [requestMessage, setRequestMessage] = useState();
+  const { email, token } = router.query;
+  const [Message, setMessage] = useState();
   const [isDone, setIsDone] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,159 +90,181 @@ export default function Reset() {
   };
 
   const handleClick = (e) => {
+    e.preventDefault();
     const { password, confirm } = loginDetails;
-    if (password !== confirm) return setErrors("passwords donot match");
+
+    if (password !== confirm)
+      return setErrors({ password: "passwords do not match" });
     setIsLoading(true);
 
-    e.preventDefault();
     axios
       .put(`/api/password`, { email, password, token })
       .then((res) => {
         setErrors();
-        setRequestMessage(res.data.message);
+        setMessage(res.data.message);
       })
-      .catch((e) => setErrors(e.response.data.error))
+      .catch((e) => {
+        console.log(e.response.data);
+        setErrors(e.response.data);
+      })
       .finally(() => {
         setIsLoading(false);
         setIsDone(true);
       });
   };
 
-  if (status === "done") {
-    if (!isDone)
-      return (
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Reset Password
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
-              name="password"
-              type="password"
-              value={loginDetails.password}
-              onChange={handleChange}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="confirm"
-              label="Confirm Password"
-              type="password"
-              value={loginDetails.confirm}
-              onChange={handleChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleClick}
-              className={classes.submit}
-            >
-              Reset Password
-            </Button>
-            {isLoading && <Typography variant="caption">Loading...</Typography>}
-            {!isLoading && errors && (
-              <div className={classes.error}>{errors}</div>
-            )}
-          </form>
-        </div>
-      );
-    if (errors) return <div className={classes.error}>{errors}</div>;
-    return <Typography>{requestMessage}</Typography>;
-  }
+  if (isDone && !errors)
+    return (
+      <div>
+        <Typography>{Message}</Typography>
+        <Button href="/login"> Go to Login</Button>
+      </div>
+    );
+
+  if (isDone && errors && errors.error)
+    return (
+      <div>
+        <div className={classes.error}>{errors.error}</div>
+        <Button href="/login">Resend</Button>
+      </div>
+    );
 
   return (
-    <div className={classes.root}>
-      <Typography> {message}</Typography>
-      <Button classes={{ root: classes.submit }} href="/forgot">
-        Resend
-      </Button>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
+    <div className={classes.paper}>
+      <Container maxWidth="xs">
+        {" "}
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Reset Password
+        </Typography>
+        <form className={classes.form} noValidate>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Password"
+            name="password"
+            type="password"
+            value={loginDetails.password}
+            onChange={handleChange}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="confirm"
+            label="Confirm Password"
+            type="password"
+            value={loginDetails.confirm}
+            onChange={handleChange}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleClick}
+            className={classes.submit}
+          >
+            Reset Password
+          </Button>
+          {isLoading && <Typography variant="caption">Loading...</Typography>}
+          {!isLoading &&
+            (errors && errors.password ? (
+              <div className={classes.error}>{errors.password}</div>
+            ) : (
+              <Typography>{Message}</Typography>
+            ))}
+        </form>
+      </Container>
     </div>
   );
-
-  // return (
-  //   <Container component="main" maxWidth="xs">
-  //     {status === "done" ? (
-  //       !isDone ? (
-  //         <div className={classes.paper}>
-  //           <Avatar className={classes.avatar}>
-  //             <LockOutlinedIcon />
-  //           </Avatar>
-  //           <Typography component="h1" variant="h5">
-  //             Reset Password
-  //           </Typography>
-  //           <form className={classes.form} noValidate>
-  //             <TextField
-  //               variant="outlined"
-  //               margin="normal"
-  //               required
-  //               fullWidth
-  //               label="Password"
-  //               name="password"
-  //               type="password"
-  //               value={loginDetails.password}
-  //               onChange={handleChange}
-  //             />
-  //             <TextField
-  //               variant="outlined"
-  //               margin="normal"
-  //               required
-  //               fullWidth
-  //               name="confirm"
-  //               label="Confirm Password"
-  //               type="password"
-  //               value={loginDetails.confirm}
-  //               onChange={handleChange}
-  //             />
-  //             <Button
-  //               type="submit"
-  //               fullWidth
-  //               variant="contained"
-  //               color="primary"
-  //               onClick={handleClick}
-  //               className={classes.submit}
-  //             >
-  //               Reset Password
-  //             </Button>
-  //             {isLoading && (
-  //               <Typography variant="caption">Loading...</Typography>
-  //             )}
-  //             {!isLoading && errors && (
-  //               <div className={classes.error}>{errors}</div>
-  //             )}
-  //           </form>
-  //         </div>
-  //       ) : (
-  //         !isLoading && (
-  //           <>
-  //             <Typography>{requestMessage}</Typography>
-  //             {errors && <div className={classes.error}>{errors}</div>}
-  //           </>
-  //         )
-  //       )
-  //     ) : (
-  //   <div className={classes.root}>
-  //     <Typography> {message}</Typography>
-  //     <Button classes={{ root: classes.submit }} href="/forgot">
-  //       Resend
-  //     </Button>
-  //   </div>
-  // )}
-
-  // </Container>
-  // );
 }
+
+// return (
+//   <div className={classes.root}>
+//     <Typography> {message}</Typography>
+//     <Button classes={{ root: classes.submit }} href="/forgot">
+//       Resend
+//     </Button>
+//     <Box mt={8}>
+//       <Copyright />
+//     </Box>
+//   </div>
+// );
+
+// return (
+//   <Container component="main" maxWidth="xs">
+//     {status === "done" ? (
+//       !isDone ? (
+//         <div className={classes.paper}>
+//           <Avatar className={classes.avatar}>
+//             <LockOutlinedIcon />
+//           </Avatar>
+//           <Typography component="h1" variant="h5">
+//             Reset Password
+//           </Typography>
+//           <form className={classes.form} noValidate>
+//             <TextField
+//               variant="outlined"
+//               margin="normal"
+//               required
+//               fullWidth
+//               label="Password"
+//               name="password"
+//               type="password"
+//               value={loginDetails.password}
+//               onChange={handleChange}
+//             />
+//             <TextField
+//               variant="outlined"
+//               margin="normal"
+//               required
+//               fullWidth
+//               name="confirm"
+//               label="Confirm Password"
+//               type="password"
+//               value={loginDetails.confirm}
+//               onChange={handleChange}
+//             />
+//             <Button
+//               type="submit"
+//               fullWidth
+//               variant="contained"
+//               color="primary"
+//               onClick={handleClick}
+//               className={classes.submit}
+//             >
+//               Reset Password
+//             </Button>
+//             {isLoading && (
+//               <Typography variant="caption">Loading...</Typography>
+//             )}
+//             {!isLoading && errors && (
+//               <div className={classes.error}>{errors}</div>
+//             )}
+//           </form>
+//         </div>
+//       ) : (
+//         !isLoading && (
+//           <>
+//             <Typography>{requestMessage}</Typography>
+//             {errors && <div className={classes.error}>{errors}</div>}
+//           </>
+//         )
+//       )
+//     ) : (
+//   <div className={classes.root}>
+//     <Typography> {message}</Typography>
+//     <Button classes={{ root: classes.submit }} href="/forgot">
+//       Resend
+//     </Button>
+//   </div>
+// )}
+
+// </Container>
+// );

@@ -204,8 +204,6 @@ export default function NavBar(props) {
 
   const [user] = useUser(); //Authentication
 
-  useEffect(() => console.log(user), [user]);
-
   return (
     <>
       <div className={classes.top}>
