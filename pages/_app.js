@@ -13,8 +13,8 @@ export default function MyApp(props) {
   //this prop will be passed to all the pages
   const passedProps = {
     ...pageProps,
-    cartItems: cartItems,
-    setCartItems: setCartItems,
+    cartItems,
+    setCartItems,
   };
 
   //on App load do the following:
