@@ -9,7 +9,7 @@ export const config = {
   },
 };
 const handler = nc().post(async (req, res) => {
-  const { name, email } = req.body;
+  const { email } = req.body;
   const { db } = await connectToDatabase();
 
   // generate email verification token and save
@@ -30,6 +30,8 @@ const handler = nc().post(async (req, res) => {
       return res
         .status(200)
         .json({ success: "This account has already been verified" });
+
+    const { name } = user;
 
     //check if token already exists for this user;
     db.collection("tokens-email").findOne({ email }, (error, token) => {
@@ -76,36 +78,26 @@ const handler = nc().post(async (req, res) => {
               "api/confirm/" +
               newToken +
               "\n\nThank You!\n",
-            // html: "<strong>and easy to do anywhere, even with Node.js</strong>",
           };
           sgMail
             .send(msg)
-            .then(() => {
+            .then(() =>
               res.status(200).json({
                 success:
                   "A verification email has been sent to " +
                   email +
-                  ". It will  expire after one day. If you didn't get verification Email click on resend token.",
-              });
-            })
-            .catch((error) => {
-              console.error(error);
+                  ". It will  expire after one hour. If you didn't get verification Email click on resend token.",
+              })
+            )
+            .catch(() =>
               res
                 .status(500)
-                .json({ error: "technical issue,please click on resend" });
-            });
+                .json({ error: "technical issue,please click on resend" })
+            );
         }
       );
     });
   });
-
-  //generate email verification token and save
-
-  //   //TTL Index for auto expiry,will be executed only once for index creation
-  //   db.collection("tokens").createIndex(
-  //     { createdAt: 1 },
-  //     { expireAfterSeconds: 86400 } //1 day in seconds
-  //   );
 });
 
 export default handler;

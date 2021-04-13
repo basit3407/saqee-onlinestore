@@ -79,20 +79,19 @@ const handler = nc().post(async (req, res) => {
 
           sgMail
             .send(msg)
-            .then(() => {
+            .then(() =>
               res.status(200).json({
                 message:
                   "Password reset link has been sent to  " +
                   email +
-                  ". It will  expire after one day. If you didn't get the link,Kindly click again on reset password.",
-              });
-            })
-            .catch((error) => {
-              console.error(error);
+                  ". It will  expire after one hour. If you didn't get the link,Kindly click again on reset password.",
+              })
+            )
+            .catch(() =>
               res
                 .status(500)
-                .json({ error: "technical issue,please click on resend" });
-            });
+                .json({ error: "technical issue,please click on resend" })
+            );
         }
       );
     });

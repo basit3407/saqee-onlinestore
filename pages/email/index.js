@@ -36,7 +36,7 @@ export const useStyles = makeStyles((theme) => ({
 
 export default function Email() {
   const router = useRouter();
-  const { email, name } = router.query;
+  const { email } = router.query;
   const classes = useStyles();
   const [message, setMessage] = useState();
   const [error, setError] = useState();
@@ -44,12 +44,12 @@ export default function Email() {
 
   const sendEmail = () =>
     axios
-      .post("/api/confirm", { email, name })
+      .post("/api/confirm", { email })
       .then((res) => setMessage(res.data.success))
       .catch((e) => setError(e.response.data.error))
       .finally(() => setIsLoading(false));
 
-  useEffect(() => (!email || !name ? router.push("/") : sendEmail()));
+  useEffect(() => (!email ? router.push("/") : sendEmail()));
 
   const handleClick = () => sendEmail();
 

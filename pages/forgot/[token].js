@@ -1,7 +1,6 @@
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,11 +8,10 @@ import Container from "@material-ui/core/Container";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Copyright } from "../login";
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: "50%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -47,7 +45,7 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0),
     boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
     borderRadius: 0,
     background: `linear-gradient(to right,rgb(115 210 230), rgb(247 235 97) 40%) right`,
@@ -56,6 +54,11 @@ export const useStyles = makeStyles((theme) => ({
     msTransition: "all 0.2s ease",
     MozTransition: "all 0.2s ease",
     backgroundSize: "200%",
+
+    "&.MuiButton-text": {
+      padding: theme.spacing(1, 7),
+    },
+
     "&:hover": {
       backgroundPosition: "left",
       boxShadow: `3px 3px 0 ${theme.palette.secondary.dark}`,
@@ -115,24 +118,31 @@ export default function Reset() {
 
   if (isDone && !errors)
     return (
-      <div>
-        <Typography>{Message}</Typography>
-        <Button href="/login"> Go to Login</Button>
-      </div>
+      <Container maxWidth="xs">
+        <div className={classes.paper}>
+          <Typography>{Message}</Typography>
+          <Button classes={{ root: classes.submit }} href="/login">
+            Go to Login
+          </Button>
+        </div>
+      </Container>
     );
 
   if (isDone && errors && errors.error)
     return (
-      <div>
-        <div className={classes.error}>{errors.error}</div>
-        <Button href="/login">Resend</Button>
-      </div>
+      <Container maxWidth="xs">
+        <div className={classes.paper}>
+          <div className={classes.error}>{errors.error}</div>
+          <Button classes={{ root: classes.submit }} href="/forgot">
+            Resend
+          </Button>
+        </div>
+      </Container>
     );
 
   return (
-    <div className={classes.paper}>
-      <Container maxWidth="xs">
-        {" "}
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -165,8 +175,6 @@ export default function Reset() {
           <Button
             type="submit"
             fullWidth
-            variant="contained"
-            color="primary"
             onClick={handleClick}
             className={classes.submit}
           >
@@ -180,91 +188,7 @@ export default function Reset() {
               <Typography>{Message}</Typography>
             ))}
         </form>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 }
-
-// return (
-//   <div className={classes.root}>
-//     <Typography> {message}</Typography>
-//     <Button classes={{ root: classes.submit }} href="/forgot">
-//       Resend
-//     </Button>
-//     <Box mt={8}>
-//       <Copyright />
-//     </Box>
-//   </div>
-// );
-
-// return (
-//   <Container component="main" maxWidth="xs">
-//     {status === "done" ? (
-//       !isDone ? (
-//         <div className={classes.paper}>
-//           <Avatar className={classes.avatar}>
-//             <LockOutlinedIcon />
-//           </Avatar>
-//           <Typography component="h1" variant="h5">
-//             Reset Password
-//           </Typography>
-//           <form className={classes.form} noValidate>
-//             <TextField
-//               variant="outlined"
-//               margin="normal"
-//               required
-//               fullWidth
-//               label="Password"
-//               name="password"
-//               type="password"
-//               value={loginDetails.password}
-//               onChange={handleChange}
-//             />
-//             <TextField
-//               variant="outlined"
-//               margin="normal"
-//               required
-//               fullWidth
-//               name="confirm"
-//               label="Confirm Password"
-//               type="password"
-//               value={loginDetails.confirm}
-//               onChange={handleChange}
-//             />
-//             <Button
-//               type="submit"
-//               fullWidth
-//               variant="contained"
-//               color="primary"
-//               onClick={handleClick}
-//               className={classes.submit}
-//             >
-//               Reset Password
-//             </Button>
-//             {isLoading && (
-//               <Typography variant="caption">Loading...</Typography>
-//             )}
-//             {!isLoading && errors && (
-//               <div className={classes.error}>{errors}</div>
-//             )}
-//           </form>
-//         </div>
-//       ) : (
-//         !isLoading && (
-//           <>
-//             <Typography>{requestMessage}</Typography>
-//             {errors && <div className={classes.error}>{errors}</div>}
-//           </>
-//         )
-//       )
-//     ) : (
-//   <div className={classes.root}>
-//     <Typography> {message}</Typography>
-//     <Button classes={{ root: classes.submit }} href="/forgot">
-//       Resend
-//     </Button>
-//   </div>
-// )}
-
-// </Container>
-// );

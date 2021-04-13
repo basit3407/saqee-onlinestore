@@ -1,6 +1,6 @@
 import { Button, Container, Typography } from "@material-ui/core";
 import { useRouter } from "next/router";
-import { useStyles } from ".";
+import { useStyles } from "./index";
 
 export default function EmailVerified() {
   const classes = useStyles();
