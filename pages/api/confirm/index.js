@@ -67,7 +67,7 @@ const handler = nc().post(async (req, res) => {
           sgMail.setApiKey(process.env.SENDGRID_API_KEY);
           const msg = {
             to: email, // Change to your recipient
-            from: "bm@basitminhas.com", // Change to your verified sender
+            from: "saqeeOnlineStore@gmail.com", // Change to your verified sender
             subject: "Saqee's Online Store",
             text:
               "Hello " +
