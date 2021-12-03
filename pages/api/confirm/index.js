@@ -89,11 +89,12 @@ const handler = nc().post(async (req, res) => {
                   ". It will  expire after one hour. If you didn't get verification Email click on resend token.",
               })
             )
-            .catch(() =>
+            .catch((e) => {
+              console.log(e);
               res
                 .status(500)
-                .json({ error: "technical issue,please click on resend" })
-            );
+                .json({ error: "technical issue,please click on resend" });
+            });
         }
       );
     });
