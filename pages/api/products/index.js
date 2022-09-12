@@ -1,5 +1,5 @@
 import { connectToDatabase } from "../../../util/mongodb";
-import validate from "../../../validation/product";
+// import validate from "../../../validation/product";
 
 export default async function productsHandler(req, res) {
   const {
@@ -43,28 +43,54 @@ export default async function productsHandler(req, res) {
       }
 
       break;
+    // case "POST":
+    //   // @route POST /api/products
+    //   // @desc create product in products of [name] in data base
+    //   // @access public
+    //   {
+    //     const { errors, isValid } = validate(req.body); // Form validation
+    //     if (!isValid) return res.status(400).json(errors); //if not valid retrun error
+
+    //     //delete extra entries in product
+    //     let product = req.body;
+    //     for (const prop in product) !product[prop] && delete product[prop]; //delete optional empty fields
+    //     delete product.auxImagesQty;
+    //     delete product.variationsQty;
+
+    //     //save to db
+    //     try {
+    //       await db.collection("products").insertOne(product);
+    //       res.status(200).json({ message: "product saved" }); //save product in db
+    //     } catch (e) {
+    //       res
+    //         .status(500)
+    //         .json({ server: "there was some problem,please try again" });
+    //     }
+    //   }
+
+    //   break;
     case "POST":
-      // @route POST /api/products
+      // @route POST api/products/[name]
       // @desc create product in products of [name] in data base
       // @access public
       {
-        const { errors, isValid } = validate(req.body); // Form validation
-        if (!isValid) return res.status(400).json(errors); //if not valid retrun error
+        // // Form validation
+        // const { errors, isValid } = validate(req.body);
+        // //if not valid retrun error
+        // if (!isValid) return res.status(400).json(errors);
 
-        //delete extra entries in product
-        let product = req.body;
-        for (const prop in product) !product[prop] && delete product[prop]; //delete optional empty fields
-        delete product.auxImagesQty;
-        delete product.variationsQty;
-
-        //save to db
+        //if no errors save
         try {
-          await db.collection("products").insertOne(product);
-          res.status(200).json({ message: "product saved" }); //save product in db
+          console.log(" i got called");
+          await db.collection("products").insertMany(req.body);
+          console.log("hulla");
+          res.status(200).json({ message: "product saved" });
         } catch (e) {
-          res
-            .status(500)
-            .json({ server: "there was some problem,please try again" });
+          console.log(e);
+          e &&
+            res
+              .status(500)
+              .json({ error: "there was some problem,please try again" });
         }
       }
 
