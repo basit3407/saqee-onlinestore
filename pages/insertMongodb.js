@@ -409,6 +409,19 @@ export default function insertMongodb() {
     },
   ];
 
+  // const corrected_fabrics = Fabrics.map((item) => ({
+  //   ...item,
+  //   image: parseInt(item.image),
+  //   ...(item.auxillaryImages && {
+  //     auxillaryImages: item.auxillaryImages.map((itm) => parseInt(itm)),
+  //   }),
+  // }));
+
+  // const corrected_other = other.map((item) => ({
+  //   ...item,
+  //   image: parseInt(item.image),
+  // }));
+
   const products = [...Fabrics, ...other];
 
   return (
