@@ -78,7 +78,7 @@ const MapProducts = () => {
   const products1 = [
       {
         category: "garments",
-        id: "6061a129a0862b22f0295352",
+        id: "631f0b01dc50eb5c78a52d9a",
         title: "Shirt & Trousers (2 piece)",
         brand: "Aiman Zaman",
         price: 2250,

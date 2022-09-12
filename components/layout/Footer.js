@@ -112,6 +112,21 @@ export default function Footer() {
               Copyright:{new Date().getFullYear()} Saqee&apos;s Online Store.All
               Rights Reserved
             </Typography>
+            <Typography
+              className={classes.copyright}
+              align="center"
+              variant="caption"
+              display="block"
+            >
+              Designed and developed by{" "}
+              <Link
+                href="https://basit-minhas.vercel.app/"
+                color="inherit"
+                underline="always"
+              >
+                Basit Minhas
+              </Link>
+            </Typography>
           </Grid>
         </Grid>
       </Container>
