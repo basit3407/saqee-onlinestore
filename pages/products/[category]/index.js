@@ -235,7 +235,7 @@ const MapProducts = (props) => {
               width={425}
               height={425}
               className={classes.img}
-              src={item.image}
+              src={`/images/${item.category}/${item.category} (${item.image}).jpg`}
             />
             <div className={classes.productCaption}>
               <Link
@@ -308,11 +308,13 @@ MapProducts.propTypes = {
 //get products from database on page load.
 export async function getServerSideProps(context) {
   const { category } = context.params;
+
   //query db by category
   const dbQuery = { category: category.slice(0).toLowerCase() };
   const { db } = await connectToDatabase();
   try {
     const products = await db.collection("products").find(dbQuery).toArray();
+
     return {
       props: products.length
         ? { array: JSON.parse(JSON.stringify(products)) }
