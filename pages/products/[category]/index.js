@@ -235,7 +235,7 @@ const MapProducts = (props) => {
               width={425}
               height={425}
               className={classes.img}
-              src={item.image}
+              src={`/images/${item.category}/${item.category} (${item.image}).jpg`}
             />
             <div className={classes.productCaption}>
               <Link

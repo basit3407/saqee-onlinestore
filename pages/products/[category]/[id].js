@@ -135,7 +135,9 @@ export default function Product(props) {
   const { error, product, cartItems, setCartItems } = props,
     router = useRouter(),
     classes = useStyles(),
-    [mainImage, setMainImage] = useState(product.image), //image to be displayed on main
+    [mainImage, setMainImage] = useState(
+      `/images/${product.category}/${product.category} (${product.image}).jpg`
+    ), //image to be displayed on main
     [orderDetails, setOrderDetails] = useState({
       //Qty and variation of the product being ordered by client
       qty: 1,
@@ -241,15 +243,20 @@ export default function Product(props) {
                   height={500}
                 />
                 {/* if auxillary images are present render them */}
-                {product.auxImages && (
+                {product.auxillaryImages && (
                   <div className={classes.auxillaryImages}>
                     {/*hide main image from aux section if it is set as main image */}
-                    {mainImage !== product.image && (
+                    {mainImage !==
+                      `/images/${product.category}/${product.category} (${product.image}).jpg` && (
                       <div className={classes.auxImage}>
                         <Image
-                          onClick={() => setMainImage(product.image)} // onClick set this image to main image (in aux section)
+                          onClick={() =>
+                            setMainImage(
+                              `/images/${product.category}/${product.category} (${product.image}).jpg`
+                            )
+                          } // onClick set this image to main image (in aux section)
                           className={classes.image}
-                          src={product.image}
+                          src={`/images/${product.category}/${product.category} (${product.image}).jpg`}
                           width={50}
                           height={50}
                         />
@@ -259,7 +266,8 @@ export default function Product(props) {
                     <MapAuxillaryImages
                       mainImage={mainImage}
                       setMainImage={setMainImage}
-                      images={product.auxImages}
+                      images={product.auxillaryImages}
+                      category={product.category}
                     />
                   </div>
                 )}
@@ -360,7 +368,7 @@ Product.propTypes = {
     countInStock: PropTypes.number.isRequired,
     description: PropTypes.string,
     brand: PropTypes.string,
-    auxImages: PropTypes.arrayOf(PropTypes.string),
+    auxillaryImages: PropTypes.arrayOf(PropTypes.string),
     variations: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string,
@@ -387,12 +395,17 @@ const MapAuxillaryImages = (props) => {
   return images.map((item, index) => {
     return (
       //hide the auxillary image if it is set as main image
-      item !== mainImage && (
+      `/images/${props.category}/${props.category} (${item}).jpg` !==
+        mainImage && (
         <div key={index} className={classes.auxImage}>
           <Image
-            onClick={() => setMainImage(item)} //onClick set this image to main image
+            onClick={() =>
+              setMainImage(
+                `/images/${props.category}/${props.category} (${item}).jpg`
+              )
+            } //onClick set this image to main image
             className={classes.image}
-            src={item}
+            src={`/images/${props.category}/${props.category} (${item}).jpg`}
             height={50}
             width={50}
           />
@@ -406,6 +419,7 @@ MapAuxillaryImages.propTypes = {
   images: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   mainImage: PropTypes.string.isRequired,
   setMainImage: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
 };
 
 // This function is for mapping variations of product
