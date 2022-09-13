@@ -241,7 +241,7 @@ export default function Product(props) {
                   height={500}
                 />
                 {/* if auxillary images are present render them */}
-                {product.auxImages && (
+                {product.auxillaryImages && (
                   <div className={classes.auxillaryImages}>
                     {/*hide main image from aux section if it is set as main image */}
                     {mainImage !== product.image && (
@@ -259,7 +259,7 @@ export default function Product(props) {
                     <MapAuxillaryImages
                       mainImage={mainImage}
                       setMainImage={setMainImage}
-                      images={product.auxImages}
+                      images={product.auxillaryImages}
                     />
                   </div>
                 )}
@@ -360,7 +360,7 @@ Product.propTypes = {
     countInStock: PropTypes.number.isRequired,
     description: PropTypes.string,
     brand: PropTypes.string,
-    auxImages: PropTypes.arrayOf(PropTypes.string),
+    auxillaryImages: PropTypes.arrayOf(PropTypes.string),
     variations: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string,
